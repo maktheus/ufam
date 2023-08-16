@@ -144,12 +144,11 @@ public class Scheduller {
 
             if (!currentProcess.isCompleted()) {
                 int executionTime = Math.min(timeQuantum, currentProcess.remainingTime());
+                System.out.println();
                 currentProcess.execute(executionTime);
                 currentTime += executionTime;
 
-                System.out.println("Executing process: " + currentProcess.name +
-                        " | Remaining Time: " + currentProcess.remainingTime() +
-                        " | Current Time: " + currentTime);
+                System.out.println(currentProcess.name );
 
                 if (currentProcess.isCompleted()) {
                     queue.remove(index);

@@ -13,7 +13,7 @@ public class Menu {
 
     public Menu(ArrayList<Process> processes) {
         this.processes = processes;
-        this.quantum = 0;
+        this.quantum = 1;
         typeMenuPremp = this.processes.get(0).type;
     }
 
