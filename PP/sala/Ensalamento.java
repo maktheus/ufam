@@ -446,110 +446,66 @@ public class Ensalamento {
     static int avaliar(int[] individuo, ArrayList<ArrayList<ArrayList<Integer>>> possibilidadesHorarioTurmaSala) {
         int total = 0;
         boolean[] salasUtilizadas = new boolean[individuo.length];
-    
+        
         for (int t = 0; t < individuo.length; t++) {
             int s = individuo[t];
-            ArrayList<ArrayList<Integer>> possibilidadesTurmaSala = possibilidadesHorarioTurmaSala.get(s);
-            ArrayList<Integer> possibilidadesHorario = possibilidadesTurmaSala.get(t);
             
-            if (possibilidadesHorario.contains(1) && !salasUtilizadas[s]) {
-                total++;
-                salasUtilizadas[s] = true;
+            if (s >= 0 && s < possibilidadesHorarioTurmaSala.size()) {
+                ArrayList<ArrayList<Integer>> possibilidadesTurmaSala = possibilidadesHorarioTurmaSala.get(s);
+                
+                if (t >= 0 && t < possibilidadesTurmaSala.size()) {
+                    ArrayList<Integer> possibilidadesHorario = possibilidadesTurmaSala.get(t);
+                    
+                    if (possibilidadesHorario.contains(1) && !salasUtilizadas[s]) {
+                        total++;
+                        salasUtilizadas[s] = true;
+                    }
+                }
             }
         }
-    
+        
         return total;
     }
+    
+    
     
 
     public ArrayList<ArrayList<Integer>> encontrarMelhorAlocacao(ArrayList<ArrayList<ArrayList<Integer>>> possibilidadesHorarioTurmaSala) {
         int numTurmas = possibilidadesHorarioTurmaSala.get(0).size();
         int numSalas = possibilidadesHorarioTurmaSala.size();
 
-        // Parâmetros do algoritmo genético
-        int tamanhoPopulacao = 100;
-        int numGeracoes = 1000;
-        double taxaMutacao = 0.1;
+        int[] individuo = new int[numTurmas];
+        int[] melhorIndividuo = new int[numTurmas];
+        int melhorAvaliacao = 0;
 
-        Random random = new Random();
-
-        // Inicialização da população
-        List<int[]> populacao = new ArrayList<>();
-        for (int i = 0; i < tamanhoPopulacao; i++) {
-            int[] individuo = new int[numTurmas];
-            for (int j = 0; j < numTurmas; j++) {
-                individuo[j] = random.nextInt(numSalas);
-            }
-            populacao.add(individuo);
+        for (int i = 0; i < numTurmas; i++) {
+            individuo[i] = -1;
         }
 
-        // Algoritmo genético
-        for (int geracao = 0; geracao < numGeracoes; geracao++) {
-            populacao.sort((indiv1, indiv2) -> Integer.compare(avaliar(indiv2, possibilidadesHorarioTurmaSala),
-                    avaliar(indiv1, possibilidadesHorarioTurmaSala)));
-
-            // Seleção dos pais (elitismo)
-            List<int[]> pais = new ArrayList<>(populacao.subList(0, tamanhoPopulacao / 2));
-
-            // Cruzamento
-            List<int[]> filhos = new ArrayList<>();
-            for (int i = 0; i < tamanhoPopulacao / 2; i++) {
-                int[] pai1 = pais.get(random.nextInt(pais.size()));
-                int[] pai2 = pais.get(random.nextInt(pais.size()));
-                int pontoCorte = random.nextInt(numTurmas - 1) + 1;
-                int[] filho = new int[numTurmas];
-                System.arraycopy(pai1, 0, filho, 0, pontoCorte);
-                System.arraycopy(pai2, pontoCorte, filho, pontoCorte, numTurmas - pontoCorte);
-                filhos.add(filho);
-            }
-
-            // Mutação
-            for (int[] filho : filhos) {
-                if (random.nextDouble() < taxaMutacao) {
-                    int turma = random.nextInt(numTurmas);
-                    int novaSala = random.nextInt(numSalas);
-                    filho[turma] = novaSala;
+        for (int i = 0; i < numTurmas; i++) {
+            for (int j = 0; j < numSalas; j++) {
+                individuo[i] = j;
+                int avaliacao = avaliar(individuo, possibilidadesHorarioTurmaSala);
+                if (avaliacao > melhorAvaliacao) {
+                    melhorAvaliacao = avaliacao;
+                    for (int k = 0; k < numTurmas; k++) {
+                        melhorIndividuo[k] = individuo[k];
+                    }
                 }
             }
-
-            // Nova população
-            populacao = new ArrayList<>(pais);
-            populacao.addAll(filhos);
+            individuo[i] = -1;
         }
 
-        // Encontrar o melhor indivíduo
-        int[] melhorIndividuo = populacao.get(0);
-
-        // Imprimir a alocação
-        for (int turma = 0; turma < melhorIndividuo.length; turma++) {
-            int sala = melhorIndividuo[turma];
-            if (sala >= 0 && sala < numSalas) {
-                System.out.println("Turma " + (turma + 1) + " -> Sala " + (char) ('A' + sala));
-            } else {
-                System.out.println("Turma " + (turma + 1) + " não alocada");
-            }
+        ArrayList<ArrayList<Integer>> pairTurmaSala = new ArrayList<ArrayList<Integer>>();
+        for (int i = 0; i < numTurmas; i++) {
+            ArrayList<Integer> pair = new ArrayList<Integer>();
+            pair.add(i);
+            pair.add(melhorIndividuo[i]);
+            pairTurmaSala.add(pair);
         }
 
-        //return the pair
-        ArrayList<ArrayList<Integer>> pair = new ArrayList<ArrayList<Integer>>();
+        return pairTurmaSala;
 
-        for (int turma = 0; turma < melhorIndividuo.length; turma++) {
-            int sala = melhorIndividuo[turma];
-            if(sala >= 0 && sala < numSalas) {
-                ArrayList<Integer> pairTurmaSala = new ArrayList<Integer>();
-                pairTurmaSala.add(turma);
-                pairTurmaSala.add(sala);
-                pair.add(pairTurmaSala);
-            }
-            else{
-                ArrayList<Integer> pairTurmaSala = new ArrayList<Integer>();
-                pairTurmaSala.add(turma);
-                pairTurmaSala.add(-1);
-                pair.add(pairTurmaSala);
-            }
-        }
-
-        return pair;
     }
 
     public void alocarTodas() {
@@ -575,9 +531,6 @@ public class Ensalamento {
                 }
             }
         }
-
-
-        
     }
 
     public int getTheDiffBetweenSalaAndTurma(Turma turma, Sala sala) {
@@ -613,16 +566,6 @@ public class Ensalamento {
     }
 
     public String relatorioTurmasPorSala() {
-        // String relatorio = relatorioResumoEnsalamento() + "\n\n";
-        // for (Sala sala : this.salas) {
-        // relatorio += "--- " + sala.getDescricao() + " ---\n\n";
-        // for (TurmaEmSala turmaEmSala : this.ensalamento) {
-        // if (turmaEmSala.sala == sala) {
-        // relatorio += turmaEmSala.turma.getDescricao() + "\n";
-        // }
-        // }
-        // }
-
         String relatorio = relatorioResumoEnsalamento() + "\n\n";
         for (Sala sala : this.salasAntesOrdenar) {
             relatorio += "--- " + sala.getDescricao() + " ---\n\n";
@@ -632,7 +575,6 @@ public class Ensalamento {
                 }
             }
         }
-
         return relatorio;
     }
 
