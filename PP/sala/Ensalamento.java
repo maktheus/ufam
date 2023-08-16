@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 public class Ensalamento {
     ArrayList<Sala> salas = new ArrayList<Sala>();
@@ -44,13 +45,11 @@ public class Ensalamento {
     public void addSala(Sala sala) {
         this.salas.add(sala);
         this.salasAntesOrdenar.add(sala);
-        ordenarSalasPorCapacidade();
     }
 
     public void addTurma(Turma turma) {
         this.turmas.add(turma);
         this.turmasAntesOrdenar.add(turma);
-        ordenarTurmasPorNumeroAlunosDecrescente();
     }
 
     public Sala getSala(Turma turma) {
@@ -85,7 +84,11 @@ public class Ensalamento {
     }
 
     public boolean alocar(Turma turma, Sala sala) {
-        if (sala.capacidade < turma.numAlunos) {
+        if (sala.capacidade <= turma.numAlunos) {
+            return false;
+        }
+
+        if (!sala.acessivel) {
             return false;
         }
 
@@ -146,21 +149,6 @@ public class Ensalamento {
         }
         return minDiffPointer;
     }
-
-    // public int getMinimunDiffPointerBetweenTurmaAndSala(Sala sala) {
-    // int minDiff = Integer.MAX_VALUE;
-    // int minDiffPointer = -1;
-    // for (int i = 0; i < this.turmas.size(); i++) {
-    // Turma turma = this.turmas.get(i);
-    // int diff = sala.capacidade - turma.numAlunos;
-    // if (diff >= 0 && diff < minDiff && sala.acessivel == true &&
-    // salaDisponivel(sala, turma.horarios) == true ) {
-    // minDiff = diff;
-    // minDiffPointer = i;
-    // }
-    // }
-    // return minDiffPointer;
-    // }
 
     public boolean refinedFirstFit(Turma turma) {
         for (Sala sala : salas) {
@@ -427,81 +415,169 @@ public class Ensalamento {
         });
     }
 
+    // crear matrix com todos as combinações de turmas
+
+    public ArrayList<ArrayList<ArrayList<Integer>>> possibilidades() {
+        ArrayList<ArrayList<ArrayList<Integer>>> possibilidadesHorarioTurmaSala = new ArrayList<ArrayList<ArrayList<Integer>>>();
+
+        int[] HORAS = { 8, 10, 12, 14, 16, 18, 20 };
+
+        for (Sala sala : salas) {
+            ArrayList<ArrayList<Integer>> possibilidadesHorarioTurma = new ArrayList<ArrayList<Integer>>();
+            for (Turma turma : turmas) {
+
+                ArrayList<Integer> possibilidadeHorario = new ArrayList<Integer>(); // Criar novo vetor em cada iteração
+                for (int horario : HORAS) {
+                    if (turma.horarios.contains(horario) && sala.acessivel == true
+                            && sala.capacidade >= turma.numAlunos) {
+                        possibilidadeHorario.add(1);
+                    } else {
+                        possibilidadeHorario.add(0);
+                    }
+                }
+                possibilidadesHorarioTurma.add(possibilidadeHorario);
+            }
+            possibilidadesHorarioTurmaSala.add(possibilidadesHorarioTurma);
+        }
+
+        return possibilidadesHorarioTurmaSala;
+    }
+
+    static int avaliar(int[] individuo, ArrayList<ArrayList<ArrayList<Integer>>> possibilidadesHorarioTurmaSala) {
+        int total = 0;
+        boolean[] salasUtilizadas = new boolean[individuo.length];
+    
+        for (int t = 0; t < individuo.length; t++) {
+            int s = individuo[t];
+            ArrayList<ArrayList<Integer>> possibilidadesTurmaSala = possibilidadesHorarioTurmaSala.get(s);
+            ArrayList<Integer> possibilidadesHorario = possibilidadesTurmaSala.get(t);
+            
+            if (possibilidadesHorario.contains(1) && !salasUtilizadas[s]) {
+                total++;
+                salasUtilizadas[s] = true;
+            }
+        }
+    
+        return total;
+    }
+    
+
+    public ArrayList<ArrayList<Integer>> encontrarMelhorAlocacao(ArrayList<ArrayList<ArrayList<Integer>>> possibilidadesHorarioTurmaSala) {
+        int numTurmas = possibilidadesHorarioTurmaSala.get(0).size();
+        int numSalas = possibilidadesHorarioTurmaSala.size();
+
+        // Parâmetros do algoritmo genético
+        int tamanhoPopulacao = 100;
+        int numGeracoes = 1000;
+        double taxaMutacao = 0.1;
+
+        Random random = new Random();
+
+        // Inicialização da população
+        List<int[]> populacao = new ArrayList<>();
+        for (int i = 0; i < tamanhoPopulacao; i++) {
+            int[] individuo = new int[numTurmas];
+            for (int j = 0; j < numTurmas; j++) {
+                individuo[j] = random.nextInt(numSalas);
+            }
+            populacao.add(individuo);
+        }
+
+        // Algoritmo genético
+        for (int geracao = 0; geracao < numGeracoes; geracao++) {
+            populacao.sort((indiv1, indiv2) -> Integer.compare(avaliar(indiv2, possibilidadesHorarioTurmaSala),
+                    avaliar(indiv1, possibilidadesHorarioTurmaSala)));
+
+            // Seleção dos pais (elitismo)
+            List<int[]> pais = new ArrayList<>(populacao.subList(0, tamanhoPopulacao / 2));
+
+            // Cruzamento
+            List<int[]> filhos = new ArrayList<>();
+            for (int i = 0; i < tamanhoPopulacao / 2; i++) {
+                int[] pai1 = pais.get(random.nextInt(pais.size()));
+                int[] pai2 = pais.get(random.nextInt(pais.size()));
+                int pontoCorte = random.nextInt(numTurmas - 1) + 1;
+                int[] filho = new int[numTurmas];
+                System.arraycopy(pai1, 0, filho, 0, pontoCorte);
+                System.arraycopy(pai2, pontoCorte, filho, pontoCorte, numTurmas - pontoCorte);
+                filhos.add(filho);
+            }
+
+            // Mutação
+            for (int[] filho : filhos) {
+                if (random.nextDouble() < taxaMutacao) {
+                    int turma = random.nextInt(numTurmas);
+                    int novaSala = random.nextInt(numSalas);
+                    filho[turma] = novaSala;
+                }
+            }
+
+            // Nova população
+            populacao = new ArrayList<>(pais);
+            populacao.addAll(filhos);
+        }
+
+        // Encontrar o melhor indivíduo
+        int[] melhorIndividuo = populacao.get(0);
+
+        // Imprimir a alocação
+        for (int turma = 0; turma < melhorIndividuo.length; turma++) {
+            int sala = melhorIndividuo[turma];
+            if (sala >= 0 && sala < numSalas) {
+                System.out.println("Turma " + (turma + 1) + " -> Sala " + (char) ('A' + sala));
+            } else {
+                System.out.println("Turma " + (turma + 1) + " não alocada");
+            }
+        }
+
+        //return the pair
+        ArrayList<ArrayList<Integer>> pair = new ArrayList<ArrayList<Integer>>();
+
+        for (int turma = 0; turma < melhorIndividuo.length; turma++) {
+            int sala = melhorIndividuo[turma];
+            if(sala >= 0 && sala < numSalas) {
+                ArrayList<Integer> pairTurmaSala = new ArrayList<Integer>();
+                pairTurmaSala.add(turma);
+                pairTurmaSala.add(sala);
+                pair.add(pairTurmaSala);
+            }
+            else{
+                ArrayList<Integer> pairTurmaSala = new ArrayList<Integer>();
+                pairTurmaSala.add(turma);
+                pairTurmaSala.add(-1);
+                pair.add(pairTurmaSala);
+            }
+        }
+
+        return pair;
+    }
+
     public void alocarTodas() {
-        // ordenarTurmasPorNumeroAlunosDecrescente();
-        // ordenarTurmasPorNumeroAlunosDecrescente();
-        // ordenarTurmasPorPesoAlunosHorariosDecrescente();
+        ordenarTurmasPorNumeroAlunosDecrescente();
+        ordenarSalasPorCapacidadeDecrescente();
 
-        // for (Turma turma : this.turmas) {
-        // // best fit
-        // bestFit(turma);
-
-        // }
-
-        ArrayList<Turma> turmasA = new ArrayList<>();
-        ArrayList<Turma> turmasB = new ArrayList<>();
-        ArrayList<Turma> turmasC = new ArrayList<>();
-        ArrayList<Turma> turmasD = new ArrayList<>();
-
-        // ordenar por quantidade de horarios
-        int numTurmas = turmas.size();
-        // int batchSize = (int) Math.ceil((double) numTurmas / 4);
-        int count = 1;
-        for (int i = 0; i < numTurmas; i++) {
-            count++;
-            Turma turma = turmas.get(i);
-            if (count == 1) {
-                // bestfit
-                ordenarSalasPorCapacidade();
-                bestFit(turma);
-            } else if (count == 2) {
-                // worst fit
-                // ordenar sala
-                ordenarSalasPorCapacidadeDecrescente();
-                bestFit(turma);
-            }
-
-            if (count == 2) {
-                count = 1;
-            }
+        // iterate possibilidade and print
+        ArrayList<ArrayList<ArrayList<Integer>>> possibilidades = possibilidades();
+        for (ArrayList<ArrayList<Integer>> possibilidade : possibilidades) {
+            System.out.println(possibilidade);
         }
-
-        for (Turma turma : turmasA) {
-            for (Sala sala : salas) {
-                if (sala.acessivel && sala.capacidade >= turma.numAlunos && salaDisponivel(sala, turma.horarios)) {
-                    alocar(turma, sala);
-                    break;
+        System.out.println();
+        
+        //iterate encontrarMelhorAlocacao
+        ArrayList<ArrayList<Integer>> pair = encontrarMelhorAlocacao(possibilidades);
+        for (ArrayList<Integer> pairTurmaSala : pair) {
+            int turma = pairTurmaSala.get(0);
+            int sala = pairTurmaSala.get(1);
+            if (sala >= 0 && turma != -1) {
+                System.out.println("Turma " + (turma) + " -> Sala " + ( sala));
+                if(alocar(turmas.get(turma), salas.get(sala))){
+                    System.out.println("Alocado");
                 }
             }
         }
 
-        for (Turma turma : turmasB) {
-            for (Sala sala : salas) {
-                if (sala.acessivel && sala.capacidade >= turma.numAlunos && salaDisponivel(sala, turma.horarios)) {
-                    alocar(turma, sala);
-                    break;
-                }
-            }
-        }
 
-        for (Turma turma : turmasC) {
-            for (Sala sala : salas) {
-                if (sala.acessivel && sala.capacidade >= turma.numAlunos && salaDisponivel(sala, turma.horarios)) {
-                    alocar(turma, sala);
-                    break;
-                }
-            }
-        }
-
-        for (Turma turma : turmasD) {
-            for (Sala sala : salas) {
-                if (sala.acessivel && sala.capacidade >= turma.numAlunos && salaDisponivel(sala, turma.horarios)) {
-                    alocar(turma, sala);
-                    break;
-                }
-            }
-        }
-
+        
     }
 
     public int getTheDiffBetweenSalaAndTurma(Turma turma, Sala sala) {
