@@ -8,12 +8,14 @@ public class Menu {
     public int option2 = 0;
     public int quantum;
     public int typeMenuPremp;
+    public String FolderName;
     Scheduller scheduller = new Scheduller();
     ArrayList<Process> processes;
 
-    public Menu(ArrayList<Process> processes) {
+    public Menu(ArrayList<Process> processes, String FolderName) {
         this.processes = processes;
         this.quantum = 1;
+        this.FolderName = FolderName;
         typeMenuPremp = this.processes.get(0).type;
     }
 
@@ -31,13 +33,13 @@ public class Menu {
                         break;
                     case 2:
 
-                        scheduller.shortestRemainingTimeFirst(processes, quantum);
+                        scheduller.shortestRemainingTimeFirst(processes);
                         refreshProcess();
 
                         break;
                     case 3:
 
-                        scheduller.prioP(processes, quantum);
+                        scheduller.prioP(processes);
                         refreshProcess();
 
                         break;
@@ -113,7 +115,7 @@ public class Menu {
                         break;
                     case 4:
 
-                        scheduller.shortestRemainingTimeFirst(processes, quantum);
+                        scheduller.shortestRemainingTimeFirst(processes);
                         refreshProcess();
 
                         break;
@@ -125,7 +127,7 @@ public class Menu {
                         break;
                     case 6:
 
-                        scheduller.prioP(processes, quantum);
+                        scheduller.prioP(processes);
                         refreshProcess();
 
                         break;
