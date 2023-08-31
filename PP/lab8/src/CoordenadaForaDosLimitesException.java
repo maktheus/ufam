@@ -5,13 +5,13 @@ package br.edu.ufam.icomp.lab_excecoes;
 // TamanhoMaximoExcedidoException: "Quantidade máxima de coordenadas excedida"
 // DistanciaEntrePontosExcedidaException: "Distância máxima entre duas coordenadas vizinhas excedida"
 
-public class CoordenadaNegativaException extends Exception {
-    public CoordenadaNegativaException(String message) {
+public class CoordenadaForaDosLimitesException extends RoverCoordenadaException {
+    public CoordenadaForaDosLimitesException(String message) {
         super(message);
     }
 
-    public CoordenadaNegativaException() {
-        super("Coordenada com valor negativo");
+    public CoordenadaForaDosLimitesException() {
+        super("Coordenada com valores fora dos limites");
     }
 
 }

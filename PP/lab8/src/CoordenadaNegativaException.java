@@ -5,7 +5,7 @@ package br.edu.ufam.icomp.lab_excecoes;
 // TamanhoMaximoExcedidoException: "Quantidade máxima de coordenadas excedida"
 // DistanciaEntrePontosExcedidaException: "Distância máxima entre duas coordenadas vizinhas excedida"
 
-public class CoordenadaNegativaException extends Exception {
+public class CoordenadaNegativaException extends RoverCoordenadaException {
     public CoordenadaNegativaException(String message) {
         super(message);
     }

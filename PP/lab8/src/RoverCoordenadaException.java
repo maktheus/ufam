@@ -1,4 +1,7 @@
 package br.edu.ufam.icomp.lab_excecoes;
+// RoverException: "Exceção geral do rover"
+// RoverCoordenadaException: "Exceção geral de coordenada do rover"
+// RoverCaminhoException: "Exceção geral de caminho do rover"
 // CoordenadaNegativaException: "Coordenada com valor negativo"
 // CoordenadaForaDosLimitesException: "Coordenada com valores fora dos limites"
 // DigitoInvalidoException: "Digito da coordenada inválido"
@@ -11,7 +14,8 @@ public class RoverCoordenadaException extends RoverException {
         super(message);
     }
 
+    
     public RoverCoordenadaException() {
-        super("Coordenada inválida");
+        super(" Exceção geral de coordenada do rover");
     }
 }
