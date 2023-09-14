@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  db:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_mysql_container
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data: 

@@ -5,6 +5,7 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.3/userguide/building_java_projects.html in the Gradle documentation.
  */
 
+
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
@@ -23,6 +24,12 @@ dependencies {
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:32.1.1-jre")
+
+    // FlatLaf
+    implementation("com.formdev:flatlaf:3.2.1")
+
+    // JGoodies
+    implementation("mysql:mysql-connector-java:8.0.33")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -41,3 +48,4 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
