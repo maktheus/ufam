@@ -1,10 +1,15 @@
 package urnaeletronica.FrontEnd.Pages;
 
 import urnaeletronica.FrontEnd.Components.*;
+import urnaeletronica.FrontEnd.Pages.Voting.VontingPage;
+//import App.java;
+
 
 import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+
+
 
 public class LandingPage {
     private JPanel panel1;
@@ -42,6 +47,19 @@ public class LandingPage {
         constraints.gridx = 1;
         constraints.gridy = 0;
         panel1.add(button1.getButton(), constraints);
+
+        //button on click listener
+        button1.getButton().addActionListener(e -> {
+            // Set this Jframe not visible
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(panel1);
+            frame.setVisible(false);
+            
+            // Create new VotingPage
+            VontingPage votingPage = new VontingPage();
+            frame.setContentPane(votingPage.getPanel());
+            frame.setVisible(true);
+
+        });
 
         constraints.gridy = 1;
         panel1.add(button2.getButton(), constraints);

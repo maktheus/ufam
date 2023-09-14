@@ -64,4 +64,11 @@ public class App {
         constraints.anchor = GridBagConstraints.SOUTH;
         frame.add(footer.getPanel(), constraints);
     }
+
+    public static void changePage(JFrame frame, JPanel panel){
+        frame.setContentPane(panel);
+        frame.setVisible(true);
+    }
+
+    
 }
