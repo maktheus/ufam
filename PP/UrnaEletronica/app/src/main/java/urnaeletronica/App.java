@@ -10,13 +10,13 @@ public class App {
 
     public static void main(String[] args) {
         // Database
-        
+
         DataBaseController database = new DataBaseController();
         database.connect();
 
-        if(database.connect() == null){
+        if (database.connect() == null) {
             System.out.println("Erro ao conectar ao banco de dados");
-            return ;
+            return;
         }
 
         // Landing Page screen
@@ -29,12 +29,11 @@ public class App {
         frame.setVisible(true);
 
         Header header = new Header();
-        LandingPage body = new LandingPage();
+        LandingPage body = new LandingPage(frame);
         Footer footer = new Footer();
 
         GridBagConstraints constraints = new GridBagConstraints();
 
-        // Defina o peso para alcançar a proporção desejada (10%, 70%, 20%)
         constraints.weightx = 1.0; // Peso total
 
         // Header (10%)
@@ -65,10 +64,4 @@ public class App {
         frame.add(footer.getPanel(), constraints);
     }
 
-    public static void changePage(JFrame frame, JPanel panel){
-        frame.setContentPane(panel);
-        frame.setVisible(true);
-    }
-
-    
 }
