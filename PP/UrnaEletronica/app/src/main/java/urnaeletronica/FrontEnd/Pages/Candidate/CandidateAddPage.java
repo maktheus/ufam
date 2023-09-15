@@ -6,7 +6,7 @@ import javax.swing.*;
 public class CandidateAddPage {
     private JPanel panel;
 
-    public CandidateAddPage() {
+    public CandidateAddPage(JFrame frame) {
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
         JLabel title = new JLabel("Adicionar candidato");

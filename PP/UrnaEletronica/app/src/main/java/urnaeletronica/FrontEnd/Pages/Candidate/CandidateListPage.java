@@ -7,7 +7,7 @@ public class CandidateListPage {
         
         private JPanel panel;
         
-        public CandidateListPage(){
+        public CandidateListPage(JFrame frame){
             panel = new JPanel();
             panel.setBackground(new java.awt.Color(0, 0, 0));
         }

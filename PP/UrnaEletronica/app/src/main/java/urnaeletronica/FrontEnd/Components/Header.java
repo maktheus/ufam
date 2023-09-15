@@ -1,18 +1,22 @@
 package urnaeletronica.FrontEnd.Components;
 import javax.swing.*;
 
+import urnaeletronica.FrontEnd.Pages.LandingPage;
+
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 
 public class Header {
-    private JPanel panel1;
+    private JPanel panel;
     private JLabel label1 = new JLabel("Urna Eletronica");
     private JButton button1 = new JButton("Sair");
     private JButton button2 = new JButton("Home");
 
 
-    public Header(){
-        panel1 = new JPanel();
-        panel1.setLayout(null);
-        panel1.setBackground(new java.awt.Color(248, 255, 229));
+    public Header(JFrame frame){
+        panel = new JPanel();
+        panel.setLayout(null);
+        panel.setBackground(new java.awt.Color(248, 255, 229));
 
         label1.setBounds(0, 0, 600, 50);
         label1.setFont(new java.awt.Font("Martian Mono", 0, 16));
@@ -23,25 +27,51 @@ public class Header {
         button1.setBackground(new java.awt.Color(255, 255, 255));
         button1.setBorderPainted(false);
         button1.setFocusPainted(false);
-        button1.setFont(new java.awt.Font("Arial", 0, 20));
+        button1.setFont(new java.awt.Font("Martin Mono", 0, 20));
         button1.setForeground(new java.awt.Color(0, 0, 0));
 
         button2.setBounds(0, 0, 100, 50);
         button2.setBackground(new java.awt.Color(255, 255, 255));
         button2.setBorderPainted(false);
         button2.setFocusPainted(false);
-        button2.setFont(new java.awt.Font("Arial", 0, 20));
+        button2.setFont(new java.awt.Font("Martian Mono", 0, 20));
         button2.setForeground(new java.awt.Color(0, 0, 0));
         
 
 
-        panel1.add(label1);
-        panel1.add(button1);
-        panel1.add(button2);
+        panel.add(label1);
+        panel.add(button1);
+        panel.add(button2);
+
+        // button one on click change Jframe to LandingPage
+        button1.addActionListener(new java.awt.event.ActionListener(){
+            // close the aplicattion
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                System.exit(0);
+            }
+        });
+
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GridBagConstraints constraints = new GridBagConstraints();
+
+                frame.getContentPane().remove(panel);
+                constraints.gridx = 0;
+                constraints.gridy = 1;
+                constraints.gridwidth = 1;
+                constraints.gridheight = 1;
+                constraints.weighty = 0.7; // 70%
+                constraints.fill = GridBagConstraints.BOTH;
+    
+                frame.getContentPane().add(new LandingPage(frame).getPanel(), constraints);
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
 
     }
 
     public JPanel getPanel() {
-        return panel1;
+        return panel;
     }
 } 

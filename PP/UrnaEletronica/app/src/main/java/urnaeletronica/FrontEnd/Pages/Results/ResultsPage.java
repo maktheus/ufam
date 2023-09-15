@@ -6,7 +6,7 @@ public class ResultsPage {
     
     private JPanel panel;
     
-    public ResultsPage(){
+    public ResultsPage(JFrame frame){
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
     }

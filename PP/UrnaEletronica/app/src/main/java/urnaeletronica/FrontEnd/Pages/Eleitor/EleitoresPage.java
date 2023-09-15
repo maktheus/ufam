@@ -10,7 +10,7 @@ public class EleitoresPage {
 
     private JPanel panel;
 
-    public EleitoresPage(){
+    public EleitoresPage(JFrame frame){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

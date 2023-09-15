@@ -7,7 +7,7 @@ public class ElitoreAddPage {
 
     private JPanel panel;
 
-    public ElitoreAddPage() {
+    public ElitoreAddPage(JFrame jframe) {
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
     }

@@ -6,18 +6,25 @@ import urnaeletronica.FrontEnd.Components.*;
 import urnaeletronica.FrontEnd.Pages.LandingPage;
 import urnaeletronica.BackEnd.Controllers.DataBaseController;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
 public class App {
 
     public static void main(String[] args) {
+        FlatLightLaf.install();
+
+        FlatLightLaf.setup();
+        
+        
         // Database
 
         DataBaseController database = new DataBaseController();
         database.connect();
 
-        if (database.connect() == null) {
-            System.out.println("Erro ao conectar ao banco de dados");
-            return;
-        }
+        // if (database.connect() == null) {
+        //     System.out.println("Erro ao conectar ao banco de dados");
+        //     return;
+        // }
 
         // Landing Page screen
         JFrame frame = new JFrame("Urna Eletronica");
@@ -28,7 +35,7 @@ public class App {
         frame.setLayout(new GridBagLayout());
         frame.setVisible(true);
 
-        Header header = new Header();
+        Header header = new Header(frame);
         LandingPage body = new LandingPage(frame);
         Footer footer = new Footer();
 

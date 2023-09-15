@@ -8,7 +8,7 @@ public class LoginPage {
     public JTextField textField;
     public JButton button;
     
-    public LoginPage(){
+    public LoginPage(JFrame jframe){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

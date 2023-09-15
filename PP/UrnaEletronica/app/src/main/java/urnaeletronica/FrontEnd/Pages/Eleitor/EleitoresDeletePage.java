@@ -9,7 +9,7 @@ public class EleitoresDeletePage {
     public JTextField textField;
     public JButton button;
     
-    public EleitoresDeletePage(){
+    public EleitoresDeletePage(JFrame frame){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

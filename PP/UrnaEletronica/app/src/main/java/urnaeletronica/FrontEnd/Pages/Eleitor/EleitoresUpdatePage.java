@@ -7,7 +7,7 @@ public class EleitoresUpdatePage {
 
     private JPanel panel;
 
-    public EleitoresUpdatePage() {
+    public EleitoresUpdatePage(JFrame jframe) {
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
     }

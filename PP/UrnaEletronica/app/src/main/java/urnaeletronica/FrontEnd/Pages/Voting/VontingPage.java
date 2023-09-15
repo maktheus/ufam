@@ -35,7 +35,6 @@ public class VontingPage {
         panel.add(number, constraints);
 
 
-
         //Add candidate number label
         constraints.gridx = 0;
         constraints.gridy = 2;
@@ -45,8 +44,6 @@ public class VontingPage {
         constraints.gridx = 1;
         constraints.gridy = 0;
         panel.add(new VotingButtons().getPanel(), constraints);
-       
-
     }
 
 
