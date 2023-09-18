@@ -14,8 +14,18 @@ services:
       MYSQL_DATABASE: mydatabase
       MYSQL_USER: myuser
       MYSQL_PASSWORD: mypassword
+      MYSQLD_DEFAULT_AUTHENTICATION_PLUGIN: mysql_native_password
     volumes:
       - db_data:/var/lib/mysql
 
+  flyway:
+    image: flyway/flyway
+    command: ["-url=jdbc:mysql://db:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true", "-user=myuser", "-password=mypassword", "migrate"]
+
+    volumes:
+      - ./app/src/main/java/urnaeletronica/BackEnd/Migration:/flyway/sql
+    depends_on:
+      - db
+
 volumes:
-  db_data: 
+  db_data:

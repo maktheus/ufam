@@ -29,14 +29,13 @@ public class Footer {
         label2.setForeground(new java.awt.Color(0, 0, 0));
         label2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
-
-        constraints.gridx = 0;
+        // anchor center
+        constraints.anchor = GridBagConstraints.CENTER;
         constraints.gridy = 0;
-
 
         panel.add(label1,constraints);
 
-        constraints.gridx = 1;
+        constraints.gridy = 1;
         panel.add(label2,constraints);
     }
 

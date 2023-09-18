@@ -15,7 +15,11 @@ public class Header {
 
     public Header(JFrame frame){
         panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new GridBagLayout());
+
+        // constraints create
+        GridBagConstraints constraints = new GridBagConstraints();
+
         panel.setBackground(new java.awt.Color(248, 255, 229));
 
         label1.setBounds(0, 0, 600, 50);
@@ -38,10 +42,19 @@ public class Header {
         button2.setForeground(new java.awt.Color(0, 0, 0));
         
 
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 0.6;
+        panel.add(label1, constraints);  
 
-        panel.add(label1);
-        panel.add(button1);
-        panel.add(button2);
+        constraints.gridx = 1;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.2;
+        panel.add(button1, constraints);
+
+        constraints.gridx = 2;
+        constraints.weightx = 0.2;
+        panel.add(button2,constraints);
 
         // button one on click change Jframe to LandingPage
         button1.addActionListener(new java.awt.event.ActionListener(){
