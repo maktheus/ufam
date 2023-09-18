@@ -2,15 +2,15 @@ package urnaeletronica.BackEnd.Models;
 
 public class Candidate  extends Voter{
     
-    private String idForCandidate;
+    private String candidateNumber;
 
-    public Candidate(String name, String cpf,   String etitulo, String idForCandidate) {
+    public Candidate(String name, String cpf,   String etitulo, String candidateNumber) {
         super(name, cpf, etitulo);
-        this.idForCandidate = idForCandidate;
+        this.candidateNumber = candidateNumber;
     }
 
-    public String getIdForCandidate() {
-        return this.idForCandidate;
+    public String candidateNumber() {
+        return this.candidateNumber;
     }
 
 }

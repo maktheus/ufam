@@ -9,6 +9,7 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+    id("org.flywaydb.flyway") version "9.22.1"
 }
 
 repositories {
@@ -30,6 +31,7 @@ dependencies {
 
     // JGoodies
     implementation("mysql:mysql-connector-java:8.0.33")
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -49,3 +51,9 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+flyway {
+    url = "jdbc:mysql://localhost:3306/mydatabase"
+    user = "myuser"
+    password = "mypassword"
+    locations = arrayOf("filesystem:app/src/main/java/urnaeletronica/BackEnd/Migration")
+}
