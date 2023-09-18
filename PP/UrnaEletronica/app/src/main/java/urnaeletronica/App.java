@@ -23,6 +23,7 @@ public class App {
 
         // if (database.connect() == null) {
         //     System.out.println("Erro ao conectar ao banco de dados");
+        //     System.out.println("Verifique se o banco de dados está rodando");
         //     return;
         // }
 

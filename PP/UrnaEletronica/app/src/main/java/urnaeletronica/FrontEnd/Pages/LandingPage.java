@@ -1,7 +1,7 @@
 package urnaeletronica.FrontEnd.Pages;
 
 import urnaeletronica.FrontEnd.Components.*;
-import urnaeletronica.FrontEnd.Pages.Eleitor.EleitoresPage;
+import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;
 import urnaeletronica.FrontEnd.Pages.Voting.VontingPage;
 import urnaeletronica.FrontEnd.Pages.Candidate.CandidatePage;
 import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
@@ -91,8 +91,7 @@ public class LandingPage {
             constraints.gridheight = 1;
             constraints.weighty = 0.7; // 70%
             constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new EleitoresPage(frame).getPanel(), constraints);
+            frame.getContentPane().add(new EleitorPage(frame).getPanel(), constraints);
             frame.revalidate();
             frame.repaint();
 

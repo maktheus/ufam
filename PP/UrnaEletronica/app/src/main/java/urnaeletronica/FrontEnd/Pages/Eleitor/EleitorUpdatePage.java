@@ -3,11 +3,11 @@ package urnaeletronica.FrontEnd.Pages.Eleitor;
 import java.awt.*;
 import javax.swing.*;
 
-public class EleitoresUpdatePage {
+public class EleitorUpdatePage {
 
     private JPanel panel;
 
-    public EleitoresUpdatePage(JFrame jframe) {
+    public EleitorUpdatePage(JFrame jframe) {
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
     }

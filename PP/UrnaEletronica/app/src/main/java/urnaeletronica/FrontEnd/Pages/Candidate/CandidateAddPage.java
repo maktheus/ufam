@@ -3,6 +3,8 @@ package urnaeletronica.FrontEnd.Pages.Candidate;
 import java.awt.*;
 import javax.swing.*;
 
+
+
 public class CandidateAddPage {
     private JPanel panel;
 

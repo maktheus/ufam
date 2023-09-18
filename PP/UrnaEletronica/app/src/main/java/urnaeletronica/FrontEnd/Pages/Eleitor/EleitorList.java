@@ -2,11 +2,11 @@ package urnaeletronica.FrontEnd.Pages.Eleitor;
 import java.awt.*;
 import javax.swing.*;
 
-public class EleitoresLIst {
+public class EleitorList {
         
         private JPanel panel;
         
-        public EleitoresLIst(JFrame frame){
+        public EleitorList(JFrame frame){
             panel = new JPanel();
             panel.setBackground(new java.awt.Color(0, 0, 0));
         }

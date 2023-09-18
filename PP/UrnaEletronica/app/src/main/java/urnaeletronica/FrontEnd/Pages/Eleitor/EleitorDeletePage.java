@@ -3,13 +3,13 @@ import java.awt.*;
 import javax.swing.*;
 
 
-public class EleitoresDeletePage {
+public class EleitorDeletePage {
     public JPanel panel;
     public JLabel label;
     public JTextField textField;
     public JButton button;
     
-    public EleitoresDeletePage(JFrame frame){
+    public EleitorDeletePage(JFrame frame){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
