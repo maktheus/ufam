@@ -3,6 +3,9 @@ package urnaeletronica.FrontEnd.Pages.Candidate;
 import java.awt.*;
 import javax.swing.*;
 
+// import urnaeletronica.Backend.Models.Candidate;
+// import urnaeletronica.Backend.Controllers.CandidateController;
+
 
 
 public class CandidateAddPage {
@@ -13,7 +16,7 @@ public class CandidateAddPage {
         panel.setBackground(new java.awt.Color(0, 0, 0));
         JLabel title = new JLabel("Adicionar candidato");
 
-        JLabel etitulo = new JLabel("Digite o número do candidato");
+        JLabel etitulo = new JLabel("Digite o Etitulo do candidato");
         JTextField candidateEtitulo = new JTextField(20);
 
         // Create input to get candidate Etitulo
@@ -33,30 +36,57 @@ public class CandidateAddPage {
         button.setForeground(new java.awt.Color(25, 0, 0));
 
         // Add title
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 0;
         panel.add(title, constraints);
 
         // Add Etitulo label
-        constraints.gridx = 0;
+        constraints.gridx = 1;
         constraints.gridy = 1;
         panel.add(etitulo, constraints);
 
-        // Add number label
-        constraints.gridx = 0;
+         // Add candidate Etitulo input
+        constraints.gridx = 1;
         constraints.gridy = 2;
+        panel.add(candidateEtitulo, constraints);
+
+        // Add number label
+        constraints.gridx = 1;
+        constraints.gridy = 3;
         panel.add(number, constraints);
 
         // Add candidate number label
-        constraints.gridx = 0;
-        constraints.gridy = 3;
+        constraints.gridx = 1;
+        constraints.gridy = 4;
         panel.add(candidateNumber, constraints);
 
         // Add button
-        constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridx = 1;
+        constraints.gridy = 5;
         panel.add(button, constraints);
+
+       
+
+
+        // // Add action listener to button
+        // button.addActionListener(e -> {
+        //     CandidateController candidateController = new CandidateController();
+        //     addCandidate(frame, candidateController, candidateEtitulo.getText(), candidateNumber.getText());
+        // });
+
+
     }
+
+
+    // public void addCandidate(JFrame frame, CandidateController candidateController, String candidateEtitulo, String candidateNumber) {
+        
+    //     // Candidate candidate = candidateController.createCandidate(candidateEtitulo, candidateNumber);
+    //     // if (candidate != null) {
+    //     //     JOptionPane.showMessageDialog(frame, "Candidato criado com sucesso!");
+    //     // } else {
+    //     //     JOptionPane.showMessageDialog(frame, "Erro ao criar candidato!");
+    //     // }
+    // }
 
     public JPanel getPanel() {
         return panel;

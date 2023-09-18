@@ -14,6 +14,10 @@ public class Header {
 
 
     public Header(JFrame frame){
+
+        // changePanel
+        ChangePageComponent changePageComponent = new ChangePageComponent();
+
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
 
@@ -42,6 +46,9 @@ public class Header {
         button2.setForeground(new java.awt.Color(0, 0, 0));
         
 
+        // set elements to the left in the panel
+        constraints.anchor = GridBagConstraints.WEST;
+
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weightx = 0.6;
@@ -64,23 +71,7 @@ public class Header {
             }
         });
 
-        button2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                GridBagConstraints constraints = new GridBagConstraints();
-
-                frame.getContentPane().remove(panel);
-                constraints.gridx = 0;
-                constraints.gridy = 1;
-                constraints.gridwidth = 1;
-                constraints.gridheight = 1;
-                constraints.weighty = 0.7; // 70%
-                constraints.fill = GridBagConstraints.BOTH;
-    
-                frame.getContentPane().add(new LandingPage(frame).getPanel(), constraints);
-                frame.revalidate();
-                frame.repaint();
-            }
-        });
+        changePageComponent.setChangePanel(button2, frame, panel, new LandingPage(frame).getPanel(), 0.7);
 
     }
 

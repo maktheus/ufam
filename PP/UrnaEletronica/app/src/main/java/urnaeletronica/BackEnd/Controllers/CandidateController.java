@@ -19,16 +19,14 @@ public class CandidateController {
     public Candidate createCandidate(Connection database, Voter voter, String idForCandidate){
         try {
             
-            String sql = "INSERT INTO candidate (name, cpf, etitulo, idForCandidate) VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO candidate (etitulo,idForCandidate) VALUES (?,?)";
             PreparedStatement stmt = database.prepareStatement(sql);
-            stmt.setString(1, voter.getName());
-            stmt.setString(2, voter.getCpf());
             stmt.setString(3, voter.getEtitulo());
             stmt.setString(4, idForCandidate);
 
             stmt.executeUpdate();
 
-            Candidate candidate = new Candidate(voter.getName(), voter.getCpf(), voter.getEtitulo(), idForCandidate);
+            Candidate candidate = new Candidate(voter.getEtitulo(), idForCandidate);
 
             return candidate;
 
@@ -62,7 +60,7 @@ public class CandidateController {
             PreparedStatement stmt = database.prepareStatement(sql);
             stmt.setString(1, cpf);
             ResultSet rs = stmt.executeQuery();
-            Candidate candidate = new Candidate(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"), rs.getString("idForCandidate"));
+            Candidate candidate = new Candidate(rs.getString("etitulo"), rs.getString("idForCandidate"));
             return candidate;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -77,7 +75,7 @@ public class CandidateController {
             ResultSet rs = stmt.executeQuery();
             ArrayList<Candidate> candidates = new ArrayList<Candidate>();
             while(rs.next()){
-                Candidate candidate = new Candidate(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"), rs.getString("idForCandidate"));
+                Candidate candidate = new Candidate(rs.getString("etitulo"), rs.getString("idForCandidate"));
                 candidates.add(candidate);
             }
             return candidates;

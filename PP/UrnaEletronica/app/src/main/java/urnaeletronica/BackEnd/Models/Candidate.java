@@ -1,12 +1,18 @@
 package urnaeletronica.BackEnd.Models;
 
-public class Candidate  extends Voter{
+public class Candidate {
     
     private String candidateNumber;
+    private String etitulo;
 
-    public Candidate(String name, String cpf,   String etitulo, String candidateNumber) {
-        super(name, cpf, etitulo);
+
+    public Candidate( String etitulo, String candidateNumber) {
+        this.etitulo = etitulo;        
         this.candidateNumber = candidateNumber;
+    }
+
+    public String etitulo() {
+        return this.etitulo;
     }
 
     public String candidateNumber() {
