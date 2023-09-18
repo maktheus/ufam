@@ -1,10 +1,10 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
 import urnaeletronica.FrontEnd.Pages.Page;
-import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.FrontEnd.Components.*;
+
+
 import javax.swing.*;
 import java.awt.GridBagLayout;
-import java.sql.Connection;
 import java.awt.GridBagConstraints;
 
 
@@ -14,8 +14,8 @@ public class EleitorPage extends Page{
 
     private JPanel panel;
 
-    public EleitorPage(JFrame frame, Connection database) {
-        super(frame, database);
+    public EleitorPage(JFrame frame) {
+        super(frame);
         
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());

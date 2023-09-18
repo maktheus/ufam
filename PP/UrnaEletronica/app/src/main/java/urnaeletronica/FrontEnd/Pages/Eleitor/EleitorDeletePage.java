@@ -3,7 +3,6 @@ package urnaeletronica.FrontEnd.Pages.Eleitor;
 import urnaeletronica.FrontEnd.Pages.Page;
 
 import java.awt.*;
-import java.sql.Connection;
 import javax.swing.*;
 
 
@@ -15,9 +14,8 @@ public class EleitorDeletePage extends Page {
     public JTextField textField;
     public JButton button;
     
-    public EleitorDeletePage(JFrame frame, Connection database) {
-        super(frame, database);
-
+    public EleitorDeletePage(JFrame frame) {
+        super(frame);
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

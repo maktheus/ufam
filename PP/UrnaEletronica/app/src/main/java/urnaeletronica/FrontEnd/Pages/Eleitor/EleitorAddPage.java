@@ -1,13 +1,11 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
 
 import java.awt.*;
-import java.sql.Connection;
 
 import javax.swing.*;
 
 import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.BackEnd.Models.Voter;
-import urnaeletronica.FrontEnd.Components.FormInputComponent;
 import urnaeletronica.FrontEnd.Pages.Page;
 
 public class EleitorAddPage extends Page{
@@ -15,8 +13,8 @@ public class EleitorAddPage extends Page{
     private JPanel panel;
     VoterController voterController = new VoterController();
 
-    public EleitorAddPage(JFrame jframe, Connection database) {
-        super(jframe, database);
+    public EleitorAddPage(JFrame jframe) {
+        super(jframe);
 
 
         panel = new JPanel();
@@ -35,9 +33,10 @@ public class EleitorAddPage extends Page{
         JLabel label3 = new JLabel("Titulo de Eleitor");
         JTextField textField3 = new JTextField();
         
-        FormInputComponent cpf = new FormInputComponent(textField2, label2, "CPF", 0, 0, 600, 50);
-        FormInputComponent titulo = new FormInputComponent(textField3, label3, "Titulo de Eleitor", 0, 0, 600, 50);
-        FormInputComponent nome = new FormInputComponent(textField1, label1, "Nome", 0, 0, 600, 50);
+        super.
+        FormInputComponent(textField2, label2, "CPF", 0, 0, 600, 50);
+        FormInputComponent(textField3, label3, "Titulo de Eleitor", 0, 0, 600, 50);
+        FormInputComponent(textField1, label1, "Nome", 0, 0, 600, 50);
 
         JButton button = new JButton("Cadastrar");
 
@@ -85,7 +84,7 @@ public class EleitorAddPage extends Page{
 
     public void cadastrarEleitor(Voter voter){
         VoterController voterController = new VoterController();
-        voterController.createVoter(super.database,voter);
+        voterController.createVoter(voter);
     }
 
 

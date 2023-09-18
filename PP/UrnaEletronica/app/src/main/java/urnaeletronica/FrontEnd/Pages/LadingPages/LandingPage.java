@@ -11,7 +11,6 @@ import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
 
 import javax.swing.*;
 import java.awt.GridBagLayout;
-import java.sql.Connection;
 import java.awt.GridBagConstraints;
 
 public class LandingPage extends Page{
@@ -24,8 +23,8 @@ public class LandingPage extends Page{
     private Button button3 = new Button("Eleitores", "primary");
     private Button button4 = new Button("Resultados", "primary");
 
-    public LandingPage(JFrame frame, Connection database) {
-        super(frame, database);
+    public LandingPage(JFrame frame) {
+        super(frame);
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

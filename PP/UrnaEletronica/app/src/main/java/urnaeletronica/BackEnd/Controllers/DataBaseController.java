@@ -33,4 +33,15 @@ public class DataBaseController {
         }
     }
 
+    public  static PreparedStatement prepareStatement( String sql) {
+        try {
+            Connection conn = connect();
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            return stmt;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
 }

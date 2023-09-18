@@ -2,9 +2,6 @@ package urnaeletronica.FrontEnd.Components;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.MatteBorder;
-
-
 
 public class Button {
     private JButton button;

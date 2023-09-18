@@ -12,22 +12,17 @@ public class CandidateController {
     // private String cpf;
     // private String etitulo;
 
+    DataBaseController database = new DataBaseController();
+    public CandidateController() {}
 
-    public CandidateController() {
-    }
-
-    public Candidate createCandidate(Connection database, Voter voter, String idForCandidate){
+    public static Candidate createCandidate( Voter voter, String idForCandidate){
         try {
-            
-            String sql = "INSERT INTO candidate (etitulo,idForCandidate) VALUES (?,?)";
-            PreparedStatement stmt = database.prepareStatement(sql);
-            stmt.setString(3, voter.getEtitulo());
-            stmt.setString(4, idForCandidate);
-
+            String sql = "INSERT INTO candidate (etitulo, idForCandidate) VALUES (?, ?)";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            stmt.setString(1, voter.getEtitulo());
+            stmt.setString(2, idForCandidate);
             stmt.executeUpdate();
-
             Candidate candidate = new Candidate(voter.getEtitulo(), idForCandidate);
-
             return candidate;
 
         } catch (SQLException e) {
