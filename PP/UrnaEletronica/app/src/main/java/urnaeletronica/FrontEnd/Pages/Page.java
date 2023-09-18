@@ -3,14 +3,19 @@ package urnaeletronica.FrontEnd.Pages;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.sql.Connection;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 
 
 public abstract class Page {
-    JFrame frame;
-    public Page(JFrame  frame){}
+    public JFrame frame;
+    public Connection database;
+    public Page(JFrame  frame,  Connection database){
+        this.frame = frame;
+        this.database = database;
+    }
 
     public void setChangePanel(JButton button, JPanel panel, JPanel newPanel, double weighty){
         button.addActionListener(new ActionListener() {

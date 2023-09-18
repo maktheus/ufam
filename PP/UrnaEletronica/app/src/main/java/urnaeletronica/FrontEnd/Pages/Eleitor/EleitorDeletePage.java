@@ -1,17 +1,23 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
 
+import urnaeletronica.FrontEnd.Pages.Page;
 
 import java.awt.*;
+import java.sql.Connection;
 import javax.swing.*;
 
 
-public class EleitorDeletePage extends Pages {
+
+
+public class EleitorDeletePage extends Page {
     public JPanel panel;
     public JLabel label;
     public JTextField textField;
     public JButton button;
     
-    public EleitorDeletePage(JFrame frame){
+    public EleitorDeletePage(JFrame frame, Connection database) {
+        super(frame, database);
+
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -36,5 +42,4 @@ public class EleitorDeletePage extends Pages {
     public JPanel getPanel() {
         return panel;
     }
-    
 }

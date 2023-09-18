@@ -1,17 +1,24 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
 
 import java.awt.*;
+import java.sql.Connection;
+
 import javax.swing.*;
 
+import urnaeletronica.BackEnd.Controllers.VoterController;
+import urnaeletronica.BackEnd.Models.Voter;
 import urnaeletronica.FrontEnd.Components.FormInputComponent;
 import urnaeletronica.FrontEnd.Pages.Page;
 
 public class EleitorAddPage extends Page{
 
     private JPanel panel;
+    VoterController voterController = new VoterController();
 
-    public EleitorAddPage(JFrame jframe) {
-        super(jframe);
+    public EleitorAddPage(JFrame jframe, Connection database) {
+        super(jframe, database);
+
+
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
         panel.setLayout(new GridBagLayout());
@@ -63,7 +70,12 @@ public class EleitorAddPage extends Page{
 
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cadastrarEleitor();
+                //get data from text Field
+                String nome = textField1.getText();
+                String cpf = textField2.getText();
+                String titulo = textField3.getText();
+                Voter voter = new Voter(nome, cpf, titulo);
+                cadastrarEleitor(voter);
             }
         });
 
@@ -71,8 +83,9 @@ public class EleitorAddPage extends Page{
 
     //cadastrar eleitor
 
-    public void cadastrarEleitor(){
-
+    public void cadastrarEleitor(Voter voter){
+        VoterController voterController = new VoterController();
+        voterController.createVoter(super.database,voter);
     }
 
 

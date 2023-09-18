@@ -3,6 +3,7 @@ package urnaeletronica.FrontEnd.Pages.LadingPages;
 import urnaeletronica.FrontEnd.Components.*;
 import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;
 import urnaeletronica.FrontEnd.Pages.Voting.VontingPage;
+import urnaeletronica.FrontEnd.Pages.Page;
 import urnaeletronica.FrontEnd.Pages.Candidate.CandidatePage;
 import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
 
@@ -10,9 +11,10 @@ import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
 
 import javax.swing.*;
 import java.awt.GridBagLayout;
+import java.sql.Connection;
 import java.awt.GridBagConstraints;
 
-public class LandingPage {
+public class LandingPage extends Page{
 
     private JPanel panel;
     // private String iconPath =
@@ -22,8 +24,8 @@ public class LandingPage {
     private Button button3 = new Button("Eleitores", "primary");
     private Button button4 = new Button("Resultados", "primary");
 
-    public LandingPage(JFrame frame) {
-
+    public LandingPage(JFrame frame, Connection database) {
+        super(frame, database);
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();

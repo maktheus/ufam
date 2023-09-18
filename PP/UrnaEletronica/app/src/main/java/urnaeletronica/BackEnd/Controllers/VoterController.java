@@ -4,17 +4,13 @@ import java.util.ArrayList;
 
 import urnaeletronica.BackEnd.Models.Voter;
 public class VoterController {
-    // public  class Voter   {
-    // private String name;
-    // private String cpf;
-    // private String etitulo;
 
     public VoterController() {
     }
 
     public boolean createVoter(Connection database, Voter voter){
         try {
-            String sql = "INSERT INTO voter (name, cpf, etitulo) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO Voter (name, cpf, etitulo) VALUES (?, ?, ?)";
             PreparedStatement stmt = database.prepareStatement(sql);
             stmt.setString(1, voter.getName());
             stmt.setString(2, voter.getCpf());
@@ -30,7 +26,7 @@ public class VoterController {
 
     public boolean deleteVoter(Connection database, String cpf){
         try {
-            String sql = "DELETE FROM voter WHERE cpf = ?";
+            String sql = "DELETE FROM Voter WHERE cpf = ?";
             PreparedStatement stmt = database.prepareStatement(sql);
             stmt.setString(1, cpf);
             stmt.executeUpdate();
@@ -44,7 +40,7 @@ public class VoterController {
 
     public Voter getVoter(Connection database, String cpf){
         try {
-            String sql = "SELECT * FROM voter WHERE cpf = ?";
+            String sql = "SELECT * FROM Voter WHERE cpf = ?";
             PreparedStatement stmt = database.prepareStatement(sql);
             stmt.setString(1, cpf);
             ResultSet rs = stmt.executeQuery();
@@ -58,7 +54,7 @@ public class VoterController {
 
     public ArrayList<Voter> getAllVoters(Connection database){
         try {
-            String sql = "SELECT * FROM voter";
+            String sql = "SELECT * FROM Voter";
             PreparedStatement stmt = database.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<Voter> voters = new ArrayList<Voter>();
