@@ -1,4 +1,4 @@
-package urnaeletronica.FrontEnd.Pages;
+package urnaeletronica.FrontEnd.Pages.LadingPages;
 
 import urnaeletronica.FrontEnd.Components.*;
 import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;

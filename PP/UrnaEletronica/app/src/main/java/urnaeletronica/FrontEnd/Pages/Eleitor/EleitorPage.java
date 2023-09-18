@@ -1,4 +1,5 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
+import urnaeletronica.FrontEnd.Pages.Page;
 
 import urnaeletronica.FrontEnd.Components.*;
 import javax.swing.*;
@@ -8,13 +9,13 @@ import java.awt.GridBagConstraints;
 
 
 
-public class EleitorPage {
+public class EleitorPage extends Page{
 
     private JPanel panel;
 
-    public EleitorPage(JFrame frame){
-        ChangePageComponent changePageComponent = new ChangePageComponent();
-
+    public EleitorPage(JFrame frame) {
+        
+        super(frame);
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -44,11 +45,10 @@ public class EleitorPage {
         constraints.gridy = 3;
         panel.add(button4.getButton(), constraints);
 
-        changePageComponent.setChangePanel(button.getButton(), frame, panel, new EleitorAddPage(frame).getPanel(), 0.7);
-        changePageComponent.setChangePanel(button2.getButton(), frame, panel, new EleitorUpdatePage(frame).getPanel(), 0.7);
-        changePageComponent.setChangePanel(button3.getButton(), frame, panel, new EleitorDeletePage(frame).getPanel(), 0.7);
-        changePageComponent.setChangePanel(button4.getButton(), frame, panel, new EleitorListPage(frame).getPanel(), 0.7);
-
+        setChangePanel(button.getButton(), panel, new EleitorAddPage(frame).getPanel(), 0.7);
+        setChangePanel(button2.getButton(), panel, new EleitorUpdatePage(frame).getPanel(), 0.7);
+        setChangePanel(button3.getButton(), panel, new EleitorDeletePage(frame).getPanel(), 0.7);
+        setChangePanel(button4.getButton(), panel, new EleitorListPage(frame).getPanel(), 0.7);
     }
 
     public JPanel getPanel() {

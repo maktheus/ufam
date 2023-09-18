@@ -1,9 +1,11 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
+
+
 import java.awt.*;
 import javax.swing.*;
 
 
-public class EleitorDeletePage {
+public class EleitorDeletePage extends Pages {
     public JPanel panel;
     public JLabel label;
     public JTextField textField;

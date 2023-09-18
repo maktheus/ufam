@@ -1,15 +1,18 @@
-package urnaeletronica.FrontEnd.Components;
+package urnaeletronica.FrontEnd.Pages;
 
-import urnaeletronica.FrontEnd.Pages.LandingPage;
-import java.awt.*;
-import javax.swing.*;
-// addActionListener
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 
 
-public class ChangePageComponent {
-    
-    public void setChangePanel(JButton button,JFrame frame, JPanel panel, JPanel newPanel, double weighty){
+public abstract class Page {
+    JFrame frame;
+    public Page(JFrame  frame){}
+
+    public void setChangePanel(JButton button, JPanel panel, JPanel newPanel, double weighty){
         button.addActionListener(new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 GridBagConstraints constraints = new GridBagConstraints();

@@ -3,7 +3,7 @@ package urnaeletronica;
 import java.awt.*;
 import javax.swing.*;
 import urnaeletronica.FrontEnd.Components.*;
-import urnaeletronica.FrontEnd.Pages.LandingPage;
+import urnaeletronica.FrontEnd.Pages.LadingPages.LandingPage;
 import urnaeletronica.BackEnd.Controllers.DataBaseController;
 
 import com.formdev.flatlaf.FlatLightLaf;
