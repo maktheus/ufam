@@ -18,14 +18,23 @@ services:
     volumes:
       - db_data:/var/lib/mysql
 
-  flyway:
-    image: flyway/flyway
-    command: ["-url=jdbc:mysql://db:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true", "-user=myuser", "-password=mypassword", "migrate"]
 
-    volumes:
-      - ./app/src/main/java/urnaeletronica/BackEnd/Migration:/flyway/sql
-    depends_on:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  app:
+    build: .
+    depends_on: 
       - db
+    volumes:
+      - ./app/src/main/java/urnaeletronica/BackEnd/Migration:/migrations
+      - ./scripts:/scripts
 
+    entrypoint: /scripts/entrypoint.sh
+    
 volumes:
   db_data:

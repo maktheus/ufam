@@ -46,8 +46,6 @@ public class CandidateController {
     }
 
     
-        
-    
 
     public Candidate getCandidate(Connection database, String cpf){
         try {

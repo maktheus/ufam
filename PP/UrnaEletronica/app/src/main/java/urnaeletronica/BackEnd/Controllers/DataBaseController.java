@@ -15,7 +15,7 @@ public class DataBaseController {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
+            System.out.println("Connected to the MYSQL server successfully.");
             return conn;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -27,7 +27,7 @@ public class DataBaseController {
     public static void disconnect(Connection conn) {
         try {
             conn.close();
-            System.out.println("Disconnected from the PostgreSQL server successfully.");
+            System.out.println("Disconnected from the MYSQL server successfully.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

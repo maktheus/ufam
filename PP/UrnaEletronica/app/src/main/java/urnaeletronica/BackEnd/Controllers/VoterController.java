@@ -25,10 +25,10 @@ public class VoterController {
         }
     }
 
-    public boolean deleteVoter(Connection database, String cpf){
+    public boolean deleteVoter(String cpf){
         try {
             String sql = "DELETE FROM Voter WHERE cpf = ?";
-            PreparedStatement stmt = database.prepareStatement(sql);
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, cpf);
             stmt.executeUpdate();
             return true;
@@ -39,10 +39,10 @@ public class VoterController {
     }
 
 
-    public Voter getVoter(Connection database, String cpf){
+    public Voter getVoter( String cpf){
         try {
             String sql = "SELECT * FROM Voter WHERE cpf = ?";
-            PreparedStatement stmt = database.prepareStatement(sql);
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, cpf);
             ResultSet rs = stmt.executeQuery();
             Voter voter = new Voter(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"));
@@ -53,10 +53,10 @@ public class VoterController {
         }
     }
 
-    public ArrayList<Voter> getAllVoters(Connection database){
+    public ArrayList<Voter> getAllVoters(){
         try {
             String sql = "SELECT * FROM Voter";
-            PreparedStatement stmt = database.prepareStatement(sql);
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<Voter> voters = new ArrayList<Voter>();
             while(rs.next()){

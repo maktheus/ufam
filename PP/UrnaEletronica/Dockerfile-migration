@@ -1,0 +1,11 @@
+# Use a imagem Java oficial como base
+FROM openjdk:11
+
+# Defina o diretório de trabalho dentro do contêiner
+WORKDIR /app
+
+# Copie seus arquivos Java para o contêiner
+COPY . .
+
+# Comando para compilar e executar seu código Java (ajuste conforme necessário)
+CMD ["javac", "SeuArquivoDeMigracao.java"]
