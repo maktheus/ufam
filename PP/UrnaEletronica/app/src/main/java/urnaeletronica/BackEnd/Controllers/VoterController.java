@@ -10,13 +10,13 @@ public class VoterController {
     }
 
     public static boolean createVoter(Voter voter){
-        try {
-            String sql = "INSERT INTO Voter (name, cpf, etitulo) VALUES (?, ?, ?)";
-            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+        String sql = "INSERT INTO Voter (name, cpf, etitulo) VALUES (?, ?, ?)";
+        
+        try (PreparedStatement stmt = DataBaseController.prepareStatement(sql)) {
             stmt.setString(1, voter.getName());
             stmt.setString(2, voter.getCpf());
             stmt.setString(3, voter.getEtitulo());
-
+    
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -24,11 +24,12 @@ public class VoterController {
             return false;
         }
     }
+    
 
-    public static boolean deleteVoter(String cpf){
-        try {
-            String sql = "DELETE FROM Voter WHERE cpf = ?";
-            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+    public static boolean deleteVoter(String cpf) {
+        String sql = "DELETE FROM Voter WHERE cpf = ?";
+        
+        try (PreparedStatement stmt = DataBaseController.prepareStatement(sql)) {
             stmt.setString(1, cpf);
             stmt.executeUpdate();
             return true;
@@ -37,15 +38,17 @@ public class VoterController {
             return false;
         }
     }
+    
 
     public static boolean updateVoter(Voter voter){
-        try {
-            String sql = "UPDATE Voter SET name = ?, cpf = ?, etitulo = ? WHERE cpf = ?";
-            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+        String sql = "UPDATE Voter SET name = ?, cpf = ?, etitulo = ? WHERE cpf = ?";
+        
+        try (PreparedStatement stmt = DataBaseController.prepareStatement(sql)) {
             stmt.setString(1, voter.getName());
             stmt.setString(2, voter.getCpf());
             stmt.setString(3, voter.getEtitulo());
             stmt.setString(4, voter.getCpf());
+            
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -53,6 +56,7 @@ public class VoterController {
             return false;
         }
     }
+    
 
     public static Voter getVoter( String etitulo){
         try {
@@ -79,21 +83,25 @@ public class VoterController {
     }
     
 
-    public  static ArrayList<Voter> getAllVoters(){
-        try {
-            String sql = "SELECT * FROM Voter";
+    public static ArrayList<Voter> getAllVoters(){
+        ArrayList<Voter> voters = new ArrayList<>();
+        String sql = "SELECT * FROM Voter";
+        
+        try (
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-            ArrayList<Voter> voters = new ArrayList<Voter>();
-            while(rs.next()){
+        ) {
+            while (rs.next()) {
                 Voter voter = new Voter(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"));
                 voters.add(voter);
             }
-            return voters;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
         }
+        
+        return voters;
     }
+    
 
 }

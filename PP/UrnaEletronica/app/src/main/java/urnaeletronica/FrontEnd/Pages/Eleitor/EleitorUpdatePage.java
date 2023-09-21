@@ -80,10 +80,18 @@ public class EleitorUpdatePage extends Page{
 
     private void updateEleitor(Voter voter){
         if(!verifyForm(voter)){
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente");
             return;
         }
         
-        VoterController.updateVoter(voter);
+        
+        if(VoterController.updateVoter(voter)){
+            JOptionPane.showMessageDialog(null, "Eleitor atualizado com sucesso");
+            setChangePanel(panel, new EleitorPage(frame).getPanel());
+        }else{
+            JOptionPane.showMessageDialog(null, "Eleitor não encontrado");
+        }
+
     }
     public JPanel getPanel() {
         return panel;
