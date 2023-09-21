@@ -1,6 +1,6 @@
 package urnaeletronica.BackEnd.Models;
 
-public class Candidate {
+public class Candidate  {
     
     private String candidateNumber;
     private String etitulo;
@@ -11,12 +11,16 @@ public class Candidate {
         this.candidateNumber = candidateNumber;
     }
 
-    public String etitulo() {
+    public String getEtitulo() {
         return this.etitulo;
     }
 
-    public String candidateNumber() {
+    public String getIdForCandidate() {
         return this.candidateNumber;
     }
-
+   
+    public String toString() {
+        return "Candidate Number: " + this.candidateNumber + "\n" +
+               "E-Titulo: " + this.etitulo + "\n";
+    }
 }

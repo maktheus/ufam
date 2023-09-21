@@ -6,23 +6,23 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 
 
-public class VotingButtons {
+public class VotingButtonsComponent {
     private JPanel panel;
 
     // Create number buttons
-    Button button1 = new Button("1", "primary");
-    Button button2 = new Button("2", "primary");
-    Button button3 = new Button("3", "primary");
-    Button button4 = new Button("4", "primary");
-    Button button5 = new Button("5", "primary");
-    Button button6 = new Button("6", "primary");
-    Button button7 = new Button("7", "primary");
-    Button button8 = new Button("8", "primary");
-    Button button9 = new Button("9", "primary");
-    Button button0 = new Button("0", "primary");
+    ButtonComponent button1 = new ButtonComponent("1", "primary");
+    ButtonComponent button2 = new ButtonComponent("2", "primary");
+    ButtonComponent button3 = new ButtonComponent("3", "primary");
+    ButtonComponent button4 = new ButtonComponent("4", "primary");
+    ButtonComponent button5 = new ButtonComponent("5", "primary");
+    ButtonComponent button6 = new ButtonComponent("6", "primary");
+    ButtonComponent button7 = new ButtonComponent("7", "primary");
+    ButtonComponent button8 = new ButtonComponent("8", "primary");
+    ButtonComponent button9 = new ButtonComponent("9", "primary");
+    ButtonComponent button0 = new ButtonComponent("0", "primary");
 
 
-    public VotingButtons() {
+    public VotingButtonsComponent() {
 
         // Create a panel to put the buttons
         panel = new JPanel();

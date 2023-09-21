@@ -3,14 +3,14 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class Footer {
+public class FooterComponent {
     private JPanel panel;
     private JLabel label1 = new JLabel("© 2023 Matheus Serrão");
     private JLabel label2 = new JLabel("Feito em setembro de 2023");
 
 
 
-    public Footer(){
+    public FooterComponent(){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
     

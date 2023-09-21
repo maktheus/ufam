@@ -21,9 +21,9 @@ public class App {
         frame.setLayout(new GridBagLayout());
         frame.setVisible(true);
 
-        Header header = new Header(frame);
+        HeaderComponent header = new HeaderComponent(frame);
         LandingPage body = new LandingPage(frame);
-        Footer footer = new Footer();
+        FooterComponent footer = new FooterComponent();
 
         GridBagConstraints constraints = new GridBagConstraints();
 

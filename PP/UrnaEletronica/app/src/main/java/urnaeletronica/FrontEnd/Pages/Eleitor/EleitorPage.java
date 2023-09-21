@@ -1,6 +1,8 @@
 package urnaeletronica.FrontEnd.Pages.Eleitor;
 import urnaeletronica.FrontEnd.Pages.Page;
+import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.FrontEnd.Components.*;
+
 
 
 import javax.swing.*;
@@ -16,7 +18,7 @@ public class EleitorPage extends Page{
 
     public EleitorPage(JFrame frame) {
         super(frame);
-        
+        getEleitores();
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -24,10 +26,12 @@ public class EleitorPage extends Page{
         panel.setPreferredSize(new java.awt.Dimension(0, 400));
         panel.setBackground(new java.awt.Color(0, 0, 0));
 
-        Button button = new Button("Cadastrar", "primary");
-        Button button2 = new Button("Editar", "primary");
-        Button button3 = new Button("Excluir", "primary");
-        Button button4 = new Button("Listar", "primary");
+        ButtonComponent button = new ButtonComponent("Cadastrar", "primary");
+        ButtonComponent button2 = new ButtonComponent("Editar", "primary");
+        ButtonComponent button3 = new ButtonComponent("Excluir", "primary");
+        ButtonComponent button4 = new ButtonComponent("Listar", "primary");
+
+        constraints.anchor = GridBagConstraints.CENTER;
 
         constraints.gridx = 1;
         constraints.gridy = 0;
@@ -46,10 +50,19 @@ public class EleitorPage extends Page{
         constraints.gridy = 3;
         panel.add(button4.getButton(), constraints);
 
-        setChangePanel(button.getButton(), panel, new EleitorAddPage(frame).getPanel(), 0.7);
-        setChangePanel(button2.getButton(), panel, new EleitorUpdatePage(frame).getPanel(), 0.7);
-        setChangePanel(button3.getButton(), panel, new EleitorDeletePage(frame).getPanel(), 0.7);
-        setChangePanel(button4.getButton(), panel, new EleitorListPage(frame).getPanel(), 0.7);
+        setChangePanel(button.getButton(), panel, new EleitorAddPage(frame).getPanel());
+        setChangePanel(button2.getButton(), panel, new EleitorUpdatePage(frame).getPanel());
+        setChangePanel(button3.getButton(), panel, new EleitorDeletePage(frame).getPanel());
+        setChangePanel(button4.getButton(), panel, new EleitorListPage(frame).getPanel());
+    }
+
+    //get all eleitores to verify what buttons will be shown
+    private void getEleitores(){
+        if(VoterController.getAllVoters() == null){
+            //hide buttons
+
+        }
+
     }
 
     public JPanel getPanel() {

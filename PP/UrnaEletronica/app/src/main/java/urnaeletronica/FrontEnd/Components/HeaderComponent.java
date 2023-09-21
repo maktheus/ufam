@@ -6,14 +6,14 @@ import urnaeletronica.FrontEnd.Pages.LadingPages.LandingPage;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class Header  {
+public class HeaderComponent  {
     private JPanel headerPanel;
     private JLabel label1 = new JLabel("Urna Eletronica");
     private JButton button1 = new JButton("Sair");
     private JButton button2 = new JButton("Home");
 
 
-    public Header(JFrame frame){
+    public HeaderComponent(JFrame frame){
 
         // changePanel
 
@@ -84,9 +84,9 @@ public class Header  {
         GridBagConstraints constraints = new GridBagConstraints();
         frame.getContentPane().removeAll();
 
-       Header header = new Header(frame);
+       HeaderComponent header = new HeaderComponent(frame);
         LandingPage body = new LandingPage(frame);
-        Footer footer = new Footer();
+        FooterComponent footer = new FooterComponent();
 
        
 

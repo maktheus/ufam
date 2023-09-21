@@ -18,10 +18,10 @@ public class LandingPage extends Page{
     private JPanel panel;
     // private String iconPath =
     // "/home/temp/code/ufam/PP/UrnaEletronica/app/src/main/java/urnaeletronica/FrontEnd/Imgs/Urna.png";
-    private Button button1 = new Button("Votar", "primary");
-    private Button button2 = new Button("Candidatos", "primary");
-    private Button button3 = new Button("Eleitores", "primary");
-    private Button button4 = new Button("Resultados", "primary");
+    private ButtonComponent button1 = new ButtonComponent("Votar", "primary");
+    private ButtonComponent button2 = new ButtonComponent("Candidatos", "primary");
+    private ButtonComponent button3 = new ButtonComponent("Eleitores", "primary");
+    private ButtonComponent button4 = new ButtonComponent("Resultados", "primary");
 
     public LandingPage(JFrame frame) {
         super(frame);

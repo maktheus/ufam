@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class CandidateController {
 
     // private String name;
-    // private String cpf;
+    // private String etitulo;
     // private String etitulo;
 
     DataBaseController database = new DataBaseController();
@@ -32,11 +32,13 @@ public class CandidateController {
         }
     }
 
-    public boolean deleteCandidate(Connection database, String cpf){
+    public static boolean updateCandidate(Candidate candidate){
         try {
-            String sql = "DELETE FROM candidate WHERE cpf = ?";
-            PreparedStatement stmt = database.prepareStatement(sql);
-            stmt.setString(1, cpf);
+            String sql = "UPDATE candidate SET etitulo = ?, idForCandidate = ? WHERE etitulo = ?";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            stmt.setString(1, candidate.getEtitulo());
+            stmt.setString(2, candidate.getIdForCandidate());
+            stmt.setString(3, candidate.getEtitulo());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -45,13 +47,25 @@ public class CandidateController {
         }
     }
 
-    
-
-    public Candidate getCandidate(Connection database, String cpf){
+    public static boolean deleteCandidate( String etitulo){
         try {
-            String sql = "SELECT * FROM candidate WHERE cpf = ?";
-            PreparedStatement stmt = database.prepareStatement(sql);
-            stmt.setString(1, cpf);
+            String sql = "DELETE FROM candidate WHERE etitulo = ?";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            stmt.setString(1, etitulo);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+
+    public static Candidate getCandidate( String etitulo){
+        try {
+            String sql = "SELECT * FROM candidate WHERE etitulo = ?";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            stmt.setString(1, etitulo);
             ResultSet rs = stmt.executeQuery();
             Candidate candidate = new Candidate(rs.getString("etitulo"), rs.getString("idForCandidate"));
             return candidate;
@@ -61,10 +75,10 @@ public class CandidateController {
         }
     }
 
-    public  ArrayList<Candidate> getAllCandidates(Connection database){
+    public static ArrayList<Candidate> getAllCandidates(){
         try {
             String sql = "SELECT * FROM candidate";
-            PreparedStatement stmt = database.prepareStatement(sql);
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<Candidate> candidates = new ArrayList<Candidate>();
             while(rs.next()){

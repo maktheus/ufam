@@ -1,5 +1,5 @@
 package urnaeletronica.FrontEnd.Pages.Voting;
-import urnaeletronica.FrontEnd.Components.VotingButtons;
+import urnaeletronica.FrontEnd.Components.VotingButtonsComponent;
 
 
 import javax.swing.*;
@@ -43,7 +43,7 @@ public class VontingPage {
 
         constraints.gridx = 1;
         constraints.gridy = 0;
-        panel.add(new VotingButtons().getPanel(), constraints);
+        panel.add(new VotingButtonsComponent().getPanel(), constraints);
     }
 
 

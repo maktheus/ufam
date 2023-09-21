@@ -13,15 +13,17 @@ public class EleitorAddPage extends Page{
     private JPanel panel;
     VoterController voterController = new VoterController();
 
-    public EleitorAddPage(JFrame jframe) {
-        super(jframe);
-
+    public EleitorAddPage(JFrame frame) {
+        super(frame);
 
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         
+        constraints.fill = GridBagConstraints.CENTER;
+
+
         JLabel label1 = new JLabel("Nome");
         JTextField textField1 = new JTextField();
         
@@ -33,10 +35,10 @@ public class EleitorAddPage extends Page{
         JLabel label3 = new JLabel("Titulo de Eleitor");
         JTextField textField3 = new JTextField();
         
-        super.
-        FormInputComponent(textField2, label2, "CPF", 0, 0, 600, 50);
-        FormInputComponent(textField3, label3, "Titulo de Eleitor", 0, 0, 600, 50);
-        FormInputComponent(textField1, label1, "Nome", 0, 0, 600, 50);
+        
+        FormInputComponent(textField2, label2, "CPF", 0, 0, 1200, 50);
+        FormInputComponent(textField3, label3, "Titulo de Eleitor", 0, 0, 1200, 50);
+        FormInputComponent(textField1, label1, "Nome", 0, 0, 1200, 50);
 
         JButton button = new JButton("Cadastrar");
 
@@ -77,14 +79,17 @@ public class EleitorAddPage extends Page{
                 cadastrarEleitor(voter);
             }
         });
-
     }
 
     //cadastrar eleitor
 
     public void cadastrarEleitor(Voter voter){
-        VoterController voterController = new VoterController();
-        voterController.createVoter(voter);
+        if(VoterController.createVoter(voter) == true){
+            JOptionPane.showMessageDialog(null, "Eleitor cadastrado com sucesso");
+            setChangePanel(panel, new EleitorPage(frame).getPanel());
+        }else{
+            JOptionPane.showMessageDialog(null, "Erro ao cadastrar eleitor");
+        }
     }
 
 

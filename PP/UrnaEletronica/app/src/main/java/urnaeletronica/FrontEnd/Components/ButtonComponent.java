@@ -3,26 +3,26 @@ package urnaeletronica.FrontEnd.Components;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
-public class Button {
+public class ButtonComponent {
     private JButton button;
 
     public JButton getButton() {
         return this.button;
     }
 
-    public Button(String text, int x, int y) {
+    public ButtonComponent(String text, int x, int y) {
         this.button = new JButton();
         this.button.setText(text);
         PrimaryButton(x, y);
     }
 
-    public Button(String text, String type) {
+    public ButtonComponent(String text, String type) {
         this.button = new JButton();
         this.button.setText(text);
         checkType(type);
     }
 
-    public Button(String text, String type, int x, int y) {
+    public ButtonComponent(String text, String type, int x, int y) {
         this.button = new JButton();
         this.button.setText(text);
         checkType(type, x, y);

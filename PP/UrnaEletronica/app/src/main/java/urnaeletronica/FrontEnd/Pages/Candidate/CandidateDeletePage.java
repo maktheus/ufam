@@ -3,6 +3,8 @@ package urnaeletronica.FrontEnd.Pages.Candidate;
 import java.awt.*;
 import javax.swing.*;
 
+import urnaeletronica.BackEnd.Controllers.CandidateController;
+
 public class CandidateDeletePage {
     private JPanel panel;
 
@@ -27,6 +29,20 @@ public class CandidateDeletePage {
         constraints.gridx = 1;
         constraints.gridy = 1;
         panel.add(textField, constraints);
+
+        constraints.gridx = 1;
+        constraints.gridy = 2;
+        panel.add(button, constraints);
+
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteCandidate(textField.getText());
+            }
+        });
+    }
+
+    private void deleteCandidate(String etitulo){
+        CandidateController.deleteCandidate(etitulo);
     }
 
     public JPanel getPanel(){

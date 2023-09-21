@@ -9,7 +9,7 @@ public class VoterController {
      
     }
 
-    public boolean createVoter(Voter voter){
+    public static boolean createVoter(Voter voter){
         try {
             String sql = "INSERT INTO Voter (name, cpf, etitulo) VALUES (?, ?, ?)";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
@@ -25,7 +25,7 @@ public class VoterController {
         }
     }
 
-    public boolean deleteVoter(String cpf){
+    public static boolean deleteVoter(String cpf){
         try {
             String sql = "DELETE FROM Voter WHERE cpf = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
@@ -38,22 +38,48 @@ public class VoterController {
         }
     }
 
-
-    public Voter getVoter( String cpf){
+    public static boolean updateVoter(Voter voter){
         try {
-            String sql = "SELECT * FROM Voter WHERE cpf = ?";
+            String sql = "UPDATE Voter SET name = ?, cpf = ?, etitulo = ? WHERE cpf = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
-            stmt.setString(1, cpf);
-            ResultSet rs = stmt.executeQuery();
-            Voter voter = new Voter(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"));
-            return voter;
+            stmt.setString(1, voter.getName());
+            stmt.setString(2, voter.getCpf());
+            stmt.setString(3, voter.getEtitulo());
+            stmt.setString(4, voter.getCpf());
+            stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public static Voter getVoter( String etitulo){
+        try {
+            System.out.println(etitulo);
+            String sql = "SELECT * FROM Voter WHERE etitulo = ?";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            stmt.setString(1, etitulo);
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) { // Mova o cursor para a primeira linha antes de acessar os resultados
+                Voter voter = new Voter(rs.getString("name"), rs.getString("cpf"), rs.getString("etitulo"));
+                System.out.println("Eleitor: "+voter);
+                return voter;
+            } else {
+                System.out.println("Nenhum eleitor encontrado");
+                return null;
+            }
+    
+        } catch (SQLException e) {
+            System.out.println("Erro");
             System.out.println(e.getMessage());
             return null;
         }
     }
+    
 
-    public ArrayList<Voter> getAllVoters(){
+    public  static ArrayList<Voter> getAllVoters(){
         try {
             String sql = "SELECT * FROM Voter";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
