@@ -25,22 +25,14 @@ public class LandingPage extends Page{
 
     public LandingPage(JFrame frame) {
         super(frame);
-        panel = new JPanel();
+        panel = new JPanel();        
+
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
 
-        panel.setBackground(new java.awt.Color(0, 0, 0));
+        panel.setBackground(new java.awt.Color(255, 255, 255));
 
-        // ImageIcon UrnaIcon = new ImageIcon(iconPath);
-        // icon = new JLabel(UrnaIcon);
-        // constraints.gridx = 0;
-        // constraints.gridy = 0;
-        // constraints.gridwidth = 1;
-        // constraints.gridheight = 4;
-        // panel.add(icon, constraints);
-        // constraints.gridheight = 1; // Reset grid height for buttons
-
-        // constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.CENTER;
         constraints.weightx = 0.8;
         constraints.weighty = 1.0;
         constraints.gridx = 1;
@@ -48,73 +40,20 @@ public class LandingPage extends Page{
         panel.add(button1.getButton(), constraints);
 
         // button on click listener
-        button1.getButton().addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new VontingPage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
-
+        setChangePanel(button1.getButton(), panel, new VontingPage(frame).getPanel());
         constraints.gridy = 1;
         panel.add(button2.getButton(), constraints);
 
-        button2.getButton().addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new CandidatePage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
-
+        setChangePanel(button2.getButton(), panel, new CandidatePage(frame).getPanel());
         constraints.gridy = 2;
         panel.add(button3.getButton(), constraints);
 
-        button3.getButton().addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-            frame.getContentPane().add(new EleitorPage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
-
+        setChangePanel(button3.getButton(), panel, new EleitorPage(frame).getPanel());
 
         constraints.gridy = 3;
         panel.add(button4.getButton(), constraints);
-        button4.getButton().addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new ResultsPage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
+        
+        setChangePanel(button4.getButton(), panel, new ResultsPage(frame).getPanel());
     }
 
     public JPanel getPanel() {

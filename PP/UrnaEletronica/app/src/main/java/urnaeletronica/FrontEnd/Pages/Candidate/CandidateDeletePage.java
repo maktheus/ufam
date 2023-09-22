@@ -4,11 +4,14 @@ import java.awt.*;
 import javax.swing.*;
 
 import urnaeletronica.BackEnd.Controllers.CandidateController;
+import urnaeletronica.FrontEnd.Pages.Page;
 
-public class CandidateDeletePage {
+public class CandidateDeletePage extends Page {
     private JPanel panel;
 
     public CandidateDeletePage(JFrame frame){
+        super(frame);
+
         panel = new JPanel();
         panel.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -42,7 +45,15 @@ public class CandidateDeletePage {
     }
 
     private void deleteCandidate(String etitulo){
-        CandidateController.deleteCandidate(etitulo);
+        try {
+            CandidateController.deleteCandidate(etitulo);
+
+            JOptionPane.showMessageDialog(null, "Candidato deletado com sucesso!");
+            // go to candidatePage
+            setChangePanel(panel, new CandidatePage(frame).getPanel());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public JPanel getPanel(){

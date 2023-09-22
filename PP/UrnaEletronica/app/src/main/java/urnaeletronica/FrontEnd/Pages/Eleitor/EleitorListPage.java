@@ -55,7 +55,6 @@ public class EleitorListPage extends Page{
             }else{
                 JOptionPane.showMessageDialog(null, "Eleitor encontrado");
                 EleitorShowComponent eleitorShowComponent = new EleitorShowComponent(eleitor);
-                
                 //return to EleitorPage
                 setChangePanel(panel, new EleitorPage(frame).getPanel());
             }

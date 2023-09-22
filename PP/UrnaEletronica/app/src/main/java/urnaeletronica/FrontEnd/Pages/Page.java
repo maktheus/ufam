@@ -2,9 +2,7 @@ package urnaeletronica.FrontEnd.Pages;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import urnaeletronica.BackEnd.Models.Voter;
 
@@ -53,18 +51,7 @@ public abstract class Page {
         frame.repaint();
     }
 
-    public void FormInputComponent(JTextField textField, JLabel label, String text, int x, int y, int width,
-            int height) {
-        textField.setBounds(x, y, width, height);
-        textField.setFont(new java.awt.Font("Martian Mono", 0, 16));
-        textField.setForeground(new java.awt.Color(0, 0, 0));
-        textField.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        label.setBounds(x, y, width, height);
-        label.setFont(new java.awt.Font("Martian Mono", 0, 16));
-        label.setForeground(new java.awt.Color(255, 255, 255));
-        label.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        label.setText(text);
-    }
+    
 
     public boolean verifyForm(Voter voter) {
         if (voter == null) {

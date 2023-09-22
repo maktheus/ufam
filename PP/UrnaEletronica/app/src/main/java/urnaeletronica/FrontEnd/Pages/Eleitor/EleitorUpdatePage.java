@@ -5,6 +5,8 @@ import javax.swing.*;
 
 import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.BackEnd.Models.Voter;
+import urnaeletronica.FrontEnd.Components.ButtonComponent;
+import urnaeletronica.FrontEnd.Components.FormInputComponent;
 import urnaeletronica.FrontEnd.Pages.Page;
 
 public class EleitorUpdatePage extends Page{
@@ -19,23 +21,13 @@ public class EleitorUpdatePage extends Page{
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         
-        JLabel label1 = new JLabel("Nome");
-        JTextField textField1 = new JTextField();
-        
-        
-        JLabel label2 = new JLabel("CPF");
-        JTextField textField2 = new JTextField();
-        
-        
-        JLabel label3 = new JLabel("Titulo de Eleitor");
-        JTextField textField3 = new JTextField();
-        
-        super.
-        FormInputComponent(textField2, label2, "CPF", 0, 0, 600, 50);
-        FormInputComponent(textField3, label3, "Titulo de Eleitor", 0, 0, 600, 50);
-        FormInputComponent(textField1, label1, "Nome", 0, 0, 600, 50);
 
-        JButton button = new JButton("Cadastrar");
+        FormInputComponent cpfInput = new FormInputComponent("CPF");
+        FormInputComponent etituloInput = new FormInputComponent("Titulo de Eleitor");
+        FormInputComponent NomeInput = new FormInputComponent("Nome");
+
+
+        ButtonComponent button = new ButtonComponent("Atualizar", "primary");
 
 
         // put on center of screen
@@ -44,32 +36,32 @@ public class EleitorUpdatePage extends Page{
         constraints.gridx = 1;
         constraints.gridy = 0;
         constraints.weighty = 0.2;
-        panel.add(label1, constraints);
+        panel.add( NomeInput.getLabel(), constraints);
     
         constraints.gridy = 1;
-        panel.add(textField1, constraints);
+        panel.add(NomeInput.getTextField(), constraints);
 
         constraints.gridy = 2;
-        panel.add(label2, constraints);
+        panel.add( cpfInput.getLabel(), constraints);
 
         constraints.gridy = 3;
-        panel.add(textField2, constraints);
+        panel.add( cpfInput.getTextField(), constraints);
 
         constraints.gridy = 4;
-        panel.add(label3, constraints);
+        panel.add( etituloInput.getLabel(), constraints);
 
         constraints.gridy = 5;
-        panel.add(textField3, constraints);
+        panel.add( etituloInput.getTextField(), constraints);
 
         constraints.gridy = 7;
-        panel.add(button, constraints);
+        panel.add(button.getButton(), constraints);
 
-        button.addActionListener(new java.awt.event.ActionListener() {
+        button.getButton().addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 //get data from text Field
-                String nome = textField1.getText();
-                String cpf = textField2.getText();
-                String titulo = textField3.getText();
+                String nome = NomeInput.getTextField().getText();
+                String cpf =  cpfInput.getTextField().getText();
+                String titulo = etituloInput.getTextField().getText();
                 Voter voter = new Voter(nome, cpf, titulo);
                 updateEleitor(voter);
             }
@@ -79,10 +71,10 @@ public class EleitorUpdatePage extends Page{
 
 
     private void updateEleitor(Voter voter){
-        if(!verifyForm(voter)){
-            JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente");
-            return;
-        }
+        // if(!verifyForm(voter)){
+        //     JOptionPane.showMessageDialog(null, "Preencha todos os campos corretamente");
+        //     return;
+        // }
         
         
         if(VoterController.updateVoter(voter)){

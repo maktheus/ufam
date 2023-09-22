@@ -1,8 +1,7 @@
 package urnaeletronica.BackEnd.Controllers;
+
 import java.sql.*;
 
-
-import urnaeletronica.BackEnd.Models.Voter;
 import urnaeletronica.BackEnd.Models.Candidate;
 import java.util.ArrayList;
 
@@ -15,20 +14,18 @@ public class CandidateController {
     DataBaseController database = new DataBaseController();
     public CandidateController() {}
 
-    public static Candidate createCandidate( Voter voter, String idForCandidate){
+    public static boolean createCandidate( Candidate candidate){
         try {
             String sql = "INSERT INTO candidate (etitulo, idForCandidate) VALUES (?, ?)";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
-            stmt.setString(1, voter.getEtitulo());
-            stmt.setString(2, idForCandidate);
+            stmt.setString(1, candidate.getEtitulo());
+            stmt.setString(2, candidate.getIdForCandidate());
             stmt.executeUpdate();
-            Candidate candidate = new Candidate(voter.getEtitulo(), idForCandidate);
-            return candidate;
-
+            return true;
         } catch (SQLException e) {
 
             System.out.println(e.getMessage());
-            return null;
+            return false;
         }
     }
 

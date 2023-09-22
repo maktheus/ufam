@@ -1,6 +1,7 @@
 package urnaeletronica.FrontEnd.Components;
 
-import javax.swing.BorderFactory;
+import java.awt.Dimension;
+
 import javax.swing.JButton;
 
 public class ButtonComponent {
@@ -52,16 +53,17 @@ public class ButtonComponent {
         this.button.setFocusPainted(false);
         this.button.setFont(new java.awt.Font("Martian Mono", java.awt.Font.PLAIN, 16)); // Fonte "Martian Mono"
         this.button.setForeground(new java.awt.Color(0, 0, 0)); // Cor do texto
-        // Borda com raio de 8
-        this.button.setBorder(BorderFactory.createMatteBorder(8, 8, 8, 8, new java.awt.Color(0, 0, 0)));
+
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(200, 45)));
     }
 
     private void SecondaryButton() {
-        this.button.setBackground(new java.awt.Color(200, 200, 200)); // Cor de fundo diferente
+        this.button.setBackground(new java.awt.Color(0,0,0)); // Cor de fundo diferente
         this.button.setBorderPainted(false);
         this.button.setFocusPainted(false);
         this.button.setFont(new java.awt.Font("Martian Mono", 0, 16));
-        this.button.setForeground(new java.awt.Color(0, 0, 0));
+        this.button.setForeground(new java.awt.Color(250, 167, 45));
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(150, 40)));
     }
 
     private void TertiaryButton() {

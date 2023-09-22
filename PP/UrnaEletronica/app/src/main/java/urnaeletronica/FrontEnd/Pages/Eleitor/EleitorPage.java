@@ -33,9 +33,12 @@ public class EleitorPage extends Page{
 
         constraints.anchor = GridBagConstraints.CENTER;
 
+        constraints.insets = new java.awt.Insets(10, 10, 10, 10);
+
+        constraints.weighty = 1.0;
+
         constraints.gridx = 1;
         constraints.gridy = 0;
-        constraints.weighty = 0.2;
         panel.add(button.getButton(), constraints);
 
         constraints.gridx = 1;

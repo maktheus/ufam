@@ -8,8 +8,6 @@ public class FooterComponent {
     private JLabel label1 = new JLabel("© 2023 Matheus Serrão");
     private JLabel label2 = new JLabel("Feito em setembro de 2023");
 
-
-
     public FooterComponent(){
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -28,14 +26,14 @@ public class FooterComponent {
         label2.setFont(new java.awt.Font("Martian Regular", 0, 16));
         label2.setForeground(new java.awt.Color(0, 0, 0));
         label2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
-        // anchor center
+        
+        
         constraints.anchor = GridBagConstraints.CENTER;
-        constraints.gridy = 0;
+        constraints.gridy = 1;
 
         panel.add(label1,constraints);
 
-        constraints.gridy = 1;
+        constraints.gridy = 2;
         panel.add(label2,constraints);
     }
 
