@@ -2,13 +2,15 @@ package urnaeletronica.BackEnd.Controllers;
 import java.sql.*;
 import java.util.ArrayList;
 
+import urnaeletronica.BackEnd.Models.Voto;
+
 public class VoteController {
-    public static boolean vote(String eTitulo, String candidateNumber) {
+    public static boolean vote(Voto vote) {
         try {
             String sql = "INSERT INTO vote (etitulo, candidateNumber) VALUES (?, ?)";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
-            stmt.setString(1, eTitulo);
-            stmt.setString(2, candidateNumber);
+            stmt.setString(1, vote.getEtitulo());
+            stmt.setString(2, vote.getCandidate());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {

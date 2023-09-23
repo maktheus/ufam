@@ -30,7 +30,8 @@ public class VotingButtonsComponent {
         GridBagConstraints constraints = new GridBagConstraints();
         //set transparente background
         panel.setOpaque(false);
-
+        
+        constraints.insets = new java.awt.Insets(10, 10, 10, 10);
 
 
          // Primeira linha

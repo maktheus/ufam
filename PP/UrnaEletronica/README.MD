@@ -21,19 +21,21 @@ Ao final da eleição, o sistema deverá mostrar os resultados da urna atual inc
 Considere uma votação com apenas um turno.
 
 Funcionalidades Mínimas
-    []Gerenciamento de eleitores
-        [] cadastro,
-        [] consulta,
-        [] alteração,
-        [] remoção
+    [X]Gerenciamento de eleitores
+        [X] cadastro,
+        [X] consulta,
+        [X] alteração,
+        [X] remoção
         
-    []Gerenciamento de candidatos
-        [] cadastro,
-        [] consulta,
-        [] alteração,
-        [] remoção
+    [X]Gerenciamento de candidatos
+        [X] cadastro,
+        [X] consulta,
+        [X] alteração,
+        [X] remoção
 
     []Inicialização da urna e o término da votação devem ser feitos utilizando uma senha.
+        [X]Inicialização
+        []Termino
     []Somente a pessoa credenciada pelo sistema tem a senha de início e término da eleição.
-    []Cada eleitor pode votar uma única vez, utilizando seu titulo de eleitor.
+    [X]Cada eleitor pode votar uma única vez, utilizando seu titulo de eleitor.
     []O eleitor pode votar em branco ou nulo.

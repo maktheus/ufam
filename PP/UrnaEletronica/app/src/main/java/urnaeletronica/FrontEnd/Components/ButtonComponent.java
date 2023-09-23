@@ -41,10 +41,48 @@ public class ButtonComponent {
             case "tertiary":
                 TertiaryButton();
                 break;
+            case "success":
+                SuccessButton();
+                break;
+            case "danger":
+                DangerButton();
+                break;
+            case "warning":
+                WarningButton();
+                break;
             default:
                 PrimaryButton();
                 break;
         }
+    }
+
+    private void SuccessButton() {
+        this.button.setBackground(new java.awt.Color(27, 154, 170)); // Cor de fundo #F8FFE5
+        this.button.setBorderPainted(false);
+        this.button.setFocusPainted(false);
+        this.button.setFont(new java.awt.Font("Martian Mono", java.awt.Font.PLAIN, 16)); // Fonte "Martian Mono"
+        this.button.setForeground(new java.awt.Color(255,255,255)); // Cor do texto
+
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(200, 45)));
+    }
+
+    private void DangerButton() {
+        this.button.setBackground(new java.awt.Color(239, 71, 111)); // Cor de fundo #F8FFE5
+        this.button.setBorderPainted(false);
+        this.button.setFocusPainted(false);
+        this.button.setFont(new java.awt.Font("Martian Mono", java.awt.Font.PLAIN, 16)); // Fonte "Martian Mono"
+        this.button.setForeground(new java.awt.Color(255,255,255)); // Cor do texto
+
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(200, 45)));
+    }
+
+    private void WarningButton() {
+        this.button.setBackground(new java.awt.Color(250, 167, 45)); // Cor de fundo #F8FFE5
+        this.button.setBorderPainted(false);
+        this.button.setFocusPainted(false);
+        this.button.setFont(new java.awt.Font("Martian Mono", java.awt.Font.PLAIN, 16)); // Fonte "Martian Mono"
+        this.button.setForeground(new java.awt.Color(255,255,255)); // Cor do texto
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(200, 45)));
     }
 
     private void PrimaryButton() {
@@ -58,12 +96,12 @@ public class ButtonComponent {
     }
 
     private void SecondaryButton() {
-        this.button.setBackground(new java.awt.Color(0,0,0)); // Cor de fundo diferente
+        this.button.setBackground(new java.awt.Color(242, 211, 180)); // Cor de fundo diferente
         this.button.setBorderPainted(false);
         this.button.setFocusPainted(false);
         this.button.setFont(new java.awt.Font("Martian Mono", 0, 16));
-        this.button.setForeground(new java.awt.Color(250, 167, 45));
-        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(150, 40)));
+        this.button.setForeground(new java.awt.Color(0,0,0));
+        this.button.setPreferredSize(new java.awt.Dimension(new Dimension(200, 45)));
     }
 
     private void TertiaryButton() {

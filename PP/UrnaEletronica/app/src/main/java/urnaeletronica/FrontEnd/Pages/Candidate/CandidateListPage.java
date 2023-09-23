@@ -14,7 +14,7 @@ public class CandidateListPage extends Page {
         private JPanel panel;
         
         public CandidateListPage(JFrame frame){
-            super(frame)
+            super(frame);
             panel = new JPanel();
             panel.setBackground(new java.awt.Color(0, 0, 0));
 

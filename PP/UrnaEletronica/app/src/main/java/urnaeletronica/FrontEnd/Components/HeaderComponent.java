@@ -44,6 +44,11 @@ public class HeaderComponent {
         button2.setFocusPainted(false);
         button2.setFont(new java.awt.Font("Martian Mono", 0, 20));
         button2.setForeground(new java.awt.Color(0, 0, 0));
+        constraints.weighty = 1.0; // Peso total
+        constraints.weightx = 1.0; // Peso total
+
+        
+
 
         // set elements to the left in the panel
         constraints.anchor = GridBagConstraints.WEST;

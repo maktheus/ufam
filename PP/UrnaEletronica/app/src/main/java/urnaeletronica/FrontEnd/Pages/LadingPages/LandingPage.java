@@ -2,7 +2,7 @@ package urnaeletronica.FrontEnd.Pages.LadingPages;
 
 import urnaeletronica.FrontEnd.Components.*;
 import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;
-import urnaeletronica.FrontEnd.Pages.Voting.VontingPage;
+import urnaeletronica.FrontEnd.Pages.Voting.EtituloConfirmVotePage;
 import urnaeletronica.FrontEnd.Pages.Page;
 import urnaeletronica.FrontEnd.Pages.Candidate.CandidatePage;
 import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
@@ -18,10 +18,10 @@ public class LandingPage extends Page{
     private JPanel panel;
     // private String iconPath =
     // "/home/temp/code/ufam/PP/UrnaEletronica/app/src/main/java/urnaeletronica/FrontEnd/Imgs/Urna.png";
-    private ButtonComponent button1 = new ButtonComponent("Votar", "primary");
-    private ButtonComponent button2 = new ButtonComponent("Candidatos", "primary");
-    private ButtonComponent button3 = new ButtonComponent("Eleitores", "primary");
-    private ButtonComponent button4 = new ButtonComponent("Resultados", "primary");
+    private ButtonComponent button1 = new ButtonComponent("Votar", "secondary");
+    private ButtonComponent button2 = new ButtonComponent("Candidatos", "secondary");
+    private ButtonComponent button3 = new ButtonComponent("Eleitores", "secondary");
+    private ButtonComponent button4 = new ButtonComponent("Resultados", "secondary");
 
     public LandingPage(JFrame frame) {
         super(frame);
@@ -40,7 +40,7 @@ public class LandingPage extends Page{
         panel.add(button1.getButton(), constraints);
 
         // button on click listener
-        setChangePanel(button1.getButton(), panel, new VontingPage(frame).getPanel());
+        setChangePanel(button1.getButton(), panel, new EtituloConfirmVotePage(frame).getPanel());
         constraints.gridy = 1;
         panel.add(button2.getButton(), constraints);
 

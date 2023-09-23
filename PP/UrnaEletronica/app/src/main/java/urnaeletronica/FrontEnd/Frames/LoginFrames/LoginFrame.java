@@ -76,7 +76,6 @@ public class LoginFrame extends Frame {
 
     private void login(  String senha) {
         try{
-            System.out.println(senha);
             if(LoginController.login(senha)){
                 changeFrame(frame, new MainFrame().getFrame());
             }else{
