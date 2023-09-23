@@ -1,11 +1,14 @@
 package urnaeletronica.FrontEnd.Pages.LadingPages;
 
+import urnaeletronica.BackEnd.Controllers.CandidateController;
+import urnaeletronica.BackEnd.Controllers.VoteController;
+import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.FrontEnd.Components.*;
+import urnaeletronica.FrontEnd.Frames.ResultsFrames.ResultsFrame;
 import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;
 import urnaeletronica.FrontEnd.Pages.Voting.EtituloConfirmVotePage;
 import urnaeletronica.FrontEnd.Pages.Page;
 import urnaeletronica.FrontEnd.Pages.Candidate.CandidatePage;
-import urnaeletronica.FrontEnd.Pages.Results.ResultsPage;
 
 //import App.java;
 
@@ -18,10 +21,10 @@ public class LandingPage extends Page{
     private JPanel panel;
     // private String iconPath =
     // "/home/temp/code/ufam/PP/UrnaEletronica/app/src/main/java/urnaeletronica/FrontEnd/Imgs/Urna.png";
-    private ButtonComponent button1 = new ButtonComponent("Votar", "secondary");
+    private ButtonComponent button1 = new ButtonComponent("Eleitores", "secondary");
     private ButtonComponent button2 = new ButtonComponent("Candidatos", "secondary");
-    private ButtonComponent button3 = new ButtonComponent("Eleitores", "secondary");
-    private ButtonComponent button4 = new ButtonComponent("Resultados", "secondary");
+    private ButtonComponent button3 = new ButtonComponent("Votar", "secondary");
+    private ButtonComponent button4 = new ButtonComponent("Finalizar Votacao", "secondary");
 
     public LandingPage(JFrame frame) {
         super(frame);
@@ -53,8 +56,35 @@ public class LandingPage extends Page{
         constraints.gridy = 3;
         panel.add(button4.getButton(), constraints);
         
-        setChangePanel(button4.getButton(), panel, new ResultsPage(frame).getPanel());
+        setChangePanel(button4.getButton(), frame, new ResultsFrame().getFrame());
+
+
+        verifyIfThereIsAnyEleitor();
+        verifyIfThereIsAnyCandidato();
+        verifyIfSomeoneAlredyVoted();
     }
+
+    private void verifyIfThereIsAnyEleitor(){
+        if (VoterController.getAllVoters().size() == 0 ) {
+            button2.getButton().setEnabled(false);
+            button2.getButton().setText("Ainda não há Eleitores Cadastrados");
+        }
+    }
+
+    private void verifyIfThereIsAnyCandidato(){
+        if(CandidateController.getAllCandidates().size() == 0){
+            button3.getButton().setEnabled(false);
+            button3.getButton().setText("Ainda não há Candidatos Cadastrados");
+        }
+    }
+
+    private void verifyIfSomeoneAlredyVoted() {
+        if (VoteController.getAllVotes().size() == 0) {
+             button4.getButton().setEnabled(false);
+             button4.getButton().setText("Ainda não há Votos Cadastrados");
+        }
+    }
+
 
     public JPanel getPanel() {
         return panel;

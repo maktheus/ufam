@@ -1,13 +1,14 @@
 package urnaeletronica.BackEnd.Controllers;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import urnaeletronica.BackEnd.Models.Voto;
 
 public class VoteController {
     public static boolean vote(Voto vote) {
         try {
-            String sql = "INSERT INTO vote (etitulo, candidateNumber) VALUES (?, ?)";
+            String sql = "INSERT INTO VotoCandidato (etitulo, candidateNumber) VALUES (?, ?)";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, vote.getEtitulo());
             stmt.setString(2, vote.getCandidate());
@@ -21,7 +22,7 @@ public class VoteController {
 
     public static boolean verifyIfAlredyVoted(String eTitulo) {
         try {
-            String sql = "SELECT * FROM vote WHERE etitulo = ?";
+            String sql = "SELECT * FROM VotoCandidato WHERE etitulo = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, eTitulo);
             ResultSet rs = stmt.executeQuery();
@@ -36,9 +37,74 @@ public class VoteController {
         }
     }
 
+    // getTotalVotes
+    public static   String getTotalVotes() {
+        try {
+            String sql = "SELECT COUNT(*) FROM VotoCandidato";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("COUNT(*)");
+            } else {
+                return "0";
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "0";
+        }
+    }
+
+    public static String getNullVotes() {
+        try {
+            String sql = "SELECT COUNT(*) FROM VotoCandidato WHERE candidateNumber = 0";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("COUNT(*)");
+            } else {
+                return "0";
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "0";
+        }
+    }
+
+    public static String getWhiteVotes() {
+        try {
+            String sql = "SELECT COUNT(*) FROM VotoCandidato WHERE candidateNumber = -1";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("COUNT(*)");
+            } else {
+                return "0";
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "0";
+        }
+    }
+
+    public static String getValidVotes() {
+        try {
+            String sql = "SELECT COUNT(*) FROM VotoCandidato WHERE candidateNumber != 0 AND candidateNumber != -1";
+            PreparedStatement stmt = DataBaseController.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("COUNT(*)");
+            } else {
+                return "0";
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "0";
+        }
+    }
+
     public static String getVotes(String candidateNumber) {
         try {
-            String sql = "SELECT COUNT(*) FROM vote WHERE candidateNumber = ?";
+            String sql = "SELECT COUNT(*) FROM VotoCandidato WHERE candidateNumber = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, candidateNumber);
             ResultSet rs = stmt.executeQuery();
@@ -55,7 +121,7 @@ public class VoteController {
 
     public static String getWinner() {
         try {
-            String sql = "SELECT candidateNumber, COUNT(*) FROM vote GROUP BY candidateNumber ORDER BY COUNT(*) DESC LIMIT 1";
+            String sql = "SELECT candidateNumber, COUNT(*) FROM VotoCandidato GROUP BY candidateNumber ORDER BY COUNT(*) DESC LIMIT 1";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
@@ -69,16 +135,21 @@ public class VoteController {
         }
     }
 
-    public static ArrayList<String> getAllVotes() {
+        public static Map<String, Integer> getAllVotes() {
         try {
-            String sql = "SELECT * FROM vote";
+            String sql = "SELECT candidateNumber, COUNT(*) as voteCount FROM VotoCandidato GROUP BY candidateNumber";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-            ArrayList<String> votes = new ArrayList<String>();
+            
+            Map<String, Integer> votesMap = new HashMap<>();
+            
             while (rs.next()) {
-                votes.add(rs.getString("etitulo") + " " + rs.getString("candidateNumber"));
+                String candidateNumber = rs.getString("candidateNumber");
+                int voteCount = rs.getInt("voteCount");
+                votesMap.put(candidateNumber, voteCount);
             }
-            return votes;
+            
+            return votesMap;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;

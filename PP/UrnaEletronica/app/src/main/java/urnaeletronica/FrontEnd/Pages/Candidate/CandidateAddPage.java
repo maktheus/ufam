@@ -4,6 +4,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import urnaeletronica.BackEnd.Controllers.CandidateController;
+import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.BackEnd.Models.Candidate;
 import urnaeletronica.FrontEnd.Components.ButtonComponent;
 import urnaeletronica.FrontEnd.Components.FormInputComponent;
@@ -37,6 +38,10 @@ public class CandidateAddPage extends Page {
         panel.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
+
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.gridheight = 1;
+        constraints.gridwidth = 1;
 
 
         // Add title
@@ -89,9 +94,26 @@ public class CandidateAddPage extends Page {
 
     }
 
+    private boolean checkIfVoterExists(String candidateEtituloText) {
+        
+        if(VoterController.getVoter(candidateEtituloText) == null){
+            JOptionPane.showMessageDialog(null, "Eleitor não existe");
+            return false;
+        }
+        return true;
 
-    public void addCandidate(Candidate candidate) {
+    } 
+
+    private void addCandidate(Candidate candidate) {
        try{
+            // Check if voter exists
+            if(!checkIfVoterExists(candidate.getEtitulo())){
+                JOptionPane.showMessageDialog(null, "Eleitor não existe");
+                return;
+            }
+            
+            // Add candidate
+
             CandidateController.createCandidate(candidate);
             JOptionPane.showMessageDialog(null, "Candidato adicionado com sucesso!");
             // go to candidatePage

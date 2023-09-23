@@ -16,7 +16,7 @@ public class CandidateController {
 
     public static boolean createCandidate( Candidate candidate){
         try {
-            String sql = "INSERT INTO candidate (etitulo, idForCandidate) VALUES (?, ?)";
+            String sql = "INSERT INTO Candidate (etitulo, idForCandidate) VALUES (?, ?)";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, candidate.getEtitulo());
             stmt.setString(2, candidate.getIdForCandidate());
@@ -31,7 +31,7 @@ public class CandidateController {
 
     public static boolean updateCandidate(Candidate candidate){
         try {
-            String sql = "UPDATE candidate SET etitulo = ?, idForCandidate = ? WHERE etitulo = ?";
+            String sql = "UPDATE Candidate SET etitulo = ?, idForCandidate = ? WHERE etitulo = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, candidate.getEtitulo());
             stmt.setString(2, candidate.getIdForCandidate());
@@ -46,7 +46,7 @@ public class CandidateController {
 
     public static boolean deleteCandidate( String etitulo){
         try {
-            String sql = "DELETE FROM candidate WHERE etitulo = ?";
+            String sql = "DELETE FROM Candidate WHERE etitulo = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, etitulo);
             stmt.executeUpdate();
@@ -60,7 +60,7 @@ public class CandidateController {
 
     public static Candidate getCandidate( String etitulo){
         try {
-            String sql = "SELECT * FROM candidate WHERE etitulo = ?";
+            String sql = "SELECT * FROM Candidate WHERE etitulo = ?";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             stmt.setString(1, etitulo);
             ResultSet rs = stmt.executeQuery();
@@ -74,7 +74,7 @@ public class CandidateController {
 
     public static ArrayList<Candidate> getAllCandidates(){
         try {
-            String sql = "SELECT * FROM candidate";
+            String sql = "SELECT * FROM Candidate";
             PreparedStatement stmt = DataBaseController.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             ArrayList<Candidate> candidates = new ArrayList<Candidate>();

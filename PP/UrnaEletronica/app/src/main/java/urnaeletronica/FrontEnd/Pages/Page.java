@@ -35,6 +35,15 @@ public abstract class Page {
         });
     }
 
+    public void setChangePanel(JButton button, JFrame currentFrame, JFrame newFrame) {
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                currentFrame.dispose();
+                newFrame.setVisible(true);
+            }
+        });
+    }
+
     public void setChangePanel(JPanel panel, JPanel newPanel) {
 
         GridBagConstraints constraints = new GridBagConstraints();

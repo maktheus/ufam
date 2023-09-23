@@ -2,7 +2,7 @@ package urnaeletronica.FrontEnd.Pages.Eleitor;
 
 import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.BackEnd.Models.Voter;
-import urnaeletronica.FrontEnd.Components.EleitorShowComponent;
+import urnaeletronica.FrontEnd.Frames.EleitorShowFrames.EleitorShowFrame;
 import urnaeletronica.FrontEnd.Pages.Page;
 
 import java.awt.*;
@@ -54,7 +54,7 @@ public class EleitorListPage extends Page{
                 setChangePanel(panel, new EleitorPage(frame).getPanel());
             }else{
                 JOptionPane.showMessageDialog(null, "Eleitor encontrado");
-                EleitorShowComponent eleitorShowComponent = new EleitorShowComponent(eleitor);
+                EleitorShowFrame eleitorShowComponent = new EleitorShowFrame(eleitor);
                 //return to EleitorPage
                 setChangePanel(panel, new EleitorPage(frame).getPanel());
             }

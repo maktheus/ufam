@@ -1,4 +1,4 @@
-package urnaeletronica.FrontEnd.Components;
+package urnaeletronica.FrontEnd.Frames.EleitorShowFrames;
 
 import java.awt.*;
 import javax.swing.*;
@@ -6,9 +6,10 @@ import javax.swing.*;
 import com.formdev.flatlaf.FlatLightLaf;
 
 import urnaeletronica.BackEnd.Models.Voter;
+import urnaeletronica.FrontEnd.Frames.Frame;
 
 
-public class EleitorShowComponent {
+public class EleitorShowFrame extends Frame {
 
     private static JFrame frame;
     private JLabel label1 = new JLabel("Nome");
@@ -20,7 +21,7 @@ public class EleitorShowComponent {
     
 
     
-    public EleitorShowComponent(Voter eleitor) {
+    public EleitorShowFrame(Voter eleitor) {
        
        FlatLightLaf.setup();
         label1.setText(eleitor.getName());

@@ -1,108 +1,63 @@
 package urnaeletronica.FrontEnd.Pages.Candidate;
 
 import javax.swing.*;
+
+import urnaeletronica.FrontEnd.Components.ButtonComponent;
+import urnaeletronica.FrontEnd.Pages.Page;
+
 import java.awt.*;
 
-public class CandidatePage {
+public class CandidatePage extends Page {
     public JPanel panel;
+    ButtonComponent button2 = new ButtonComponent("Deletar Candidato", "primary");
+    ButtonComponent button3 = new ButtonComponent("Alterar Candidato", "primary");
+    ButtonComponent button4 = new ButtonComponent("Listar Candidatos", "primary");
 
     public CandidatePage(JFrame frame) {
-
+        super(frame);
         panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         panel.setBackground(new java.awt.Color(0, 0, 0));
 
-        JButton button = new JButton("Adicionar Candidato");
-        JButton button2 = new JButton("Deletar Candidato");
-        JButton button3 = new JButton("Alterar Candidato");
-        JButton button4 = new JButton("Listar Candidatos");
-
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setFont(new java.awt.Font("Martian Mono", 0, 20));
-        button.setForeground(new java.awt.Color(0, 0, 0));
-
-        button2.setBorderPainted(false);
-        button2.setFocusPainted(false);
-        button2.setFont(new java.awt.Font("Martian Mono", 0, 20));
-        button2.setForeground(new java.awt.Color(0, 0, 0));
-
-        button3.setBorderPainted(false);
-        button3.setFocusPainted(false); 
-        button3.setFont(new java.awt.Font("Martian Mono", 0, 20));
-        button3.setForeground(new java.awt.Color(0, 0, 0));
-
-        button4.setBorderPainted(false);
-        button4.setFocusPainted(false);
-        button4.setFont(new java.awt.Font("Martian Mono", 0, 20));
-        button4.setForeground(new java.awt.Color(0, 0, 0));
-
-
+        ButtonComponent button = new ButtonComponent("Adicionar Candidato", "primary");
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        panel.add(button, constraints);
+        panel.add(button.getButton(), constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 1;
-        panel.add(button2, constraints);
+        panel.add(button2.getButton(), constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 2;
-        panel.add(button3, constraints);
+        panel.add(button3.getButton(), constraints);
 
         constraints.gridx = 0;
         constraints.gridy = 3;
-        panel.add(button4, constraints);
+        panel.add(button4.getButton(), constraints);
 
-        button.addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
+        setChangePanel(button.getButton(), panel, new CandidateAddPage(frame).getPanel());
+        setChangePanel(button2.getButton(), panel, new CandidateDeletePage(frame).getPanel());
+        setChangePanel(button3.getButton(), panel, new CandidateUpdatePage(frame).getPanel());
+        setChangePanel(button4.getButton(), panel, new CandidateListPage(frame).getPanel());
 
-            frame.getContentPane().add(new CandidateAddPage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-        });
+        verifyIfThereIsAnyCandidate();
+    }
 
-
-        button2.addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new CandidateDeletePage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
-
-        button3.addActionListener(e -> {
-            frame.getContentPane().remove(panel);
-            constraints.gridx = 0;
-            constraints.gridy = 1;
-            constraints.gridwidth = 1;
-            constraints.gridheight = 1;
-            constraints.weighty = 0.7; // 70%
-            constraints.fill = GridBagConstraints.BOTH;
-
-            frame.getContentPane().add(new CandidateUpdatePage(frame).getPanel(), constraints);
-            frame.revalidate();
-            frame.repaint();
-
-        });
-
-        
-
+    private void verifyIfThereIsAnyCandidate() {
+        if (urnaeletronica.BackEnd.Controllers.CandidateController.getAllCandidates().size() == 0) {
+            // Não há candidatos, desative os botões
+            button2.getButton().setEnabled(false); // Desativa o botão "Deletar Candidato"
+            button3.getButton().setEnabled(false); // Desativa o botão "Alterar Candidato"
+            button4.getButton().setEnabled(false); // Desativa o botão "Listar Candidatos"
+        } else {
+            // Há candidatos, ative os botões
+            button2.getButton().setEnabled(true); // Ativa o botão "Deletar Candidato"
+            button3.getButton().setEnabled(true); // Ativa o botão "Alterar Candidato"
+            button4.getButton().setEnabled(true); // Ativa o botão "Listar Candidatos"
+        }
     }
 
     public JPanel getPanel() {
