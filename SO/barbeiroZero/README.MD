@@ -27,11 +27,11 @@ O General Dureza queria saber se o atendimento da barbearia está satisfatório 
 A entrada de dados deverá ser gerada aleatoriamente seguindo o seguinte formato:
 <categoria><tempo de serviço>
 
-categoria:
- 1🡺oficial 
- 2🡺sargento 
- 3🡺cabo
- 0🡺pausa
+### Categoria:
+    1🡺oficial 
+    2🡺sargento 
+    3🡺cabo
+    0🡺pausa
 Uma pausa pode ser inserida (categoria = 0) para indicar que não há ninguém na fila, ou seja, quando o sargento Tainha for admitir alguém para o interior da barbearia, encontrará a fila vazia. Para efeito de entrega e geração do relatório, gerar um total de 1000 registros para acesso à barbearia.
 
 ## Término da execução
