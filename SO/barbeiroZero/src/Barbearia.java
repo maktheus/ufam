@@ -3,109 +3,104 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class Barbearia {
-    static ConcurrentLinkedQueue<Integer> fila = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Integer> filaOficiais = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Integer> filaSargentos = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Integer> filaCabos = new ConcurrentLinkedQueue<>();
+
+    private static final Semaphore semaforo = new Semaphore(1);
     static Map<Integer, Integer> atendimentosPorCategoria = new HashMap<>();
     static Map<Integer, Integer> tempoAtendimentoPorCategoria = new HashMap<>();
     static Map<Integer, Integer> tempoEsperaPorCategoria = new HashMap<>();
     static int totalClientes = 0;
 
     public static void printFila() {
-        System.out.println(fila);
+        System.out.println("Fila Oficiais: " + filaOficiais);
+        System.out.println("Fila Sargentos: " + filaSargentos);
+        System.out.println("Fila Cabos: " + filaCabos);
     }
 
-    public static boolean isPossibleToAddToFila() {
-        if (fila.size() < 20) {
-            return true;
-        } else {
-            return false;
+    // get the size of the fila unifieds
+    public static int getSizeOfAllFilas() {
+        return filaOficiais.size() + filaSargentos.size() + filaCabos.size();   
+    }
+
+
+
+    // Adicionar cliente à fila correspondente
+    public static void addToFila(Cliente cliente) {
+        switch (categoria) {
+            case 0: // Oficiais
+                if (getSizeOfAllFilas() < 20)
+                    filaOficiais.offer(numero);
+                break;
+            case 1: // Sargentos
+                if (getSizeOfAllFilas() < 20)
+                    filaSargentos.offer(numero);
+                break;
+            case 2: // Cabos
+                if (getSizeOfAllFilas() < 20)
+                    filaCabos.offer(numero);
+                break;
         }
     }
 
-    // add to fila
-    public static void addToFila(int numeroAleatorio) {
-        if (!isPossibleToAddToFila()) {
-            System.out.println("Fila cheia");
-            return;
-        }
-        fila.offer(numeroAleatorio);
-    }
-
-    // remove from fila
-    public static void removeFromFila() {
-        if (isEmpty()) {
-            System.out.println("Fila vazia");
-            return;
-        }
-        fila.poll();
-    }
-
-    // Verificar maior prioridade (0 a 2)
-    public static int getMaiorPrioridade() {
-        int maiorPrioridade = Integer.MIN_VALUE;
-
-        for (int elemento : fila) {
-            if (elemento > maiorPrioridade) {
-                maiorPrioridade = elemento;
+    // Remover cliente da fila correspondente
+    public static int removeFromFila(int categoria) {
+        int clienteAtendido = -1; // valor padrão para caso a fila esteja vazia
+        try {
+            semaforo.acquire();
+            switch (categoria) {
+                case 0:
+                    clienteAtendido = filaOficiais.poll() != null ? filaOficiais.poll() : -1;
+                    break;
+                case 1:
+                    clienteAtendido = filaSargentos.poll() != null ? filaSargentos.poll() : -1;
+                    break;
+                case 2:
+                    clienteAtendido = filaCabos.poll() != null ? filaCabos.poll() : -1;
+                    break;
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            semaforo.release();
         }
-
-        return maiorPrioridade;
+        return clienteAtendido;
     }
 
-    // Verificar menor prioridade (0 a 2)
-    public static int getMenorPrioridade() {
-        int menorPrioridade = Integer.MAX_VALUE;
-
-        for (int elemento : fila) {
-            if (elemento < menorPrioridade) {
-                menorPrioridade = elemento;
-            }
-        }
-
-        return menorPrioridade;
-    }
-
-    // verificar se a fila esta vazia
+    
+    //isEmpty
     public static boolean isEmpty() {
-        if (fila.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        return getSizeOfAllFilas() == 0;
     }
 
     public static int removeMaiorPrioridade() {
-        if (isEmpty()) {
-            System.out.println("Fila vazia");
-            return -1;
+        int clienteAtendido = -1; // valor padrão para caso a fila esteja vazia
+        try {
+            semaforo.acquire();
+            if (filaOficiais.size() > 0) {
+                clienteAtendido = filaOficiais.poll();
+            } else if (filaSargentos.size() > 0) {
+                clienteAtendido = filaSargentos.poll();
+            } else if (filaCabos.size() > 0) {
+                clienteAtendido = filaCabos.poll();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            semaforo.release();
         }
-
-        int elementoRemover = getMaiorPrioridade();
-        fila.remove(elementoRemover);
-
-        return elementoRemover;
+        return clienteAtendido;        
     }
 
-    // Remover o elemento com menor prioridade
-    public static int removeMenorPrioridade() {
-        if (isEmpty()) {
-            System.out.println("Fila vazia");
-            return -1;
-        }
-
-        int elementoRemover = getMenorPrioridade();
-        fila.remove(elementoRemover);
-
-        return elementoRemover;
-    }
 
     public static int porcentagemDeOcupacao() {
-        return (fila.size() * 100) / 20;
+        return (getSizeOfAllFilas() * 100) / 20;
     }
 
     // Método para obter o comprimento médio das filas
     public static synchronized double comprimentoMedioFila() {
-        return (double) fila.size() / 20;
+        return (double) getSizeOfAllFilas() / 20;
     }
 
     // Método para adicionar informações sobre o atendimento

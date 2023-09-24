@@ -48,7 +48,6 @@ public class TenenteEscovinha implements Runnable {
         System.out.println("Comprimento médio da fila: " + Barbearia.comprimentoMedioFila());
 
         System.out.println("Número de clientes atendidos: " + Barbearia.totalClientes());
-
         
     }
 
