@@ -28,18 +28,18 @@ public class Barbearia {
 
     // Adicionar cliente à fila correspondente
     public static void addToFila(Cliente cliente) {
-        switch (categoria) {
+        switch (cliente.getCategoria()) {
             case 0: // Oficiais
                 if (getSizeOfAllFilas() < 20)
-                    filaOficiais.offer(numero);
+                    filaOficiais.offer(cliente.getTempoServico());
                 break;
             case 1: // Sargentos
                 if (getSizeOfAllFilas() < 20)
-                    filaSargentos.offer(numero);
+                    filaSargentos.offer(cliente.getTempoServico());
                 break;
             case 2: // Cabos
                 if (getSizeOfAllFilas() < 20)
-                    filaCabos.offer(numero);
+                    filaCabos.offer(cliente.getTempoServico());
                 break;
         }
     }
@@ -93,6 +93,9 @@ public class Barbearia {
         return clienteAtendido;        
     }
 
+    public static int totalClientes(){
+        return totalClientes;
+    }
 
     public static int porcentagemDeOcupacao() {
         return (getSizeOfAllFilas() * 100) / 20;

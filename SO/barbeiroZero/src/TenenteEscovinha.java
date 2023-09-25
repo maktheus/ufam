@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.*;
 
 public class TenenteEscovinha implements Runnable {
     private long tempoInicial;

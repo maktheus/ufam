@@ -6,7 +6,7 @@ public class Main{
     //main
     private static int currentTime = 0;
     public static void main(String[] args){
-        int maxTime = 1000;
+        int maxTime = 10;
         Semaphore adicionarElemento = new Semaphore(1);
         Semaphore cortandoCabelo = new Semaphore(1);
         Semaphore lerFila = new Semaphore(0);
