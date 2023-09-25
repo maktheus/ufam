@@ -21,6 +21,7 @@ Ao final da eleição, o sistema deverá mostrar os resultados da urna atual inc
 Considere uma votação com apenas um turno.
 
 Funcionalidades Mínimas
+
     [X]Gerenciamento de eleitores
         [X] cadastro,
         [X] consulta,
@@ -33,9 +34,34 @@ Funcionalidades Mínimas
         [X] alteração,
         [X] remoção
 
-    []Inicialização da urna e o término da votação devem ser feitos utilizando uma senha.
+    [X]Inicialização da urna e o término da votação devem ser feitos utilizando uma senha.
         [X]Inicialização
-        []Termino
-    []Somente a pessoa credenciada pelo sistema tem a senha de início e término da eleição.
+        [X]Termino
+    [X]Somente a pessoa credenciada pelo sistema tem a senha de início e término da eleição.
     [X]Cada eleitor pode votar uma única vez, utilizando seu titulo de eleitor.
-    []O eleitor pode votar em branco ou nulo.
+    [X]O eleitor pode votar em branco ou nulo.
+
+#Como rodar subir o Banco
+
+## Subir o docker
+
+```
+docker-compose up -d
+
+```
+
+## Rodando as migrations com FlyWay
+
+É necessário criar as migrações dentro de `app/src/main/java/urnaeletronica/BackEnd/Migration`. Acesse a [documentação](https://documentation.red-gate.com/fd/migrations-184127470.html) para verificar como criar a sua:
+
+
+
+```
+ ./gradlew flywayMigrate    
+```
+
+## Rodando a aplicacao
+
+``` 
+./gradlew run
+```
