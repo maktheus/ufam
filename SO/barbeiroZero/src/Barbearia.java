@@ -3,14 +3,22 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class Barbearia {
-    static ConcurrentLinkedQueue<Integer> filaOficiais = new ConcurrentLinkedQueue<>();
-    static ConcurrentLinkedQueue<Integer> filaSargentos = new ConcurrentLinkedQueue<>();
-    static ConcurrentLinkedQueue<Integer> filaCabos = new ConcurrentLinkedQueue<>();
+    public static boolean filaOutside = true;
 
-    private static final Semaphore semaforo = new Semaphore(1);
+    static ConcurrentLinkedQueue<Cliente> filaOficiais = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Cliente> filaSargentos = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Cliente> filaCabos = new ConcurrentLinkedQueue<>();
+   
+
+    static int tempoDeAtendimentoCadeira1 = 0;
+    static int tempoDeAtendimentoCadeira2 = 0;
+    static int tempoDeAtendimentoCadeira3 = 0;
+   
+
     static Map<Integer, Integer> atendimentosPorCategoria = new HashMap<>();
     static Map<Integer, Integer> tempoAtendimentoPorCategoria = new HashMap<>();
     static Map<Integer, Integer> tempoEsperaPorCategoria = new HashMap<>();
+
     static int totalClientes = 0;
 
     public static void printFila() {
@@ -20,7 +28,7 @@ public class Barbearia {
     }
 
     // get the size of the fila unifieds
-    public static int getSizeOfAllFilas() {
+    public static synchronized int getSizeOfAllFilas() {
         return filaOficiais.size() + filaSargentos.size() + filaCabos.size();   
     }
 
@@ -29,125 +37,47 @@ public class Barbearia {
     // Adicionar cliente à fila correspondente
     public static void addToFila(Cliente cliente) {
         switch (cliente.getCategoria()) {
-            case 0: // Oficiais
+            case 1: // Oficiais
                 if (getSizeOfAllFilas() < 20)
-                    filaOficiais.offer(cliente.getTempoServico());
+                    filaOficiais.offer(cliente);
                 break;
-            case 1: // Sargentos
+            case 2: // Sargentos
                 if (getSizeOfAllFilas() < 20)
-                    filaSargentos.offer(cliente.getTempoServico());
+                    filaSargentos.offer(cliente);
                 break;
-            case 2: // Cabos
+            case 3: // Cabos
                 if (getSizeOfAllFilas() < 20)
-                    filaCabos.offer(cliente.getTempoServico());
+                    filaCabos.offer(cliente);
                 break;
         }
     }
 
-    // Remover cliente da fila correspondente
-    public static int removeFromFila(int categoria) {
-        int clienteAtendido = -1; // valor padrão para caso a fila esteja vazia
-        try {
-            semaforo.acquire();
-            switch (categoria) {
-                case 0:
-                    clienteAtendido = filaOficiais.poll() != null ? filaOficiais.poll() : -1;
-                    break;
-                case 1:
-                    clienteAtendido = filaSargentos.poll() != null ? filaSargentos.poll() : -1;
-                    break;
-                case 2:
-                    clienteAtendido = filaCabos.poll() != null ? filaCabos.poll() : -1;
-                    break;
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            semaforo.release();
+    public static synchronized void removeFromFila(int categoria) {
+        switch (categoria) {
+            case 1:
+                filaOficiais.poll();
+                break;
+            case 2:
+                filaSargentos.poll();
+                break;
+            case 3:
+                filaCabos.poll();
+                break;
         }
-        return clienteAtendido;
     }
 
-    
-    //isEmpty
-    public static boolean isEmpty() {
-        return getSizeOfAllFilas() == 0;
+    public static synchronized Cliente obterCliente() {
+        // Verifica as filas em ordem de prioridade
+        if (!filaOficiais.isEmpty())
+            return filaOficiais.peek();
+        if (!filaSargentos.isEmpty())
+            return filaSargentos.peek();
+        if (!filaCabos.isEmpty())
+            return filaCabos.peek();
+        return null; // Nenhum cliente para ser atendido
     }
 
-    public static int removeMaiorPrioridade() {
-        int clienteAtendido = -1; // valor padrão para caso a fila esteja vazia
-        try {
-            semaforo.acquire();
-            if (filaOficiais.size() > 0) {
-                clienteAtendido = filaOficiais.poll();
-            } else if (filaSargentos.size() > 0) {
-                clienteAtendido = filaSargentos.poll();
-            } else if (filaCabos.size() > 0) {
-                clienteAtendido = filaCabos.poll();
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            semaforo.release();
-        }
-        return clienteAtendido;        
-    }
-
-    public static int totalClientes(){
-        return totalClientes;
-    }
-
-    public static int porcentagemDeOcupacao() {
-        return (getSizeOfAllFilas() * 100) / 20;
-    }
-
-    // Método para obter o comprimento médio das filas
-    public static synchronized double comprimentoMedioFila() {
-        return (double) getSizeOfAllFilas() / 20;
-    }
-
-    // Método para adicionar informações sobre o atendimento
-    public static synchronized void registrarAtendimento(int categoria, int tempoAtendimento, int tempoEspera) {
-        atendimentosPorCategoria.merge(categoria, 1, Integer::sum);
-        tempoAtendimentoPorCategoria.merge(categoria, tempoAtendimento, Integer::sum);
-        tempoEsperaPorCategoria.merge(categoria, tempoEspera, Integer::sum);
-        totalClientes++;
-    }
-
-    // Método para obter a porcentagem de ocupação por categoria
-    public static synchronized Map<Integer, Double> porcentagemOcupacaoPorCategoria() {
-        Map<Integer, Double> porcentagemPorCategoria = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : atendimentosPorCategoria.entrySet()) {
-            porcentagemPorCategoria.put(entry.getKey(), (double) entry.getValue() / totalClientes * 100);
-        }
-        return porcentagemPorCategoria;
-    }
-
-    public static synchronized Map<Integer, Double> tempoMedioAtendimentoPorCategoria() {
-        Map<Integer, Double> tempoMedioPorCategoria = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : tempoAtendimentoPorCategoria.entrySet()) {
-            int categoria = entry.getKey();
-            int totalTempo = entry.getValue();
-            int totalAtendimentos = atendimentosPorCategoria.get(categoria);
-            tempoMedioPorCategoria.put(categoria, (double) totalTempo / totalAtendimentos);
-        }
-        return tempoMedioPorCategoria;
-    }
-
-    // Método para obter o tempo médio de espera por categoria
-    public static synchronized Map<Integer, Double> tempoMedioEsperaPorCategoria() {
-        Map<Integer, Double> tempoMedioPorCategoria = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : tempoEsperaPorCategoria.entrySet()) {
-            int categoria = entry.getKey();
-            int totalTempo = entry.getValue();
-            int totalAtendimentos = atendimentosPorCategoria.get(categoria);
-            tempoMedioPorCategoria.put(categoria, (double) totalTempo / totalAtendimentos);
-        }
-        return tempoMedioPorCategoria;
-    }
-
-    // Método para obter o número de atendimentos por categoria
-    public static synchronized Map<Integer, Integer> numeroAtendimentosPorCategoria() {
-        return new HashMap<>(atendimentosPorCategoria);
+    public static synchronized boolean isFilaEmpty() {
+        return filaOficiais.isEmpty() && filaSargentos.isEmpty() && filaCabos.isEmpty();
     }
 }
