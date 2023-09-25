@@ -22,18 +22,18 @@ public class Main {
         //criar threads
         Thread recrutaZero = new Thread(new RecrutaZero(cortandoCabelo));
         Thread sargentoTainha = new Thread(new SargentoTainha(cortandoCabelo,fila, timeOffWaiting));
-        // Thread tenenteEscovinha = new Thread(new TenenteEscovinha(fila, timeOffWaiting));
+        Thread tenenteEscovinha = new Thread(new TenenteEscovinha());
 
         // run threads
         
         recrutaZero.start();
+        tenenteEscovinha.start();
         sargentoTainha.start();
-        // tenenteEscovinha.start();
 
         try {
             recrutaZero.join();
             sargentoTainha.join();
-            // tenenteEscovinha.join();
+            tenenteEscovinha.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

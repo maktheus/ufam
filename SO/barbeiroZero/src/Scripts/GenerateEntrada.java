@@ -1,3 +1,4 @@
+package Scripts;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,11 +12,11 @@ public class GenerateEntrada {
 
         try (BufferedWriter arquivo = new BufferedWriter(new FileWriter("entrada1.txt"))) {
             for (int i = 0; i < 1000; i++) {
-                int categoria = random.nextInt(4);
+                int categoria = random.nextInt(3)+1;
                 switch (categoria) {
-                    case 0:
-                        arquivo.write(String.format("%d %d%n", categoria, random.nextInt(3) + 1));
-                        break;
+                    // case 0:
+                    //     arquivo.write(String.format("%d %d%n", categoria, random.nextInt(3) + 1));
+                    //     break;
                     case 1:
                         arquivo.write(String.format("%d %d%n", categoria, random.nextInt(3) + 4));
                         break;

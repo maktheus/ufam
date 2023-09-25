@@ -7,6 +7,8 @@ public class SargentoTainha implements Runnable {
     private int tempoDeDescanso = 0;
     private int ocioso = 0;
 
+
+    
     public SargentoTainha( Semaphore cortandoCabelo,List<List<Integer>> fila, int tempoDeDescanso) {
         this.cortandoCabelo = cortandoCabelo;
         this.filaOutside = fila;
@@ -18,7 +20,9 @@ public class SargentoTainha implements Runnable {
         try {
             for (List<Integer> oficial : filaOutside) {  // Especifique o tipo de dados aqui
                 // cortandoCabelo.acquire();
+                // System.out.println(oficial.get(0) + " " + oficial.get(1));
                 if(oficial.get(0) == 0){
+                    Barbearia.addToFila(new Cliente(0, 0));
                     ocioso++;
                     if(ocioso == 3){
                         System.out.println("Não há mais clientes para serem atendidos pelo Sargento Tainha");
