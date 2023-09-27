@@ -1,7 +1,7 @@
 from threading import *         
 import time
 
-# ALUNA: ARIEL LUANE PEREIRA BENTES
+
 #ENGENHARIA DA COMPUTAÇÃO
 # Semaforo
 

@@ -1,5 +1,7 @@
 import java.util.concurrent.*;
 
+import javax.management.loading.PrivateClassLoader;
+
 public class RecrutaZero implements Runnable {
 
     private Semaphore cortandoCabelo;
@@ -14,6 +16,8 @@ public class RecrutaZero implements Runnable {
     private static int tempoMedioDeCorteOficiais = 0;
     private static int tempoMedioDeCorteSargentos = 0;
     private static int tempoMedioDeCorteTotal = 0;
+
+    private int tempoExtraAposDescanso = 0;
 
     private static int tempoMedioDeEsperaTotal = 0;
     private static int tempoMedioDeEsperaOficial = 0;
@@ -38,19 +42,27 @@ public class RecrutaZero implements Runnable {
                 Cliente cliente = Barbearia.obterCliente();
 
                 if (cliente != null) {
-                    long tempoDeEspera = cliente.getEntradaFilaTimestamp() - Barbearia.getTempoMedioDeEsperaSaida();
-                    tempoMedioDeEsperaTotal +=  tempoDeEspera;
-                    System.out.println(Barbearia.getTempoMedioDeEsperaSaida());
-                    System.out.println(cliente.getEntradaFilaTimestamp());
-                    System.out.println("\nTempo médio de espera total: " + tempoMedioDeEsperaTotal);
-                    // print categoria
-                    System.out.println(cliente.getCategoria());
-                    if (cliente.getCategoria() == 1) {
-                        tempoMedioDeEsperaOficial += tempoDeEspera;
-                    } else if (cliente.getCategoria() == 2) {
-                        tempoMedioDeEsperaSargento += tempoDeEspera;
-                    } else if (cliente.getCategoria() == 3) {
-                        tempoMedioDeEsperaCabo += tempoDeEspera;
+                    if(cliente.getTempoServico() + tempoExtraAposDescanso > SargentoTainha.getTempoDeDescanso()){
+                        tempoExtraAposDescanso += cliente.getTempoServico() - SargentoTainha.getTempoDeDescanso();
+                    }else{
+                        tempoExtraAposDescanso = 0;
+                    }
+
+                    if( tempoExtraAposDescanso > 0){ 
+
+                        tempoMedioDeEsperaTotal +=  tempoExtraAposDescanso;
+                        System.out.println(Barbearia.getTempoMedioDeEsperaSaida());
+                        System.out.println(cliente.getEntradaFilaTimestamp());
+                        System.out.println("\nTempo médio de espera total: " + tempoMedioDeEsperaTotal);
+                        // print categoria
+                        System.out.println(cliente.getCategoria());
+                        if (cliente.getCategoria() == 1) {
+                            tempoMedioDeEsperaOficial += tempoExtraAposDescanso;
+                        } else if (cliente.getCategoria() == 2) {
+                            tempoMedioDeEsperaSargento += tempoExtraAposDescanso;
+                        } else if (cliente.getCategoria() == 3) {
+                            tempoMedioDeEsperaCabo += tempoExtraAposDescanso;
+                        }
                     }
 
                     Barbearia.setTempoMedioDeEsperaSaida(cliente.getTempoServico());

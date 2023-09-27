@@ -1,9 +1,8 @@
 import java.util.*;
-import java.util.concurrent.Semaphore;
 
 public class SargentoTainha implements Runnable {
     private List<List<Integer>> filaOutside = new ArrayList<>();
-    private int tempoDeDescanso = 0;
+    private static int tempoDeDescanso = 0;
     private int ocioso = 0;
     public static boolean started = false;
 
@@ -56,6 +55,9 @@ public class SargentoTainha implements Runnable {
         } 
     }
 
+    public static synchronized int getTempoDeDescanso(){
+        return tempoDeDescanso;
+    }
 
     public static synchronized boolean getStarted(){
         return started;

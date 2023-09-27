@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // get time off waiting from args
 
-        int timeOffWaiting = Integer.parseInt(args[0]);
+        int  timeOffWaiting = Integer.parseInt(args[0]);
 
         // get file from args
         String file = args[1];
