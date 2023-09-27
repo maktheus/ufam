@@ -1,20 +1,25 @@
 class Cliente {
     private int categoria;
     private int tempoServico;
+    private long entradaFilaTimestamp; // Timestamp when the client joined the queue
 
     public Cliente(int categoria, int tempoServico) {
         this.categoria = categoria;
         this.tempoServico = tempoServico;
+        this.entradaFilaTimestamp = Barbearia.getTempoMedioDeEsperaEntrada();
     }
 
-    // ... getters, setters e toString() 
 
-    public int getCategoria() {
+    public synchronized  int getCategoria() {
         return categoria;
     }
 
-    public int getTempoServico() {
+    public synchronized  int getTempoServico() {
         return tempoServico;
+    }
+
+    public synchronized long getEntradaFilaTimestamp() {
+        return entradaFilaTimestamp;
     }
 
     @Override

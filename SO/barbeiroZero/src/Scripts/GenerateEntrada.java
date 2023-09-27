@@ -11,7 +11,7 @@ public class GenerateEntrada {
         Random random = new Random();
 
         try (BufferedWriter arquivo = new BufferedWriter(new FileWriter("entrada1.txt"))) {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 10; i++) {
                 int categoria = random.nextInt(3)+1;
                 switch (categoria) {
                     // case 0:

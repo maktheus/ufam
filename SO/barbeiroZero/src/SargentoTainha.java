@@ -2,15 +2,15 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class SargentoTainha implements Runnable {
-    private Semaphore cortandoCabelo;
     private List<List<Integer>> filaOutside = new ArrayList<>();
     private int tempoDeDescanso = 0;
     private int ocioso = 0;
+    public static boolean started = false;
 
 
     
-    public SargentoTainha( Semaphore cortandoCabelo,List<List<Integer>> fila, int tempoDeDescanso) {
-        this.cortandoCabelo = cortandoCabelo;
+    public SargentoTainha( List<List<Integer>> fila, int tempoDeDescanso) {
+        
         this.filaOutside = fila;
         this.tempoDeDescanso = tempoDeDescanso;
     }
@@ -33,12 +33,16 @@ public class SargentoTainha implements Runnable {
                     Thread.sleep(tempoDeDescanso);
                     continue;
                 }
-
+                
                 Cliente cliente = new Cliente(oficial.get(0), oficial.get(1));
+                Barbearia.setTempoMedioDeEsperaEntrada(tempoDeDescanso);
+
                 if(Barbearia.getSizeOfAllFilas() < 20){
                     ocioso = 0;
                     Barbearia.addToFila(cliente);   
                     System.out.println("Sargento Tainha adicionou um cliente a fila" + cliente);
+                    started = true;
+
                 }else{
                     System.out.println("Sargento Tainha não pode adicionar um cliente a fila");
                 }
@@ -50,5 +54,10 @@ public class SargentoTainha implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } 
+    }
+
+
+    public static synchronized boolean getStarted(){
+        return started;
     }
 }

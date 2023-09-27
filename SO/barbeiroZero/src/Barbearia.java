@@ -1,5 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.*;
 
 public class Barbearia {
@@ -8,7 +6,7 @@ public class Barbearia {
     static ConcurrentLinkedQueue<Cliente> filaOficiais = new ConcurrentLinkedQueue<>();
     static ConcurrentLinkedQueue<Cliente> filaSargentos = new ConcurrentLinkedQueue<>();
     static ConcurrentLinkedQueue<Cliente> filaCabos = new ConcurrentLinkedQueue<>();
-   
+
 
     private static int quantidadeDeAtendimentosCabos = 0;
     private static int quantidadeDeAtendimentosOficiais = 0;
@@ -16,13 +14,26 @@ public class Barbearia {
     private static int quantidadeDeAtendimentosTotal = 0;
     private static int quantidadeDeAtendimentosPausa = 0;
     
-
-
-    static Map<Integer, Integer> atendimentosPorCategoria = new HashMap<>();
-    static Map<Integer, Integer> tempoAtendimentoPorCategoria = new HashMap<>();
-    static Map<Integer, Integer> tempoEsperaPorCategoria = new HashMap<>();
-
+    private static int tempoMedioDeEsperaEntrada = 0;
+    private static int tempoMedioDeEsperaSaida = 0;
     
+    public static synchronized int getTempoMedioDeEsperaEntrada() {
+        return tempoMedioDeEsperaEntrada;
+    }
+
+
+    public static synchronized void setTempoMedioDeEsperaEntrada(int tempoMedioDeEsperaEntrada) {
+        Barbearia.tempoMedioDeEsperaEntrada += tempoMedioDeEsperaEntrada;
+    }
+
+    public static synchronized int getTempoMedioDeEsperaSaida() {
+        return tempoMedioDeEsperaSaida;
+    }
+
+    public static synchronized void setTempoMedioDeEsperaSaida(int tempoMedioDeEsperaSaida) {
+        Barbearia.tempoMedioDeEsperaSaida += tempoMedioDeEsperaSaida;
+    }
+
 
     public static void printFila() {
         System.out.println("Fila Oficiais: " + filaOficiais);
@@ -57,19 +68,23 @@ public class Barbearia {
                 quantidadeDeAtendimentosPausa++;
                 break;
             case 1: // Oficiais
-                if (getSizeOfAllFilas() < 20)
+                if (getSizeOfAllFilas() < 20){
+
                     quantidadeDeAtendimentosOficiais++;
                     filaOficiais.offer(cliente);
+                }
                 break;
             case 2: // Sargentos
-                if (getSizeOfAllFilas() < 20)
+                if (getSizeOfAllFilas() < 20){
                     quantidadeDeAtendimentosSargentos++;
                     filaSargentos.offer(cliente);
+                }
                 break;
             case 3: // Cabos
-                if (getSizeOfAllFilas() < 20)
+                if (getSizeOfAllFilas() < 20){
                     quantidadeDeAtendimentosCabos++;
                     filaCabos.offer(cliente);
+                }
                 break;
         }
     }

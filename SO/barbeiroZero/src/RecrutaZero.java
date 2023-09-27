@@ -10,7 +10,15 @@ public class RecrutaZero implements Runnable {
     private static int quantidadeDeAtendimentosSargentos = 0;
     private static int quantidadeDeAtendimentosTotal = 0;
 
+    private static int tempoMedioDeCorteCabos = 0;
+    private static int tempoMedioDeCorteOficiais = 0;
+    private static int tempoMedioDeCorteSargentos = 0;
+    private static int tempoMedioDeCorteTotal = 0;
 
+    private static int tempoMedioDeEsperaTotal = 0;
+    private static int tempoMedioDeEsperaOficial = 0;
+    private static int tempoMedioDeEsperaSargento = 0;
+    private static int tempoMedioDeEsperaCabo = 0;
 
     public RecrutaZero(Semaphore cortandoCabelo) {
         this.cortandoCabelo = cortandoCabelo;
@@ -28,18 +36,40 @@ public class RecrutaZero implements Runnable {
                 }
 
                 Cliente cliente = Barbearia.obterCliente();
-                
+
                 if (cliente != null) {
-                    quantidadeDeAtendimentosTotal++;
-                    if(cliente.getCategoria() == 1){
-                        quantidadeDeAtendimentosOficiais++;
-                    }else if(cliente.getCategoria() == 2){
-                        quantidadeDeAtendimentosSargentos++;
-                    }else if(cliente.getCategoria() == 3){
-                        quantidadeDeAtendimentosCabos++;
+                    long tempoDeEspera = cliente.getEntradaFilaTimestamp() - Barbearia.getTempoMedioDeEsperaSaida();
+                    tempoMedioDeEsperaTotal +=  tempoDeEspera;
+                    System.out.println(Barbearia.getTempoMedioDeEsperaSaida());
+                    System.out.println(cliente.getEntradaFilaTimestamp());
+                    System.out.println("\nTempo médio de espera total: " + tempoMedioDeEsperaTotal);
+                    // print categoria
+                    System.out.println(cliente.getCategoria());
+                    if (cliente.getCategoria() == 1) {
+                        tempoMedioDeEsperaOficial += tempoDeEspera;
+                    } else if (cliente.getCategoria() == 2) {
+                        tempoMedioDeEsperaSargento += tempoDeEspera;
+                    } else if (cliente.getCategoria() == 3) {
+                        tempoMedioDeEsperaCabo += tempoDeEspera;
                     }
-                    
+
+                    Barbearia.setTempoMedioDeEsperaSaida(cliente.getTempoServico());
+
+                    quantidadeDeAtendimentosTotal++;
+                    tempoMedioDeCorteTotal += cliente.getTempoServico();
+                    if (cliente.getCategoria() == 1) {
+                        quantidadeDeAtendimentosOficiais++;
+                        tempoMedioDeCorteOficiais += cliente.getTempoServico();
+                    } else if (cliente.getCategoria() == 2) {
+                        quantidadeDeAtendimentosSargentos++;
+                        tempoMedioDeCorteSargentos += cliente.getTempoServico();
+                    } else if (cliente.getCategoria() == 3) {
+                        quantidadeDeAtendimentosCabos++;
+                        tempoMedioDeCorteCabos += cliente.getTempoServico();
+                    }
+
                     Thread.sleep(cliente.getTempoServico());
+
                     Barbearia.removeFromFila(cliente.getCategoria());
                     System.out.println("Recruta Zero está cortando o cabelo de um " + cliente);
                     System.out.println("Recruta Zero terminou de cortar o cabelo de um " + cliente);
@@ -49,6 +79,22 @@ public class RecrutaZero implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static synchronized int getTempoMedioDeEsperaTotal() {
+        return tempoMedioDeEsperaTotal;
+    }
+
+    public static synchronized int getTempoMedioDeEsperaOficial() {
+        return tempoMedioDeEsperaOficial;
+    }
+
+    public static synchronized int getTempoMedioDeEsperaSargento() {
+        return tempoMedioDeEsperaSargento;
+    }
+
+    public static synchronized int getTempoMedioDeEsperaCabo() {
+        return tempoMedioDeEsperaCabo;
     }
 
     public static synchronized int getQuantidadeDeAtendimentosOficiais() {
@@ -65,6 +111,22 @@ public class RecrutaZero implements Runnable {
 
     public static synchronized int getQuantidadeDeAtendimentosTotal() {
         return quantidadeDeAtendimentosTotal;
+    }
+
+    public static synchronized int getTempoMedioDeCorteCabos() {
+        return tempoMedioDeCorteCabos;
+    }
+
+    public static synchronized int getTempoMedioDeCorteOficiais() {
+        return tempoMedioDeCorteOficiais;
+    }
+
+    public static synchronized int getTempoMedioDeCorteSargentos() {
+        return tempoMedioDeCorteSargentos;
+    }
+
+    public static synchronized int getTempoMedioDeCorteTotal() {
+        return tempoMedioDeCorteTotal;
     }
 
     public static synchronized boolean getCorteFinalizados() {
