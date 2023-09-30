@@ -42,14 +42,7 @@ public class RecrutaZero implements Runnable {
                 Cliente cliente = Barbearia.obterCliente();
 
                 if (cliente != null) {
-                    if(cliente.getTempoServico() + tempoExtraAposDescanso > SargentoTainha.getTempoDeDescanso()){
-                        tempoExtraAposDescanso += cliente.getTempoServico() - SargentoTainha.getTempoDeDescanso();
-                    }else{
-                        tempoExtraAposDescanso = 0;
-                    }
-
                     if( tempoExtraAposDescanso > 0){ 
-
                         tempoMedioDeEsperaTotal +=  tempoExtraAposDescanso;
                         System.out.println(Barbearia.getTempoMedioDeEsperaSaida());
                         System.out.println(cliente.getEntradaFilaTimestamp());
@@ -64,6 +57,15 @@ public class RecrutaZero implements Runnable {
                             tempoMedioDeEsperaCabo += tempoExtraAposDescanso;
                         }
                     }
+                    
+
+                    if(cliente.getTempoServico() + tempoExtraAposDescanso > SargentoTainha.getTempoDeDescanso()){
+                        tempoExtraAposDescanso += cliente.getTempoServico() - SargentoTainha.getTempoDeDescanso();
+                    }else{
+                        tempoExtraAposDescanso = 0;
+                    }
+
+                    
 
                     Barbearia.setTempoMedioDeEsperaSaida(cliente.getTempoServico());
 

@@ -59,6 +59,8 @@ public class TenenteEscovinha implements Runnable {
                 // ● [X]Número total de clientes por categoria (oficiais, sargentos, cabos e
                 // pausa)
 
+                String Barrinha = "------------------------------------------------------------------------------------------------------------------------\n";
+
                 String ocupacaoCadeiras = "Estado de ocupação da(s) cadeira(s) (% por categoria e livre)\n"
                                 + "Oficiais: "
                                 + (double) this.porcetagemMediaDeOcupacaoDasCadeirasOficiais
@@ -93,7 +95,7 @@ public class TenenteEscovinha implements Runnable {
                                                 / (double) Barbearia.getQuantidadeDeAtendimentosTotal()
                                 + "\n";
                 String tempoMedioDeEsperaPorCategoria = "Tempo médio de espera por categoria\n"
-                                + "Oficiais: "
+                                + "\nOficiais: "
                                 + (double) RecrutaZero.getTempoMedioDeEsperaOficial() / (double) Barbearia.getQuantidadeDeAtendimentosOficiais()
                                 + "\nSargentos: "
                                 + (double) RecrutaZero.getTempoMedioDeEsperaSargento() / (double) Barbearia.getQuantidadeDeAtendimentosSargentos() 
@@ -114,8 +116,8 @@ public class TenenteEscovinha implements Runnable {
                                 + Barbearia.getQuantidadeDeAtendimentosPausa() + "\n";
 
                 // ocupacao cadeiras
-                return ocupacaoCadeiras + comprimentoMedioDasFilas + tempoMedioDeAtendimentoPorCategoria
+                return  Barrinha + ocupacaoCadeiras + comprimentoMedioDasFilas + tempoMedioDeAtendimentoPorCategoria
                                 + tempoMedioDeEsperaPorCategoria + numeroDeAtendimentosPorCategoria
-                                + numeroTotalDeClientesPorCategoria;
+                                + numeroTotalDeClientesPorCategoria + Barrinha;
         }
 }

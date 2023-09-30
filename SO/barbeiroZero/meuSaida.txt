@@ -1,0 +1,70 @@
+Sargento Tainha adicionou um cliente a filaCliente{categoria=1, tempoServico=6}
+Recruta Zero está cortando o cabelo de um Cliente{categoria=1, tempoServico=6}
+Tenente Escovinha está verificando a fila
+Recruta Zero terminou de cortar o cabelo de um Cliente{categoria=1, tempoServico=6}
+Tenente Escovinha está verificando a fila
+6
+Sargento Tainha adicionou um cliente a filaCliente{categoria=1, tempoServico=6}
+5
+Tenente Escovinha está verificando a fila
+
+Tempo médio de espera total: 1
+1
+Tenente Escovinha está verificando a fila
+Sargento Tainha adicionou um cliente a filaCliente{categoria=1, tempoServico=6}
+Tenente Escovinha está verificando a fila
+Recruta Zero está cortando o cabelo de um Cliente{categoria=1, tempoServico=6}
+Recruta Zero terminou de cortar o cabelo de um Cliente{categoria=1, tempoServico=6}
+12
+10
+
+Tempo médio de espera total: 3
+1
+Sargento Tainha adicionou um cliente a filaCliente{categoria=1, tempoServico=6}
+Tenente Escovinha está verificando a fila
+Tenente Escovinha está verificando a fila
+Não há mais clientes para serem atendidos pelo Sargento Tainha todos foram adicionados a fila
+Recruta Zero está cortando o cabelo de um Cliente{categoria=1, tempoServico=6}
+Recruta Zero terminou de cortar o cabelo de um Cliente{categoria=1, tempoServico=6}
+18
+15
+
+Tempo médio de espera total: 6
+1
+Tenente Escovinha está verificando a fila
+Tenente Escovinha está verificando a fila
+Recruta Zero está cortando o cabelo de um Cliente{categoria=1, tempoServico=6}
+Recruta Zero terminou de cortar o cabelo de um Cliente{categoria=1, tempoServico=6}
+Não há mais clientes para serem atendidos pelo Recruta Zero
+Não há mais clientes para serem atendidos pelo Tenente Escovinha
+------------------------------------------------------------------------------------------------------------------------
+Estado de ocupação da(s) cadeira(s) (% por categoria e livre)
+Oficiais: 5.555555555555555% 
+Sargentos: 0.0% 
+Cabos: 0.0% 
+Total: 5.555555555555555% 
+Comprimento médio das filas: 1.1111111111111112
+Tempo médio de atendimento por categoria
+Oficiais: 6.0
+Sargentos: NaN
+Cabos: NaN
+Total: 6.0
+Tempo médio de espera por categoria
+Oficiais: 6.0
+Oficiais: 4.0
+Oficiais: 1.5
+Sargentos: NaN
+Cabos: NaN
+Total: 1.5
+Número de atendimentos por categoria
+Oficiais: 4
+Sargentos: 0
+Cabos: 0
+Total: 4
+Número total de clientes por categoria (oficiais, sargentos, cabos e pausa)
+Oficiais: 4
+Sargentos: 0
+Cabos: 0
+Pausa: 0
+------------------------------------------------------------------------------------------------------------------------
+
