@@ -48,6 +48,7 @@ public class RecrutaZero implements Runnable {
                         System.out.println(cliente.getEntradaFilaTimestamp());
                         System.out.println("\nTempo médio de espera total: " + tempoMedioDeEsperaTotal);
                         // print categoria
+                        
                         System.out.println(cliente.getCategoria());
                         if (cliente.getCategoria() == 1) {
                             tempoMedioDeEsperaOficial += tempoExtraAposDescanso;

@@ -3,10 +3,7 @@ public class TenenteEscovinha implements Runnable {
         private final int timeOfSleep = 3;
         private int quantidadeDeVerificacoes = 0;
 
-       
-
         private int comprimentoMedioDasFilas = 0;
-
 
         private int porcetagemMediaDeOcupacaoDasCadeirasTotal = 0;
         private int porcetagemMediaDeOcupacaoDasCadeirasOficiais = 0;
@@ -20,19 +17,19 @@ public class TenenteEscovinha implements Runnable {
                                 try {
                                         System.out.println("Tenente Escovinha está verificando a fila");
                                         this.comprimentoMedioDasFilas += Barbearia.getSizeOfAllFilas();
-                                        
+
                                         this.quantidadeDeVerificacoes++;
 
                                         this.porcetagemMediaDeOcupacaoDasCadeirasTotal += (Barbearia.getSizeOfAllFilas()
                                                         * 100) / 20;
                                         this.porcetagemMediaDeOcupacaoDasCadeirasOficiais += (Barbearia
                                                         .getSizeOfOficiasFila() * 100) / 20;
+                                                        
+                                                        System.out.println("Barbearia.getSizeOfSargentosFila(): " + Barbearia.getSizeOfSargentosFila());
                                         this.porcetagemMediaDeOcupacaoDasCadeirasSargentos += (Barbearia
                                                         .getSizeOfSargentosFila() * 100) / 20;
                                         this.porcetagemMediaDeOcupacaoDasCadeirasCabos += (Barbearia
                                                         .getSizeOfCabosFila() * 100) / 20;
-
-                                  
 
                                         Thread.sleep(timeOfSleep);
                                 } catch (InterruptedException e) {
@@ -96,13 +93,17 @@ public class TenenteEscovinha implements Runnable {
                                 + "\n";
                 String tempoMedioDeEsperaPorCategoria = "Tempo médio de espera por categoria\n"
                                 + "\nOficiais: "
-                                + (double) RecrutaZero.getTempoMedioDeEsperaOficial() / (double) Barbearia.getQuantidadeDeAtendimentosOficiais()
+                                + (double) RecrutaZero.getTempoMedioDeEsperaOficial()
+                                                / (double) Barbearia.getQuantidadeDeAtendimentosOficiais()
                                 + "\nSargentos: "
-                                + (double) RecrutaZero.getTempoMedioDeEsperaSargento() / (double) Barbearia.getQuantidadeDeAtendimentosSargentos() 
+                                + (double) RecrutaZero.getTempoMedioDeEsperaSargento()
+                                                / (double) Barbearia.getQuantidadeDeAtendimentosSargentos()
                                 + "\nCabos: "
-                                + (double)  RecrutaZero.getTempoMedioDeEsperaCabo() / (double) Barbearia.getQuantidadeDeAtendimentosCabos()
+                                + (double) RecrutaZero.getTempoMedioDeEsperaCabo()
+                                                / (double) Barbearia.getQuantidadeDeAtendimentosCabos()
                                 + "\nTotal: "
-                                + (double)  RecrutaZero.getTempoMedioDeEsperaTotal() / (double) Barbearia.getQuantidadeDeAtendimentosTotal()
+                                + (double) RecrutaZero.getTempoMedioDeEsperaTotal()
+                                                / (double) Barbearia.getQuantidadeDeAtendimentosTotal()
                                 + "\n";
                 String numeroDeAtendimentosPorCategoria = "Número de atendimentos por categoria\n" + "Oficiais: "
                                 + RecrutaZero.getQuantidadeDeAtendimentosOficiais() + "\nSargentos: "
@@ -116,7 +117,7 @@ public class TenenteEscovinha implements Runnable {
                                 + Barbearia.getQuantidadeDeAtendimentosPausa() + "\n";
 
                 // ocupacao cadeiras
-                return  Barrinha + ocupacaoCadeiras + comprimentoMedioDasFilas + tempoMedioDeAtendimentoPorCategoria
+                return Barrinha + ocupacaoCadeiras + comprimentoMedioDasFilas + tempoMedioDeAtendimentoPorCategoria
                                 + tempoMedioDeEsperaPorCategoria + numeroDeAtendimentosPorCategoria
                                 + numeroTotalDeClientesPorCategoria + Barrinha;
         }
