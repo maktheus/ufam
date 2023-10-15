@@ -1,36 +1,40 @@
-package urnaeletronica.FrontEnd.Frames.EleitorShowFrames;
+package urnaeletronica.FrontEnd.Frames.CandidateShowFrames;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import java.awt.*;
-import javax.swing.*;
 
 import com.formdev.flatlaf.FlatLightLaf;
 
+import urnaeletronica.BackEnd.Models.Candidate;
 import urnaeletronica.BackEnd.Models.Voter;
-import urnaeletronica.FrontEnd.Frames.Frame;
 
-
-public class EleitorShowFrame extends Frame {
-
+public class CandidateShowFrame {
+    
     private static JFrame frame;
     private JLabel label1 = new JLabel("Nome");
     private JLabel label2 = new JLabel("CPF");
-    private JLabel label3 = new JLabel("Titulo de Eleitor");
-
+    private JLabel label3 = new JLabel("Titulo de candidato");
+    private JLabel label4 = new JLabel("Numero do candidato");
     
     private JButton close = new JButton("Fechar");
     
 
     
-    public EleitorShowFrame(Voter eleitor) {
-       
-       FlatLightLaf.setup();
+    public CandidateShowFrame(Candidate candidato, Voter eleitor) {
+    
+        FlatLightLaf.setup();
+        
         label1.setText(eleitor.getName());
         label2.setText(eleitor.getCpf());
-        label3.setText(eleitor.getEtitulo());
+        label3.setText(candidato.getEtitulo());
+        label4.setText(candidato.getCandidateNumber());
 
 
         // Landing Page screen
-        JFrame frame = new JFrame("Dados Eleitor");
+        JFrame frame = new JFrame("Dados Candidato");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1200, 946);
         frame.getContentPane().setBackground(new java.awt.Color(248, 255, 229));
@@ -58,6 +62,9 @@ public class EleitorShowFrame extends Frame {
         constraints.gridy = 3;
         frame.add(close, constraints);
 
+        constraints.gridy = 4;
+        frame.add(label4, constraints);
+
         close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 frame.dispose();
@@ -65,20 +72,8 @@ public class EleitorShowFrame extends Frame {
         });
     }
 
-    public void setNome(String nome){
-        label1.setText(nome);
-    }
-
-    public void setCPF(String cpf){
-        label2.setText(cpf);
-    }
-
-    public void setTitulo(String titulo){
-        label3.setText(titulo);
-    }
-
-
     public JFrame getFrame(){
         return frame;
     }
+
 }

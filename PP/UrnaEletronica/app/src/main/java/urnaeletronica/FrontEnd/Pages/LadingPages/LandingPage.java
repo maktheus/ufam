@@ -4,6 +4,7 @@ import urnaeletronica.BackEnd.Controllers.CandidateController;
 import urnaeletronica.BackEnd.Controllers.VoteController;
 import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.FrontEnd.Components.*;
+import urnaeletronica.FrontEnd.Frames.LoginFrames.EndLoginFrame;
 import urnaeletronica.FrontEnd.Frames.ResultsFrames.ResultsFrame;
 import urnaeletronica.FrontEnd.Pages.Eleitor.EleitorPage;
 import urnaeletronica.FrontEnd.Pages.Voting.EtituloConfirmVotePage;
@@ -43,7 +44,7 @@ public class LandingPage extends Page{
         panel.add(button1.getButton(), constraints);
 
         // button on click listener
-        setChangePanel(button1.getButton(), panel, new EtituloConfirmVotePage(frame).getPanel());
+        setChangePanel(button1.getButton(), panel, new EleitorPage(frame).getPanel());
         constraints.gridy = 1;
         panel.add(button2.getButton(), constraints);
 
@@ -51,13 +52,12 @@ public class LandingPage extends Page{
         constraints.gridy = 2;
         panel.add(button3.getButton(), constraints);
 
-        setChangePanel(button3.getButton(), panel, new EleitorPage(frame).getPanel());
+        setChangePanel(button3.getButton(), panel, new EtituloConfirmVotePage(frame).getPanel());
 
         constraints.gridy = 3;
         panel.add(button4.getButton(), constraints);
         
-        setChangePanel(button4.getButton(), frame, new ResultsFrame().getFrame());
-
+        setChangePanel(button4.getButton(), frame, new EndLoginFrame().getFrame());
 
         verifyIfThereIsAnyEleitor();
         verifyIfThereIsAnyCandidato();

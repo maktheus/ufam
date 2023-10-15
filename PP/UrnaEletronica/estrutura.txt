@@ -1,0 +1,289 @@
+.
+├── Dockerfile
+├── Dockerfile-migration
+├── README.MD
+├── app
+│   ├── bin
+│   │   └── main
+│   │       └── urnaeletronica
+│   │           ├── App.class
+│   │           ├── BackEnd
+│   │           │   ├── Controllers
+│   │           │   │   ├── CandidateController.class
+│   │           │   │   ├── DataBaseController.class
+│   │           │   │   ├── LoginController.class
+│   │           │   │   ├── VoteController.class
+│   │           │   │   └── VoterController.class
+│   │           │   ├── Migration
+│   │           │   │   ├── V1__create_voter_table.sql
+│   │           │   │   ├── V2__create_candidate_table.sql
+│   │           │   │   └── V3__Create_VotoCandidato_Table.sql
+│   │           │   ├── Models
+│   │           │   │   ├── Candidate.class
+│   │           │   │   ├── Voter.class
+│   │           │   │   └── Voto.class
+│   │           │   └── Service
+│   │           └── FrontEnd
+│   │               ├── Components
+│   │               │   ├── BarrinhasComponent.class
+│   │               │   ├── ButtonComponent.class
+│   │               │   ├── FooterComponent.class
+│   │               │   ├── FormInputComponent.class
+│   │               │   ├── HeaderComponent$1.class
+│   │               │   ├── HeaderComponent$2.class
+│   │               │   ├── HeaderComponent.class
+│   │               │   └── VotingButtonsComponent.class
+│   │               ├── Frames
+│   │               │   ├── CandidateShowFrames
+│   │               │   │   ├── CandidateShowFrame$1.class
+│   │               │   │   └── CandidateShowFrame.class
+│   │               │   ├── EleitorShowFrames
+│   │               │   │   ├── EleitorShowFrame$1.class
+│   │               │   │   └── EleitorShowFrame.class
+│   │               │   ├── Frame.class
+│   │               │   ├── LoginFrames
+│   │               │   │   ├── EndLoginFrame.class
+│   │               │   │   └── LoginFrame.class
+│   │               │   ├── MainFrames
+│   │               │   │   └── MainFrame.class
+│   │               │   └── ResultsFrames
+│   │               │       └── ResultsFrame.class
+│   │               ├── Imgs
+│   │               │   ├── UrnaIcon.png
+│   │               │   ├── noun-voting-5052035.png
+│   │               │   ├── noun-voting-5052035.svg
+│   │               │   └── urna.png
+│   │               └── Pages
+│   │                   ├── Candidate
+│   │                   │   ├── CandidateAddPage.class
+│   │                   │   ├── CandidateDeletePage$1.class
+│   │                   │   ├── CandidateDeletePage.class
+│   │                   │   ├── CandidateListPage$1.class
+│   │                   │   ├── CandidateListPage.class
+│   │                   │   ├── CandidatePage.class
+│   │                   │   ├── CandidateUpdatePage$1.class
+│   │                   │   └── CandidateUpdatePage.class
+│   │                   ├── Eleitor
+│   │                   │   ├── EleitorAddPage$1.class
+│   │                   │   ├── EleitorAddPage.class
+│   │                   │   ├── EleitorDeletePage$1.class
+│   │                   │   ├── EleitorDeletePage.class
+│   │                   │   ├── EleitorListPage$1.class
+│   │                   │   ├── EleitorListPage.class
+│   │                   │   ├── EleitorPage.class
+│   │                   │   ├── EleitorUpdatePage$1.class
+│   │                   │   └── EleitorUpdatePage.class
+│   │                   ├── LadingPages
+│   │                   │   └── LandingPage.class
+│   │                   ├── LoginPages
+│   │                   │   └── LoginPage.class
+│   │                   ├── Page$1.class
+│   │                   ├── Page$2.class
+│   │                   ├── Page.class
+│   │                   └── Voting
+│   │                       ├── EtituloConfirmVotePage.class
+│   │                       ├── VontingPage$1.class
+│   │                       ├── VontingPage$10.class
+│   │                       ├── VontingPage$11.class
+│   │                       ├── VontingPage$12.class
+│   │                       ├── VontingPage$13.class
+│   │                       ├── VontingPage$2.class
+│   │                       ├── VontingPage$3.class
+│   │                       ├── VontingPage$4.class
+│   │                       ├── VontingPage$5.class
+│   │                       ├── VontingPage$6.class
+│   │                       ├── VontingPage$7.class
+│   │                       ├── VontingPage$8.class
+│   │                       ├── VontingPage$9.class
+│   │                       └── VontingPage.class
+│   ├── build
+│   │   ├── classes
+│   │   │   └── java
+│   │   │       └── main
+│   │   │           └── urnaeletronica
+│   │   │               ├── App.class
+│   │   │               ├── BackEnd
+│   │   │               │   ├── Controllers
+│   │   │               │   │   ├── CandidateController.class
+│   │   │               │   │   ├── DataBaseController.class
+│   │   │               │   │   ├── LoginController.class
+│   │   │               │   │   ├── VoteController.class
+│   │   │               │   │   └── VoterController.class
+│   │   │               │   └── Models
+│   │   │               │       ├── Candidate.class
+│   │   │               │       ├── Voter.class
+│   │   │               │       └── Voto.class
+│   │   │               └── FrontEnd
+│   │   │                   ├── Components
+│   │   │                   │   ├── BarrinhasComponent.class
+│   │   │                   │   ├── ButtonComponent.class
+│   │   │                   │   ├── FooterComponent.class
+│   │   │                   │   ├── FormInputComponent.class
+│   │   │                   │   ├── HeaderComponent$1.class
+│   │   │                   │   ├── HeaderComponent$2.class
+│   │   │                   │   ├── HeaderComponent.class
+│   │   │                   │   └── VotingButtonsComponent.class
+│   │   │                   ├── Frames
+│   │   │                   │   ├── EleitorShowFrames
+│   │   │                   │   │   ├── EleitorShowFrame$1.class
+│   │   │                   │   │   └── EleitorShowFrame.class
+│   │   │                   │   ├── Frame.class
+│   │   │                   │   ├── LoginFrames
+│   │   │                   │   │   ├── EndLoginFrame.class
+│   │   │                   │   │   └── LoginFrame.class
+│   │   │                   │   ├── MainFrames
+│   │   │                   │   │   └── MainFrame.class
+│   │   │                   │   └── ResultsFrames
+│   │   │                   │       └── ResultsFrame.class
+│   │   │                   └── Pages
+│   │   │                       ├── Candidate
+│   │   │                       │   ├── CandidateAddPage.class
+│   │   │                       │   ├── CandidateDeletePage$1.class
+│   │   │                       │   ├── CandidateDeletePage.class
+│   │   │                       │   ├── CandidateListPage$1.class
+│   │   │                       │   ├── CandidateListPage.class
+│   │   │                       │   ├── CandidatePage.class
+│   │   │                       │   ├── CandidateUpdatePage$1.class
+│   │   │                       │   └── CandidateUpdatePage.class
+│   │   │                       ├── Eleitor
+│   │   │                       │   ├── EleitorAddPage$1.class
+│   │   │                       │   ├── EleitorAddPage.class
+│   │   │                       │   ├── EleitorDeletePage$1.class
+│   │   │                       │   ├── EleitorDeletePage.class
+│   │   │                       │   ├── EleitorListPage$1.class
+│   │   │                       │   ├── EleitorListPage.class
+│   │   │                       │   ├── EleitorPage.class
+│   │   │                       │   ├── EleitorUpdatePage$1.class
+│   │   │                       │   └── EleitorUpdatePage.class
+│   │   │                       ├── LadingPages
+│   │   │                       │   └── LandingPage.class
+│   │   │                       ├── LoginPages
+│   │   │                       │   └── LoginPage.class
+│   │   │                       ├── Page$1.class
+│   │   │                       ├── Page$2.class
+│   │   │                       ├── Page.class
+│   │   │                       └── Voting
+│   │   │                           ├── EtituloConfirmVotePage.class
+│   │   │                           ├── VontingPage$1.class
+│   │   │                           ├── VontingPage$10.class
+│   │   │                           ├── VontingPage$11.class
+│   │   │                           ├── VontingPage$12.class
+│   │   │                           ├── VontingPage$13.class
+│   │   │                           ├── VontingPage$2.class
+│   │   │                           ├── VontingPage$3.class
+│   │   │                           ├── VontingPage$4.class
+│   │   │                           ├── VontingPage$5.class
+│   │   │                           ├── VontingPage$6.class
+│   │   │                           ├── VontingPage$7.class
+│   │   │                           ├── VontingPage$8.class
+│   │   │                           ├── VontingPage$9.class
+│   │   │                           └── VontingPage.class
+│   │   ├── distributions
+│   │   │   ├── app.tar
+│   │   │   └── app.zip
+│   │   ├── generated
+│   │   │   └── sources
+│   │   │       ├── annotationProcessor
+│   │   │       │   └── java
+│   │   │       │       └── main
+│   │   │       └── headers
+│   │   │           └── java
+│   │   │               └── main
+│   │   ├── libs
+│   │   │   └── app.jar
+│   │   ├── scripts
+│   │   │   ├── app
+│   │   │   └── app.bat
+│   │   └── tmp
+│   │       ├── compileJava
+│   │       │   ├── compileTransaction
+│   │       │   │   ├── backup-dir
+│   │       │   │   └── stash-dir
+│   │       │   └── previous-compilation-data.bin
+│   │       └── jar
+│   │           └── MANIFEST.MF
+│   ├── build.gradle.kts
+│   └── src
+│       └── main
+│           └── java
+│               └── urnaeletronica
+│                   ├── App.java
+│                   ├── BackEnd
+│                   │   ├── Controllers
+│                   │   │   ├── CandidateController.java
+│                   │   │   ├── DataBaseController.java
+│                   │   │   ├── LoginController.java
+│                   │   │   ├── VoteController.java
+│                   │   │   └── VoterController.java
+│                   │   ├── Migration
+│                   │   │   ├── V1__create_voter_table.sql
+│                   │   │   ├── V2__create_candidate_table.sql
+│                   │   │   └── V3__Create_VotoCandidato_Table.sql
+│                   │   ├── Models
+│                   │   │   ├── Candidate.java
+│                   │   │   ├── Voter.java
+│                   │   │   └── Voto.java
+│                   │   └── Service
+│                   └── FrontEnd
+│                       ├── Components
+│                       │   ├── BarrinhasComponent.java
+│                       │   ├── ButtonComponent.java
+│                       │   ├── FooterComponent.java
+│                       │   ├── FormInputComponent.java
+│                       │   ├── HeaderComponent.java
+│                       │   └── VotingButtonsComponent.java
+│                       ├── Frames
+│                       │   ├── CandidateShowFrames
+│                       │   │   └── CandidateShowFrame.java
+│                       │   ├── EleitorShowFrames
+│                       │   │   └── EleitorShowFrame.java
+│                       │   ├── Frame.java
+│                       │   ├── LoginFrames
+│                       │   │   ├── EndLoginFrame.java
+│                       │   │   └── LoginFrame.java
+│                       │   ├── MainFrames
+│                       │   │   └── MainFrame.java
+│                       │   └── ResultsFrames
+│                       │       └── ResultsFrame.java
+│                       ├── Imgs
+│                       │   ├── UrnaIcon.png
+│                       │   ├── noun-voting-5052035.png
+│                       │   ├── noun-voting-5052035.svg
+│                       │   └── urna.png
+│                       └── Pages
+│                           ├── Candidate
+│                           │   ├── CandidateAddPage.java
+│                           │   ├── CandidateDeletePage.java
+│                           │   ├── CandidateListPage.java
+│                           │   ├── CandidatePage.java
+│                           │   └── CandidateUpdatePage.java
+│                           ├── Eleitor
+│                           │   ├── EleitorAddPage.java
+│                           │   ├── EleitorDeletePage.java
+│                           │   ├── EleitorListPage.java
+│                           │   ├── EleitorPage.java
+│                           │   └── EleitorUpdatePage.java
+│                           ├── LadingPages
+│                           │   └── LandingPage.java
+│                           ├── LoginPages
+│                           │   └── LoginPage.java
+│                           ├── Page.java
+│                           └── Voting
+│                               ├── EtituloConfirmVotePage.java
+│                               └── VontingPage.java
+├── docker-compose.yml
+├── estrutura.txt
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── local.session.sql
+├── scripts
+│   ├── entrypoint.sh
+│   └── migrate.sh
+└── settings.gradle.kts
+
+89 directories, 197 files

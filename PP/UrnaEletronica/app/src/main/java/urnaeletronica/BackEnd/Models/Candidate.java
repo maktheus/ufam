@@ -1,7 +1,7 @@
 package urnaeletronica.BackEnd.Models;
 
 public class Candidate  {
-    
+
     private String candidateNumber;
     private String etitulo;
 
@@ -15,7 +15,7 @@ public class Candidate  {
         return this.etitulo;
     }
 
-    public String getIdForCandidate() {
+    public String getCandidateNumber() {
         return this.candidateNumber;
     }
    
