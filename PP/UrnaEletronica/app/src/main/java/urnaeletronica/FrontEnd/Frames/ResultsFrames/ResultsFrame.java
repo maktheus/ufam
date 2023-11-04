@@ -25,9 +25,8 @@ public class ResultsFrame extends Frame {
         frame.setLayout(new java.awt.GridBagLayout());
         
 
-        
         panel = new JPanel();
-        panel.setBackground(new java.awt.Color(0, 0, 0));
+        
 
         JLabel label = new JLabel("Resultado da Eleição");
 
@@ -79,7 +78,9 @@ public class ResultsFrame extends Frame {
         constraints.gridy = i + 3;
         panel.add(new JLabel("Total de votos válidos: " + VoteController.getValidVotes()), constraints);
 
-        frame.add(panel);
+        constraints.gridheight =1;
+        constraints.gridwidth =1;
+        frame.add(panel,constraints);
     }
 
     public String getResults() {

@@ -21,6 +21,10 @@ public class CandidatePage extends Page {
         panel.setBackground(new java.awt.Color(0, 0, 0));
 
         ButtonComponent button = new ButtonComponent("Adicionar Candidato", "primary");
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.insets = new Insets(10, 10, 10, 10);
 
         constraints.gridx = 0;
         constraints.gridy = 0;

@@ -3,10 +3,16 @@ import  java.awt.*;
 import javax.swing.*;
 
 import urnaeletronica.BackEnd.Controllers.CandidateController;
+import urnaeletronica.BackEnd.Controllers.VoteController;
+import urnaeletronica.BackEnd.Controllers.VoterController;
 import urnaeletronica.BackEnd.Models.Candidate;
+import urnaeletronica.BackEnd.Models.Voter;
 import urnaeletronica.FrontEnd.Components.ButtonComponent;
 import urnaeletronica.FrontEnd.Components.FormInputComponent;
+import urnaeletronica.FrontEnd.Frames.CandidateShowFrames.CandidateShowFrame;
 import urnaeletronica.FrontEnd.Pages.Page;
+
+
 
 
 public class CandidateListPage extends Page {
@@ -50,12 +56,19 @@ public class CandidateListPage extends Page {
                 }
             });
         }
+
+        private Voter getVoter(String etitulo){
+            return VoterController.getVoter(etitulo);
+        }
         private void getCandidate(String etitulo){
             try {
                 Candidate candidate = CandidateController.getCandidate(etitulo);
                 if(candidate != null){
                     JOptionPane.showMessageDialog(null, "Candidato encontrado com sucesso!");
-
+                    CandidateShowFrame candidateShowComponent = new CandidateShowFrame(candidate, getVoter(etitulo));
+                    setChangePanel(panel, new CandidatePage(frame).getPanel());
+                }else{
+                    JOptionPane.showMessageDialog(null, "Candidato não encontrado!");
                     setChangePanel(panel, new CandidatePage(frame).getPanel());
                 }
             } catch (Exception e) {

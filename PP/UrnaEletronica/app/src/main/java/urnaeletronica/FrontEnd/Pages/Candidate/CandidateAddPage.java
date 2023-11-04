@@ -74,9 +74,6 @@ public class CandidateAddPage extends Page {
         constraints.gridy = 5;
         panel.add(button.getButton(), constraints);
 
-       
-
-
         // // Add action listener to button
         button.getButton().addActionListener(e -> {
 
@@ -94,14 +91,12 @@ public class CandidateAddPage extends Page {
 
     }
 
-    private boolean checkIfVoterExists(String candidateEtituloText) {
-        
+    private boolean checkIfVoterExists(String candidateEtituloText) {  
         if(VoterController.getVoter(candidateEtituloText) == null){
             JOptionPane.showMessageDialog(null, "Eleitor não existe");
             return false;
         }
         return true;
-
     } 
 
     private void addCandidate(Candidate candidate) {

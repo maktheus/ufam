@@ -38,7 +38,6 @@ public class EleitorListPage extends Page{
             constraints.gridx = 1;
             constraints.gridy = 2;
             panel.add(button, constraints);
-
             button.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(java.awt.event.ActionEvent evt) {
                     getEleitor(textField.getText());

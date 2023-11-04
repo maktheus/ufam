@@ -16,12 +16,12 @@ Os clientes compartilham um conjunto de 20 cadeiras com distribuição das categ
 
 O General Dureza queria saber se o atendimento da barbearia está satisfatório e para tal pediu que o Tenente Escovinha fornecesse um relatório das atividades da barbearia. Para não desapontar seu superior a cada 3 segundos o tenente verifica o estado da barbearia e ao final de cada dia elabora um relatório com as seguintes informações:
 
-    ● Estado de ocupação da(s) cadeira(s) (% por categoria e livre)
-    ● Comprimento médio das filas
-    ● Tempo médio de atendimento por categoria
-    ● Tempo médio de espera por categoria
-    ● Número de atendimentos por categoria
-    ● Número total de clientes por categoria (oficiais, sargentos, cabos e pausa)
+    ● []Estado de ocupação da(s) cadeira(s) (% por categoria e livre)
+    ● []Comprimento médio das filas 
+    ● []Tempo médio de atendimento por categoria
+    ● []Tempo médio de espera por categoria
+    ● []Número de atendimentos por categoria
+    ● [X]Número total de clientes por categoria (oficiais, sargentos, cabos e pausa)
 
 ## Entrada de dados
 A entrada de dados deverá ser gerada aleatoriamente seguindo o seguinte formato:

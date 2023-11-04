@@ -44,12 +44,7 @@ public class LoginFrame extends Frame {
         senhaTextField.setPreferredSize(new Dimension(200, 24));
         senhaTextField.setFont(new Font("Martin Mono", Font.PLAIN, 16));
         
-
-
         ButtonComponent loginButton = new ButtonComponent("Login", "primary");
-        
-
-
 
         constraints.anchor = GridBagConstraints.WEST;
 
@@ -91,3 +86,4 @@ public class LoginFrame extends Frame {
         frame.setVisible(true);   
     }
 }
+

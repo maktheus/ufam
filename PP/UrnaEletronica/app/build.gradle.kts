@@ -10,7 +10,11 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
     id("org.flywaydb.flyway") version "9.19.4"
+    id("java")
+    id("org.jetbrains.dokka") version "1.9.0"
 }
+
+
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -38,6 +42,9 @@ dependencies {
     implementation("org.flywaydb:flyway-core:9.19.4")
 
     runtimeOnly("mysql:mysql-connector-java:8.0.27")
+    //jaxDoclet "some.interesting:Dependency:1.0"
+
+
 }   
 
 
@@ -74,3 +81,6 @@ flyway {
     url = "jdbc:mysql://localhost:3306/mydatabase"
     locations = arrayOf("filesystem:src/main/java/urnaeletronica/BackEnd/Migration")
 }
+
+
+

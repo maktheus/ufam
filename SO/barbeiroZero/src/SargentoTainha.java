@@ -1,73 +1,65 @@
-import java.util.Random;
-import java.util.concurrent.*;
+import java.util.*;
 
 public class SargentoTainha implements Runnable {
-    private Semaphore adicionarElemento;
-    private Semaphore lerFila;
-    private Random random = new Random();
+    private List<List<Integer>> filaOutside = new ArrayList<>();
+    private static int tempoDeDescanso = 0;
+    private int ocioso = 0;
+    public static boolean started = false;
+
 
     
-
-    public SargentoTainha(Semaphore adicionarElemento, Semaphore lerFila) {
-        this.adicionarElemento = adicionarElemento;
-        this.lerFila = lerFila;
+    public SargentoTainha( List<List<Integer>> fila, int tempoDeDescanso) {
+        
+        this.filaOutside = fila;
+        this.tempoDeDescanso = tempoDeDescanso;
     }
 
     @Override
     public void run() {
-
         try {
-            adicionarElemento.acquire(); // Aguarde para adicionar um elemento
-            Cliente cliente = generateClienteAleatorio(); // Gere um cliente aleatório
+            for (List<Integer> oficial : filaOutside) {  // Especifique o tipo de dados aqui
+                // cortandoCabelo.acquire();
+                // System.out.println(oficial.get(0) + " " + oficial.get(1));
+                if(oficial.get(0) == 0){
+                    Barbearia.addToFila(new Cliente(0, 0));
+                    ocioso++;
+                    if(ocioso == 3){
+                        System.out.println("Não há mais clientes para serem atendidos pelo Sargento Tainha");
+                        Barbearia.filaOutside = false;
+                        break;
+                    }
+                    System.out.println("Sargento Tainha está ocioso");
+                    Thread.sleep(tempoDeDescanso);
+                    continue;
+                }
+                
+                Cliente cliente = new Cliente(oficial.get(0), oficial.get(1));
+                Barbearia.setTempoMedioDeEsperaEntrada(tempoDeDescanso);
 
-            if (cliente.getCategoria() != 0) { // Se não for uma pausa
-                Barbearia.addToFila(cliente); // Adicione o cliente à fila
-                System.out.println("Sargento Tainha adicionou " + cliente + " à fila");
-            } else {
-                System.out.println("Pausa, ninguém na fila");
+                if(Barbearia.getSizeOfAllFilas() < 20){
+                    ocioso = 0;
+                    Barbearia.addToFila(cliente);   
+                    System.out.println("Sargento Tainha adicionou um cliente a fila" + cliente);
+                    started = true;
+
+                }else{
+                    System.out.println("Sargento Tainha não pode adicionar um cliente a fila");
+                }
+                // cortandoCabelo.release();
+                Thread.sleep(tempoDeDescanso);
             }
-
-            adicionarElemento.release(); // Libere o semáforo após a adição
-            lerFila.release(); // Sinalize que há algo para ler na fila
-
+            System.out.println("Não há mais clientes para serem atendidos pelo Sargento Tainha todos foram adicionados a fila");
+            Barbearia.filaOutside = false;
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        } 
     }
 
-    private int gerarCategoriaAleatoria() {
-        return random.nextInt(4); // Retorna um número aleatório entre 0 e 3
+    public static synchronized int getTempoDeDescanso(){
+        return tempoDeDescanso;
     }
 
-    private int gerarTempoServicoAleatorio(int type) {
-        // Cada corte de cabelo pode durar entre 4 e 6 segundos no caso de um
-        // oficial, de 2 a 4 segundos no caso de um sargento e de 1 a 3 segundos no caso
-        // de um cabo. A
-        // prioridade de atendimento será sempre: oficiais – sargentos – cabos.
-
-        switch (type) {
-            case 0:
-                return random.nextInt(3) + 1;
-            case 1:
-                return random.nextInt(3) + 2;
-            case 2:
-                return random.nextInt(3) + 4;
-            default:
-                return 0;
-        }
-    }
-
-    private Cliente generateClienteAleatorio() {
-        int categoria = gerarCategoriaAleatoria();
-        if(categoria == 0) {
-            return new Cliente(categoria, 0);
-        }
-        int tempoServico = gerarTempoServicoAleatorio(categoria);
-        return new Cliente(categoria, tempoServico);
-    }
-
-    public static void runSargentoTainha(Semaphore adicionarElemento, Semaphore lerFila) {
-        Thread sargento1 = new Thread(new SargentoTainha(adicionarElemento, lerFila));
-        sargento1.start();
+    public static synchronized boolean getStarted(){
+        return started;
     }
 }

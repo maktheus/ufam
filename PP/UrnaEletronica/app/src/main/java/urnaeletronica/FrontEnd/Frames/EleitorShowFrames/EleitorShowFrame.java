@@ -38,8 +38,6 @@ public class EleitorShowFrame extends Frame {
         frame.setLayout(new GridBagLayout());
         frame.setVisible(true);
 
-
-
         GridBagConstraints constraints = new GridBagConstraints();
 
 

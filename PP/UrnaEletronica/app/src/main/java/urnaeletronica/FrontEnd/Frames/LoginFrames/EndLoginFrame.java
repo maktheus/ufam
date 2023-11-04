@@ -6,7 +6,6 @@ import javax.swing.*;
 import urnaeletronica.BackEnd.Controllers.LoginController;
 import urnaeletronica.FrontEnd.Components.ButtonComponent;
 import urnaeletronica.FrontEnd.Frames.Frame;
-import urnaeletronica.FrontEnd.Frames.MainFrames.MainFrame;
 import urnaeletronica.FrontEnd.Frames.ResultsFrames.ResultsFrame;
 
 public class EndLoginFrame extends Frame {
@@ -20,7 +19,7 @@ public class EndLoginFrame extends Frame {
         frame.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints = new GridBagConstraints();
-        JLabel loginLabel = new JLabel("Login");
+        JLabel loginLabel = new JLabel("Finalizar Votação");
         loginLabel.setFont(new Font("Martin Mono", Font.PLAIN, 30));
         loginLabel.setForeground(Color.WHITE);
 
@@ -66,18 +65,21 @@ public class EndLoginFrame extends Frame {
         });
     }
 
-
-      private void login(  String senha) {
-        try{
-            if(LoginController.login(senha)){
+    private void login(String senha) {
+        try {
+            if (LoginController.login(senha)) {
                 changeFrame(frame, new ResultsFrame().getFrame());
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Senha  incorreto");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Erro ao logar");
         }
-    
+
+    }
+
+    public JFrame getFrame() {
+        return frame;
     }
 
 }

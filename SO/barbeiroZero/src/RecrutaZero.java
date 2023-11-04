@@ -1,65 +1,150 @@
-import java.util.Random;
 import java.util.concurrent.*;
 
-public class RecrutaZero implements Runnable {
-    private Semaphore cortandoCabelo;
-    private Random random = new Random();
+import javax.management.loading.PrivateClassLoader;
 
-    public RecrutaZero(Semaphore cortandoCabelo){
+public class RecrutaZero implements Runnable {
+
+    private Semaphore cortandoCabelo;
+    private static boolean corteFinalizados = false;
+
+    private static int quantidadeDeAtendimentosCabos = 0;
+    private static int quantidadeDeAtendimentosOficiais = 0;
+    private static int quantidadeDeAtendimentosSargentos = 0;
+    private static int quantidadeDeAtendimentosTotal = 0;
+
+    private static int tempoMedioDeCorteCabos = 0;
+    private static int tempoMedioDeCorteOficiais = 0;
+    private static int tempoMedioDeCorteSargentos = 0;
+    private static int tempoMedioDeCorteTotal = 0;
+
+    private int tempoExtraAposDescanso = 0;
+
+    private static int tempoMedioDeEsperaTotal = 0;
+    private static int tempoMedioDeEsperaOficial = 0;
+    private static int tempoMedioDeEsperaSargento = 0;
+    private static int tempoMedioDeEsperaCabo = 0;
+
+    public RecrutaZero(Semaphore cortandoCabelo) {
         this.cortandoCabelo = cortandoCabelo;
     }
 
     @Override
-    public void run(){
+    public void run() {
         try {
-            cortandoCabelo.acquire();  // Adquire o semáforo antes de começar o corte de cabelo
+            while (true) {
+                cortandoCabelo.acquire();
+                if (Barbearia.filaOutside == false && Barbearia.getSizeOfAllFilas() == 0) {
+                    System.out.println("Não há mais clientes para serem atendidos pelo Recruta Zero");
+                    corteFinalizados = true;
+                    break;
+                }
 
-            int categoria = obterCategoriaCliente();  // Obtém a categoria do próximo cliente
-            int tempoCorte = obterTempoCorte(categoria);  // Obtém o tempo de corte com base na categoria
+                Cliente cliente = Barbearia.obterCliente();
 
-            if (categoria != -1) {  // Se houver um cliente para ser atendido
-                System.out.println("Recruta Zero está cortando o cabelo de um " + getCategoriaNome(categoria) + " por " + tempoCorte + " segundos.");
-                Thread.sleep(tempoCorte * 1000);  // Simula o corte de cabelo
-                Barbearia.removeFromFila(categoria);  // Remove o cliente da fila
-            } else {
-                System.out.println("Nenhum cliente para atender no momento.");
+                if (cliente != null) {
+                    if( tempoExtraAposDescanso > 0){ 
+                        tempoMedioDeEsperaTotal +=  tempoExtraAposDescanso;
+                        System.out.println(Barbearia.getTempoMedioDeEsperaSaida());
+                        System.out.println(cliente.getEntradaFilaTimestamp());
+                        System.out.println("\nTempo médio de espera total: " + tempoMedioDeEsperaTotal);
+                        // print categoria
+                        
+                        System.out.println(cliente.getCategoria());
+                        if (cliente.getCategoria() == 1) {
+                            tempoMedioDeEsperaOficial += tempoExtraAposDescanso;
+                        } else if (cliente.getCategoria() == 2) {
+                            tempoMedioDeEsperaSargento += tempoExtraAposDescanso;
+                        } else if (cliente.getCategoria() == 3) {
+                            tempoMedioDeEsperaCabo += tempoExtraAposDescanso;
+                        }
+                    }
+                    
+
+                    if(cliente.getTempoServico() + tempoExtraAposDescanso > SargentoTainha.getTempoDeDescanso()){
+                        tempoExtraAposDescanso += cliente.getTempoServico() - SargentoTainha.getTempoDeDescanso();
+                    }else{
+                        tempoExtraAposDescanso = 0;
+                    }
+
+                    
+
+                    Barbearia.setTempoMedioDeEsperaSaida(cliente.getTempoServico());
+
+                    quantidadeDeAtendimentosTotal++;
+                    tempoMedioDeCorteTotal += cliente.getTempoServico();
+                    if (cliente.getCategoria() == 1) {
+                        quantidadeDeAtendimentosOficiais++;
+                        tempoMedioDeCorteOficiais += cliente.getTempoServico();
+                    } else if (cliente.getCategoria() == 2) {
+                        quantidadeDeAtendimentosSargentos++;
+                        tempoMedioDeCorteSargentos += cliente.getTempoServico();
+                    } else if (cliente.getCategoria() == 3) {
+                        quantidadeDeAtendimentosCabos++;
+                        tempoMedioDeCorteCabos += cliente.getTempoServico();
+                    }
+
+                    Thread.sleep(cliente.getTempoServico());
+
+                    Barbearia.removeFromFila(cliente.getCategoria());
+                    System.out.println("Recruta Zero está cortando o cabelo de um " + cliente);
+                    System.out.println("Recruta Zero terminou de cortar o cabelo de um " + cliente);
+                }
+                cortandoCabelo.release();
             }
-
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            cortandoCabelo.release();  // Libera o semáforo depois de terminar o corte de cabelo
         }
     }
 
-    public static void runRecrutaZero(Semaphore cortandoCabelo){
-        Thread recrutaZero = new Thread(new RecrutaZero(cortandoCabelo));
-        recrutaZero.start();
+    public static synchronized int getTempoMedioDeEsperaTotal() {
+        return tempoMedioDeEsperaTotal;
     }
 
-    private int obterCategoriaCliente() {
-        // Verifica as filas em ordem de prioridade
-        if (!Barbearia.filaOficiais.isEmpty()) return 0;
-        if (!Barbearia.filaSargentos.isEmpty()) return 1;
-        if (!Barbearia.filaCabos.isEmpty()) return 2;
-        return -1;  // Nenhum cliente para ser atendido
+    public static synchronized int getTempoMedioDeEsperaOficial() {
+        return tempoMedioDeEsperaOficial;
     }
 
-    private int obterTempoCorte(int categoria) {
-        switch (categoria) {
-            case 0: return random.nextInt(3) + 4;  // Oficial: 4 a 6 segundos
-            case 1: return random.nextInt(3) + 2;  // Sargento: 2 a 4 segundos
-            case 2: return random.nextInt(3) + 1;  // Cabo: 1 a 3 segundos
-            default: return 0;
-        }
+    public static synchronized int getTempoMedioDeEsperaSargento() {
+        return tempoMedioDeEsperaSargento;
     }
 
-    private String getCategoriaNome(int categoria) {
-        switch (categoria) {
-            case 0: return "oficial";
-            case 1: return "sargento";
-            case 2: return "cabo";
-            default: return "desconhecido";
-        }
+    public static synchronized int getTempoMedioDeEsperaCabo() {
+        return tempoMedioDeEsperaCabo;
+    }
+
+    public static synchronized int getQuantidadeDeAtendimentosOficiais() {
+        return quantidadeDeAtendimentosOficiais;
+    }
+
+    public static synchronized int getQuantidadeDeAtendimentosSargentos() {
+        return quantidadeDeAtendimentosSargentos;
+    }
+
+    public static synchronized int getQuantidadeDeAtendimentosCabos() {
+        return quantidadeDeAtendimentosCabos;
+    }
+
+    public static synchronized int getQuantidadeDeAtendimentosTotal() {
+        return quantidadeDeAtendimentosTotal;
+    }
+
+    public static synchronized int getTempoMedioDeCorteCabos() {
+        return tempoMedioDeCorteCabos;
+    }
+
+    public static synchronized int getTempoMedioDeCorteOficiais() {
+        return tempoMedioDeCorteOficiais;
+    }
+
+    public static synchronized int getTempoMedioDeCorteSargentos() {
+        return tempoMedioDeCorteSargentos;
+    }
+
+    public static synchronized int getTempoMedioDeCorteTotal() {
+        return tempoMedioDeCorteTotal;
+    }
+
+    public static synchronized boolean getCorteFinalizados() {
+        return corteFinalizados;
     }
 }

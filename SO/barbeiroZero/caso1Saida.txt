@@ -1,0 +1,41 @@
+Digite o tempo de descanso do Sargento Tainha
+Entrou um cliente na fila
+Barbeiro esta dormindo
+Relatorio sendo gerado
+Relatorio sendo gerado
+Entrou um cliente na fila
+Barbeiro esta dormindo
+Relatorio sendo gerado
+Relatorio sendo gerado
+Entrou um cliente na fila
+Barbeiro esta dormindo
+Relatorio sendo gerado
+Entrou um cliente na fila
+Relatorio sendo gerado
+Barbeiro esta dormindo
+Relatorio sendo gerado
+Relatorio sendo gerado
+Barbeiro esta dormindo
+Relatorio sendo gerado
+
+
+
+
+-------------------------------------
+Relatorio Tenete Escovinha
+Ocupacao: 0.625 %
+Ocupacao Oficial: 12.5 %
+Ocupacao Sargento: 0.0 %
+Ocupacao Cabo: 0.0 %
+Comprimento medio fila oficial: 0.125
+Comprimento medio fila sargento: 0.0
+Comprimento medio fila cabo: 0.0
+Tempo medio de atendimento oficial: 0.75s
+Tempo medio de atendimento sargento: 0.0s
+Tempo medio de atendimento cabo: 0.0s
+Tempo medio de espera oficial: 0.0s
+Tempo medio de espera sargento: 0.0s
+Tempo medio de espera cabo: 0.0s
+Numero de atendimentos oficial: 4
+Numero de atendimentos sargento: 0
+Numero de atendimentos cabo: 0
