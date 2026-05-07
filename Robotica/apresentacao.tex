@@ -1,0 +1,650 @@
+\documentclass[aspectratio=169,12pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%==============================================================
+% TEMA E CORES UFAM
+%==============================================================
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamlightblue}{RGB}{0,102,170}
+\definecolor{ufamgold}{RGB}{204,153,0}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{matrixbg}{RGB}{240,248,255}
+\definecolor{resultcolor}{RGB}{0,80,40}
+
+\setbeamercolor{palette primary}{bg=ufamblue, fg=white}
+\setbeamercolor{palette secondary}{bg=ufamlightblue, fg=white}
+\setbeamercolor{palette tertiary}{bg=ufamgold, fg=black}
+\setbeamercolor{palette quaternary}{bg=ufamblue, fg=white}
+\setbeamercolor{structure}{fg=ufamblue}
+\setbeamercolor{section in toc}{fg=ufamblue}
+\setbeamercolor{frametitle}{bg=ufamblue, fg=white}
+\setbeamercolor{title}{bg=ufamblue, fg=white}
+\setbeamercolor{block title}{bg=ufamlightblue, fg=white}
+\setbeamercolor{block body}{bg=matrixbg, fg=black}
+\setbeamercolor{block title alerted}{bg=ufamgold, fg=black}
+\setbeamercolor{block body alerted}{bg=yellow!10, fg=black}
+\setbeamercolor{block title example}{bg=ufamgreen, fg=white}
+\setbeamercolor{block body example}{bg=green!5, fg=black}
+
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette primary}
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette secondary}
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette primary}
+      \usebeamerfont{date in head/foot}
+      \insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}
+  }
+}
+
+%==============================================================
+% MACROS
+%==============================================================
+\newcommand{\Rx}[1]{\mathbf{R}_x(#1)}
+\newcommand{\Ry}[1]{\mathbf{R}_y(#1)}
+\newcommand{\Rz}[1]{\mathbf{R}_z(#1)}
+\newcommand{\Rot}[2]{{}^{#1}_{#2}\!\mathbf{R}}
+\newcommand{\Trans}[2]{{}^{#1}_{#2}\!\mathbf{T}}
+\newcommand{\degr}{^{\circ}}
+\newcommand{\mat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\hlred}[1]{\textcolor{red!70!black}{\mathbf{#1}}}
+\newcommand{\hlblue}[1]{\textcolor{ufamlightblue}{\mathbf{#1}}}
+\newcommand{\hlgreen}[1]{\textcolor{ufamgreen}{\mathbf{#1}}}
+
+%==============================================================
+% METADADOS
+%==============================================================
+\title[Lista 1 --- Robótica]{Lista 1 --- Introdução à Robótica}
+\subtitle{Transformações Espaciais e Representações de Orientação}
+\author[Pós-Graduação UFAM]{Programa de Pós-Graduação em Informática\\
+\small Instituto de Computação --- IComp}
+\institute[UFAM]{\textbf{Universidade Federal do Amazonas}}
+\date{Manaus, \today}
+
+%==============================================================
+\begin{document}
+%==============================================================
+
+%--------------------------------------------------------------
+% CAPA
+%--------------------------------------------------------------
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[ufamblue] (current page.north west) rectangle
+      ([yshift=-2.2cm]current page.north east);
+    \fill[ufamgold] ([yshift=-2.2cm]current page.north west) rectangle
+      ([yshift=-2.5cm]current page.north east);
+    \fill[ufamblue!20] (current page.south west) rectangle
+      ([yshift=1.2cm]current page.south east);
+  \end{tikzpicture}
+  \vspace{0.5cm}
+  \titlepage
+\end{frame}
+
+%--------------------------------------------------------------
+% SUMÁRIO
+%--------------------------------------------------------------
+\begin{frame}{Sumário}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+%==============================================================
+\section{Fundamentos Teóricos}
+%==============================================================
+
+\begin{frame}{Fundamentos: Sistemas de Referência e Rotações}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \textbf{Matrizes de rotação elementares:}
+      \[
+        \Rx{\theta} = \mat{1&0&0\\0&c\theta&-s\theta\\0&s\theta&c\theta}
+      \]
+      \[
+        \Ry{\theta} = \mat{c\theta&0&s\theta\\0&1&0\\-s\theta&0&c\theta}
+      \]
+      \[
+        \Rz{\theta} = \mat{c\theta&-s\theta&0\\s\theta&c\theta&0\\0&0&1}
+      \]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Propriedades fundamentais}
+        \begin{itemize}
+          \item $\mathbf{R}^{-1} = \mathbf{R}^T$ (ortogonal)
+          \item $\det(\mathbf{R}) = +1$
+          \item Eixos fixos: \textbf{pré-multiplica}
+          \item Eixo do corpo: \textbf{pós-multiplica}
+        \end{itemize}
+      \end{block}
+      \begin{alertblock}{Transformação homogênea}
+        \[
+          \Trans{A}{B} = \mat{\mathbf{R}_{3\times3} & \mathbf{p}_{3\times1}\\\mathbf{0}^T & 1}
+        \]
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q1 --- Rotações Sequenciais}
+%==============================================================
+
+\begin{frame}{Q1 --- Rotação $30\degr$ em $\hat{Y}$ seguida de $45\degr$ em $\hat{X}$}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Raciocínio}
+        Rotações em \textbf{eixos fixos} $\Rightarrow$ pré-multiplicação da direita para a esquerda:
+        \[
+          \mathbf{R} = \hlred{\Rx{45\degr}}\,\hlblue{\Ry{30\degr}}
+        \]
+        \begin{enumerate}
+          \item[$1^\circ$] $\Ry{30\degr}$: gira o vetor em torno de $Y$
+          \item[$2^\circ$] $\Rx{45\degr}$: gira o resultado em torno de $X$
+        \end{enumerate}
+      \end{block}
+      \vspace{0.3cm}
+      \[
+        \hlblue{\Ry{30\degr}} = \mat{0{,}866&0&0{,}5\\0&1&0\\-0{,}5&0&0{,}866}
+      \]
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \[
+        \hlred{\Rx{45\degr}} = \mat{1&0&0\\0&0{,}707&-0{,}707\\0&0{,}707&0{,}707}
+      \]
+      \begin{exampleblock}{Resultado}
+        \[
+          \mathbf{R} = \mat{
+            0{,}866 & 0 & 0{,}500\\
+            0{,}354 & 0{,}707 & -0{,}612\\
+           -0{,}354 & 0{,}707 &  0{,}612}
+        \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q2 --- Transformação Homogênea (Z + X,Y)}
+%==============================================================
+
+\begin{frame}{Q2 --- Rotação $45\degr$ em $\hat{Z}$ + Translação $[15,\,5,\,0]$}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Construção de $\Trans{A}{B}$}
+        \[
+          \Trans{A}{B} = \mat{c_{45}&-s_{45}&0&15\\s_{45}&c_{45}&0&5\\0&0&1&0\\0&0&0&1}
+          = \mat{0{,}707&-0{,}707&0&15\\0{,}707&0{,}707&0&5\\0&0&1&0\\0&0&0&1}
+        \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Cálculo: ${}^{A}\mathbf{p} = \Trans{A}{B}\,{}^{B}\mathbf{p}$}
+        \small
+        Dado ${}^{B}\mathbf{p} = [2{,}5;\;10{,}0;\;0{,}0]^T$:
+        \begin{align*}
+          p_x &= 0{,}707(2{,}5) - 0{,}707(10) + 15\\
+              &= 1{,}768 - 7{,}071 + 15 = \mathbf{9{,}70}\\[4pt]
+          p_y &= 0{,}707(2{,}5) + 0{,}707(10) + 5\\
+              &= 1{,}768 + 7{,}071 + 5 = \mathbf{13{,}84}\\[4pt]
+          p_z &= 0
+        \end{align*}
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        ${}^{A}\mathbf{p} = [9{,}70;\;\;13{,}84;\;\;0{,}00]^T$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q3 --- Transformação Homogênea (Y + X,Z)}
+%==============================================================
+
+\begin{frame}{Q3 --- Rotação $50\degr$ em $\hat{Y}$ + Translação $[8,\,0,\,9]$}
+  \begin{columns}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Transformação homogênea}
+        \[
+          \Trans{A}{B} = \mat{
+            0{,}643 & 0 & 0{,}766 & 8\\
+            0       & 1 & 0       & 0\\
+           -0{,}766 & 0 & 0{,}643 & 9\\
+            0       & 0 & 0       & 1}
+        \]
+        \small Para $\Ry{\theta}$, notar que a translação \textbf{não} altera $p_y$, pois $\hat{Y}$ não participa da rotação.
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Dado: ${}^{B}\mathbf{p}=[15{,}5;\;0;\;5{,}5]^T$}
+        \small
+        \begin{align*}
+          p_x &= 0{,}643(15{,}5)+0{,}766(5{,}5)+8\\
+              &= 9{,}963+4{,}213+8 = \mathbf{22{,}18}\\[3pt]
+          p_y &= 0 + 1(0) + 0 = \mathbf{0{,}00}\\[3pt]
+          p_z &= -0{,}766(15{,}5)+0{,}643(5{,}5)+9\\
+              &= -11{,}873+3{,}535+9 = \mathbf{0{,}66}
+        \end{align*}
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        ${}^{A}\mathbf{p} = [22{,}18;\;\;0{,}00;\;\;0{,}66]^T$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q4 --- Inversão de Transformação}
+%==============================================================
+
+\begin{frame}{Q4 --- Obtendo ${}^{B}_{A}\mathbf{T}$ a partir de ${}^{A}_{B}\mathbf{T}$}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{${}^{A}_{B}\mathbf{T}$ — $\Rx{33{,}5\degr}$, $\mathbf{t}=[0,12,6]^T$}
+        \[
+          \Trans{A}{B}=\mat{
+            1&0&0&0\\
+            0&0{,}835&-0{,}551&12\\
+            0&0{,}551&0{,}835&6\\
+            0&0&0&1}
+        \]
+      \end{block}
+      \begin{block}{Fórmula de inversão}
+        \[
+          \Trans{B}{A}=\mat{\mathbf{R}^T & -\mathbf{R}^T\mathbf{p}\\\mathbf{0}^T&1}
+        \]
+        \small Explorar a ortogonalidade: $\mathbf{R}^{-1}=\mathbf{R}^T$. Custo $O(n^2)$ vs $O(n^3)$ da inversão geral.
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Cálculo de $-\mathbf{R}^T\mathbf{p}$}
+        \small
+        \begin{align*}
+          &-\mat{1&0&0\\0&0{,}835&0{,}551\\0&-0{,}551&0{,}835}\mat{0\\12\\6}\\[4pt]
+          &= -\mat{0\\0{,}835(12)+0{,}551(6)\\-0{,}551(12)+0{,}835(6)}\\
+          &= \mat{0\\-13{,}32\\1{,}60}
+        \end{align*}
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        \tiny
+        $\Trans{B}{A}=\mat{1&0&0&0\\0&0{,}835&0{,}551&-13{,}32\\0&-0{,}551&0{,}835&1{,}60\\0&0&0&1}$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q5 --- Composição: Mão × Parafuso}
+%==============================================================
+
+\begin{frame}{Q5 --- Cadeia de Transformações: Base → Mesa → Parafuso / Mão}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.85,
+    frame/.style={rectangle,draw=ufamblue,thick,rounded corners=3pt,
+                  fill=ufamblue!10,minimum width=1.6cm,minimum height=0.7cm,
+                  font=\small\bfseries},
+    arr/.style={->,thick,ufamblue}]
+    \node[frame] (B) at (0,0) {$\{B\}$};
+    \node[frame] (T) at (3.5, 1.4) {$\{T\}$ Mão};
+    \node[frame] (S) at (3.5,-1.4) {$\{S\}$ Mesa};
+    \node[frame] (G) at (7.5,-1.4) {$\{G\}$ Parafuso};
+    \draw[arr] (B) -- node[above,sloped,font=\tiny]{$\Rz{25\degr}$, $[10,15,0]$} (T);
+    \draw[arr] (B) -- node[below,sloped,font=\tiny]{$\Rz{90\degr}$, $[5,-10,0]$} (S);
+    \draw[arr] (S) -- node[below,font=\tiny]{$\Rz{60\degr}$, $[5,5,0]$} (G);
+    \draw[arr,dashed,red!70!black,bend left=25]
+      (T) to node[above,font=\tiny,red!70!black]{${}^{G}_{T}\mathbf{T}$ = ?} (G);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.2cm}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Estratégia}
+        \[
+          {}^{G}_{T}\mathbf{T} = \underbrace{({}^{B}_{G}\mathbf{T})^{-1}}_{\Trans{G}{B}} \cdot \Trans{B}{T}
+        \]
+        ${}^{B}_{G}\mathbf{T} = {}^{B}_{S}\mathbf{T} \cdot {}^{S}_{G}\mathbf{T}$
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Resultado}
+        \small
+        $\Trans{G}{T}=\mat{
+          -0{,}574 & 0{,}819 & 0 & 1{,}34\\
+          -0{,}819 &-0{,}574 & 0 &-22{,}32\\
+           0       & 0       & 1 & 0\\
+           0       & 0       & 0 & 1}$
+
+        \footnotesize
+        Orientação: $\Rz{-125\degr}$ \quad Posição: $[1{,}34;\,-22{,}32;\,0]$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Q5 --- Detalhamento do Cálculo}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Parafuso em $\{B\}$}
+        \small
+        Rotação: $\Rz{90\degr}\cdot\Rz{60\degr}=\Rz{150\degr}$\\[4pt]
+        Translação:
+        \[
+          \mathbf{t}_{BG} = \mat{5\\-10\\0}+\mat{0&-1&0\\1&0&0\\0&0&1}\mat{5\\5\\0}=\mat{0\\-5\\0}
+        \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Inversão de ${}^{B}_{G}\mathbf{T}$}
+        \small
+        $\mathbf{R}_{GB}=\Rz{150\degr}^T=\Rz{-150\degr}$\\[4pt]
+        $\mathbf{t}_{GB}=-\mathbf{R}_{GB}\mathbf{t}_{BG}$:
+        \[
+          -\mat{-0{,}866&0{,}5&0\\-0{,}5&-0{,}866&0\\0&0&1}\mat{0\\-5\\0}=\mat{2{,}5\\-4{,}33\\0}
+        \]
+      \end{block}
+      \begin{alertblock}{Rotação final}
+        $\Rot{G}{T}=\Rz{-150\degr}\cdot\Rz{25\degr}=\Rz{-125\degr}$
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q6 --- Rotação Adicional $\hat{Y}$ no Efetuador}
+%==============================================================
+
+\begin{frame}{Q6 --- Efetuador Rotacionado $45\degr$ em $\hat{Y}$ (eixo do corpo)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Pós-multiplicação (eixo do corpo)}
+        Rotação adicional \textbf{no próprio frame} da mão:
+        \[
+          \Rot{B}{T'} = \underbrace{\Rz{25\degr}}_{\text{Q5}} \cdot \underbrace{\Ry{45\degr}}_{\text{nova}}
+        \]
+        \[
+          \Rot{G}{T'} = \Rz{-125\degr}\cdot\Ry{45\degr}
+        \]
+      \end{block}
+      \begin{block}{Nova rotação calculada}
+        \tiny
+        \[
+          \Rot{G}{T'}=\mat{
+            -0{,}406 & 0{,}819 & -0{,}406\\
+            -0{,}579 &-0{,}574 & -0{,}579\\
+            -0{,}707 & 0       &  0{,}707}
+        \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Verificação de ortogonalidade}
+        \small
+        Colunas 1 e 3 parecem iguais nas linhas 1 e 2, mas diferem na linha 3: $-0{,}707$ vs $+0{,}707$.\\[4pt]
+        $\mathbf{c}_1 \cdot \mathbf{c}_3 = (-0{,}406)^2+(-0{,}579)^2-0{,}5 = 0\;\checkmark$\\
+        $|\mathbf{c}_3| = 1\;\checkmark$
+      \end{block}
+      \begin{exampleblock}{Resultado ${}^{G}_{T'}\mathbf{T}$}
+        \tiny
+        $\Trans{G}{T'}=\mat{
+          -0{,}406 & 0{,}819 & -0{,}406 & 1{,}34\\
+          -0{,}579 &-0{,}574 & -0{,}579 &-22{,}32\\
+          -0{,}707 & 0       &  0{,}707 & 0\\
+           0       & 0       &  0       & 1}$
+
+        \small Translação inalterada (sem deslocamento adicional).
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q7 --- Ângulos Fixos X-Y-Z}
+%==============================================================
+
+\begin{frame}{Q7 --- Representação em Ângulos Fixos X-Y-Z}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Forma geral $\Rz{\alpha}\Ry{\beta}\Rx{\gamma}$}
+        \[
+          \mathbf{R} = \mat{
+            c\alpha c\beta & c\alpha s\beta s\gamma - s\alpha c\gamma & \cdots\\
+            s\alpha c\beta & \cdots & \cdots\\
+            -s\beta & c\beta s\gamma & c\beta c\gamma}
+        \]
+        \textbf{Extração:}
+        \begin{align*}
+          \beta  &= \mathrm{atan2}(-r_{31},\sqrt{r_{11}^2+r_{21}^2})\\
+          \alpha &= \mathrm{atan2}(r_{21}/c\beta,\;r_{11}/c\beta)\\
+          \gamma &= \mathrm{atan2}(r_{32}/c\beta,\;r_{33}/c\beta)
+        \end{align*}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Aplicando à ${}^{G}_{T'}\mathbf{R}$ de Q6}
+        \small
+        $r_{31}=-0{,}707$, $r_{11}=-0{,}406$, $r_{21}=-0{,}579$\\
+        $r_{32}=0$, $r_{33}=0{,}707$\\[6pt]
+        \textbf{Pitch:}
+        $\beta=\mathrm{atan2}(0{,}707,0{,}707)=45\degr$\\[4pt]
+        \textbf{Yaw:}
+        $\alpha=\mathrm{atan2}(-0{,}819,-0{,}574)=-125\degr$\\[4pt]
+        \textbf{Roll:}
+        $\gamma=\mathrm{atan2}(0,1)=0\degr$
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        \centering
+        \begin{tabular}{ccc}
+          \toprule
+          Ângulo & Eixo & Valor\\
+          \midrule
+          $\gamma$ & $X$ (Roll)  & $0\degr$\\
+          $\beta$  & $Y$ (Pitch) & $45\degr$\\
+          $\alpha$ & $Z$ (Yaw)   & $-125\degr$\\
+          \bottomrule
+        \end{tabular}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q8 --- Ângulos de Euler Z-Y-X}
+%==============================================================
+
+\begin{frame}{Q8 --- Ângulos de Euler Z-Y-X: $\alpha=30\degr$, $\beta=45\degr$, $\gamma=60\degr$}
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Diferença: Euler vs Ângulos Fixos}
+        \begin{tabular}{ll}
+          \textbf{Ângulos Fixos} & Eixos do \emph{mundo}\\
+                                 & Pré-multiplica\\[4pt]
+          \textbf{Euler Z-Y-X}   & Eixos do \emph{corpo}\\
+                                 & Pós-multiplica\\
+        \end{tabular}\\[6pt]
+        \textbf{Coincidência matemática:} a matriz resultante é \textbf{idêntica} nos dois casos:
+        \[
+          \mathbf{R} = \Rz{\alpha}\Ry{\beta}\Rx{\gamma}
+        \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Cálculo passo a passo}
+        \small
+        $\Rz{30\degr}\Ry{45\degr}=\mat{0{,}612&-0{,}500&0{,}612\\0{,}354&0{,}866&0{,}354\\-0{,}707&0&0{,}707}$\\[6pt]
+        Multiplicando por $\Rx{60\degr}$:
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        \[
+          \mathbf{R}=\mat{
+            0{,}612 &  0{,}280 &  0{,}739\\
+            0{,}354 &  0{,}739 & -0{,}573\\
+           -0{,}707 &  0{,}612 &  0{,}354}
+        \]
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q9 --- Eixo Arbitrário Passando por um Ponto}
+%==============================================================
+
+\begin{frame}{Q9 --- Fórmula de Rodrigues + Translação do Ponto Base}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Fórmula de Rodrigues}
+        Para rotação $\theta=60\degr$ em torno de $\hat{K}$:
+        \[
+          \mathbf{R} = c\theta\,\mathbf{I} + (1-c\theta)\hat{K}\hat{K}^T + s\theta\,[\hat{K}\times]
+        \]
+        \small
+        $\hat{K}=[1{,}2;\;0{,}5;\;0]^T \Rightarrow |\hat{K}|=1{,}3$\\
+        $\hat{k}=[0{,}923;\;0{,}385;\;0]^T$ (normalizado)\\[4pt]
+        $c_{60}=0{,}5$,\quad $s_{60}=0{,}866$
+      \end{block}
+      \begin{block}{Translação da origem}
+        Eixo passa pelo ponto $\mathbf{p}=[1{,}25;\;2{,}5;\;5{,}0]^T$:
+        \[
+          \mathbf{o}_B = (\mathbf{I}-\mathbf{R})\,\mathbf{p}
+        \]
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Submatrizes}
+        \small
+        \[
+          \hat{k}\hat{k}^T=\mat{0{,}852&0{,}355&0\\0{,}355&0{,}148&0\\0&0&0}
+        \]
+        \[
+          [\hat{k}\times]=\mat{0&0&0{,}385\\0&0&-0{,}923\\-0{,}385&0{,}923&0}
+        \]
+      \end{block}
+      \begin{exampleblock}{Resultado --- ${}^{A}_{B}\mathbf{T}$}
+        \tiny
+        $\Trans{A}{B}=\mat{
+          0{,}926 & 0{,}178 & 0{,}333 & -2{,}017\\
+          0{,}178 & 0{,}574 &-0{,}799 &  4{,}840\\
+         -0{,}333 & 0{,}799 & 0{,}500 &  0{,}918\\
+          0 & 0 & 0 & 1}$
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Q10 --- Parâmetros de Euler (Quaternion)}
+%==============================================================
+
+\begin{frame}{Q10 --- Rotação via Quaternion Unitário}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Parâmetros de Euler}
+        Para rotação $\theta=45\degr$ em $\hat{K}=[1{,}0;\;0{,}5;\;0]^T$:\\[4pt]
+        $\hat{k}=[0{,}894;\;0{,}447;\;0]^T\;(|\hat{K}|=1{,}118)$\\[6pt]
+        \[
+          \varepsilon_i = k_i\sin\frac{\theta}{2},\quad \varepsilon_4=\cos\frac{\theta}{2}
+        \]
+        \small
+        $\sin 22{,}5\degr = 0{,}3827$,\quad $\cos 22{,}5\degr = 0{,}9239$\\[4pt]
+        \[
+          \boldsymbol{\varepsilon} = \mat{0{,}342\\0{,}171\\0\\0{,}924}
+        \]
+        \textbf{Verificação:} $\sum\varepsilon_i^2 = 1\;\checkmark$
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Matriz resultante}
+        \small
+        \[
+          R_{ij} = f(\varepsilon_1,\varepsilon_2,\varepsilon_3,\varepsilon_4)
+        \]
+        Ex.: $R_{11}=1-2(\varepsilon_2^2+\varepsilon_3^2)=0{,}941$
+      \end{block}
+      \begin{exampleblock}{Resultado}
+        \[
+          \mathbf{R}=\mat{
+            0{,}941 &  0{,}117 &  0{,}316\\
+            0{,}117 &  0{,}766 & -0{,}632\\
+           -0{,}316 &  0{,}632 &  0{,}707}
+        \]
+        \footnotesize Idêntico ao obtido por Rodrigues. $\checkmark$
+      \end{exampleblock}
+      \begin{alertblock}{Vantagem do Quaternion}
+        Evita \emph{gimbal lock}; interpolação suave (SLERP); custo computacional menor.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Síntese dos Resultados}
+%==============================================================
+
+\begin{frame}{Síntese Geral dos Resultados}
+  \begin{center}
+  \small
+  \begin{tabular}{clp{6.2cm}}
+    \toprule
+    \textbf{Q} & \textbf{Método} & \textbf{Resultado principal}\\
+    \midrule
+    1 & Rotações fixas & $\mathbf{R}=\Rx{45\degr}\Ry{30\degr}$\\
+    2 & Trans.\ homogênea & ${}^{A}\mathbf{p}=[9{,}70;\;13{,}84;\;0{,}00]^T$\\
+    3 & Trans.\ homogênea & ${}^{A}\mathbf{p}=[22{,}18;\;0{,}00;\;0{,}66]^T$\\
+    4 & Inversão $\mathbf{R}^T$ & ${}^{B}_{A}\mathbf{T}$ com $\mathbf{t}=[0;\,-13{,}32;\,1{,}60]^T$\\
+    5 & Composição & ${}^{G}_{T}\mathbf{T}$: $\Rz{-125\degr}$, $\mathbf{t}=[1{,}34;\,-22{,}32;\,0]^T$\\
+    6 & Pós-multiplicação & ${}^{G}_{T'}\mathbf{T}$: $\Rz{-125\degr}\Ry{45\degr}$\\
+    7 & Ângulos fixos XYZ & $\gamma=0\degr$, $\beta=45\degr$, $\alpha=-125\degr$\\
+    8 & Euler Z-Y-X & $\mathbf{R}=\Rz{30\degr}\Ry{45\degr}\Rx{60\degr}$\\
+    9 & Rodrigues + ponto & ${}^{A}_{B}\mathbf{T}$ com $\mathbf{o}_B=[-2{,}02;\,4{,}84;\,0{,}92]^T$\\
+    10 & Quaternion & $\boldsymbol{\varepsilon}=[0{,}342;\,0{,}171;\,0;\,0{,}924]$\\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+\end{frame}
+
+%--------------------------------------------------------------
+% SLIDE FINAL
+%--------------------------------------------------------------
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[ufamblue] (current page.north west) rectangle
+      ([yshift=-2.5cm]current page.north east);
+    \fill[ufamgold] ([yshift=-2.5cm]current page.north west) rectangle
+      ([yshift=-2.8cm]current page.north east);
+    \fill[ufamblue!15] (current page.south west) rectangle
+      ([yshift=2.5cm]current page.south east);
+  \end{tikzpicture}
+
+  \vspace{1.5cm}
+  \begin{center}
+    {\LARGE\bfseries\color{ufamblue} Obrigado!}\\[0.6cm]
+    {\large Dúvidas e Discussões}\\[1cm]
+    \begin{tabular}{rl}
+      \textcolor{ufamblue}{\textbf{Disciplina:}} & Introdução à Robótica\\
+      \textcolor{ufamblue}{\textbf{Programa:}}   & PPGI --- IComp / UFAM\\
+      \textcolor{ufamblue}{\textbf{Referência:}} & Craig (2005) --- \textit{Introduction to Robotics}\\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\end{document}
