@@ -1,0 +1,924 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+
+\geometry{a4paper, top=3cm, bottom=2.5cm, left=3cm, right=2cm, headheight=15pt}
+\setstretch{1.5}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{resultbg}{RGB}{240,248,255}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\hypersetup{colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{ufamblue}{\textbf{IComp/UFAM} --- Introdução à Robótica}}
+\fancyhead[R]{\small\textcolor{ufamblue}{Lista 1 --- Transformações Espaciais}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ufamblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}[block]
+  {\large\bfseries\color{ufamblue}}
+  {Questão \thesection.}{0.8em}{}
+  [\vspace{-0.3em}\textcolor{ufamblue}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.5ex}{1.5ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{ufamgreen}}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1.5ex}{0.8ex}
+
+% Caixa de resultado final
+\tcbset{
+  resultbox/.style={
+    colback=resultbg,
+    colframe=ufamblue,
+    fonttitle=\bfseries\small,
+    title=Resultado,
+    boxrule=0.8pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+% Macros úteis
+\newcommand{\Rot}[2]{{}^{#1}_{#2}\!\mathbf{R}}
+\newcommand{\Trans}[2]{{}^{#1}_{#2}\!\mathbf{T}}
+\newcommand{\Pvec}[2]{{}^{#1}\!\mathbf{p}_{#2}}
+\newcommand{\Ap}[1]{{}^{A}\mathbf{p}_{#1}}
+\newcommand{\Rx}[1]{\mathbf{R}_x(#1)}
+\newcommand{\Ry}[1]{\mathbf{R}_y(#1)}
+\newcommand{\Rz}[1]{\mathbf{R}_z(#1)}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\vhat}[1]{\hat{\mathbf{#1}}}
+\newcommand{\degr}{^{\circ}}
+
+\begin{document}
+
+%==============================================================
+% CAPA
+%==============================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[0.4cm]
+{\Large\bfseries\color{ufamblue} UNIVERSIDADE FEDERAL DO AMAZONAS}\\[0.2cm]
+{\large\color{ufamblue} Instituto de Computação --- IComp}\\[0.1cm]
+{\large\color{ufamblue} Programa de Pós-Graduação em Informática --- PPGI}\\[0.4cm]
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[2.5cm]
+
+{\LARGE\bfseries Lista 1}\\[0.4cm]
+{\Large\bfseries Introdução à Robótica}\\[0.3cm]
+{\large Transformações Espaciais e Representações de Orientação}\\[3cm]
+
+\begin{tabular}{rl}
+  \textbf{Disciplina:} & Introdução à Robótica \\[0.3cm]
+  \textbf{Docente:}    & Prof.\ Dr.\ (Nome do Professor) \\[0.3cm]
+  \textbf{Discente:}   & (Nome do Aluno) \\[0.3cm]
+  \textbf{Matrícula:}  & (Número de Matrícula) \\[0.3cm]
+  \textbf{Nível:}      & Pós-Graduação --- Doutorado \\[0.3cm]
+  \textbf{Data:}       & Manaus, \today \\
+\end{tabular}
+
+\vfill
+{\color{ufamblue}\rule{\linewidth}{1.5pt}}
+\end{titlepage}
+
+%==============================================================
+% SUMÁRIO
+%==============================================================
+\newpage
+\tableofcontents
+\newpage
+
+%==============================================================
+% PREFÁCIO / NOTAÇÃO
+%==============================================================
+\section*{Notação Adotada}
+\addcontentsline{toc}{section}{Notação Adotada}
+
+Ao longo deste relatório adota-se a notação padrão de Craig~(2005):
+
+\begin{itemize}[leftmargin=2cm]
+  \item ${}^{A}\mathbf{p}$ --- vetor $\mathbf{p}$ descrito no sistema de referência $\{A\}$;
+  \item ${}^{A}_{B}\mathbf{R}$ --- matriz de rotação que descreve a orientação de $\{B\}$ em relação a $\{A\}$;
+  \item ${}^{A}_{B}\mathbf{T}$ --- matriz de transformação homogênea $(4\times4)$ de $\{B\}$ para $\{A\}$;
+  \item $c\theta \equiv \cos\theta$,\quad $s\theta \equiv \sin\theta$.
+\end{itemize}
+
+Todos os ângulos são fornecidos em graus e convertidos para radianos nos cálculos trigonométricos.
+
+\newpage
+
+%==============================================================
+% QUESTÃO 1
+%==============================================================
+\section{Rotações Sequenciais em torno de $\hat{Y}_A$ e $\hat{X}_A$}
+
+\subsection*{Enunciado}
+Um vetor ${}^{A}\mathbf{p}$ é rotacionado $30\degr$ em torno de $\hat{Y}_A$ e, em seguida, $45\degr$ em torno de $\hat{X}_A$.
+Determinar a matriz rotacional resultante.
+
+\subsection{Metodologia}
+Para rotações em relação a eixos \textbf{fixos} (frame $\{A\}$), cada nova rotação pré-multiplica a anterior.
+Portanto, denotando a rotação final como $\mathbf{R}$:
+\[
+  \mathbf{R} = \Rx{45\degr}\,\Ry{30\degr}
+\]
+
+\subsection{Matrizes Elementares}
+
+\[
+\Ry{30\degr} =
+\begin{pmatrix}
+  \cos 30\degr  & 0 & \sin 30\degr \\
+  0             & 1 & 0            \\
+  -\sin 30\degr & 0 & \cos 30\degr
+\end{pmatrix}
+=
+\begin{pmatrix}
+  0{,}8660  & 0 & 0{,}5000 \\
+  0         & 1 & 0        \\
+  -0{,}5000 & 0 & 0{,}8660
+\end{pmatrix}
+\]
+
+\[
+\Rx{45\degr} =
+\begin{pmatrix}
+  1 & 0           & 0            \\
+  0 & \cos 45\degr & -\sin 45\degr \\
+  0 & \sin 45\degr &  \cos 45\degr
+\end{pmatrix}
+=
+\begin{pmatrix}
+  1 & 0        & 0         \\
+  0 & 0{,}7071 & -0{,}7071 \\
+  0 & 0{,}7071 &  0{,}7071
+\end{pmatrix}
+\]
+
+\subsection{Produto das Matrizes}
+
+\[
+\mathbf{R} = \Rx{45\degr}\,\Ry{30\degr} =
+\begin{pmatrix}
+  1 & 0        & 0         \\
+  0 & 0{,}7071 & -0{,}7071 \\
+  0 & 0{,}7071 &  0{,}7071
+\end{pmatrix}
+\begin{pmatrix}
+  0{,}8660  & 0 & 0{,}5000 \\
+  0         & 1 & 0        \\
+  -0{,}5000 & 0 & 0{,}8660
+\end{pmatrix}
+\]
+
+Calculando elemento a elemento:
+\begin{align*}
+  r_{11} &= 0{,}8660,\quad r_{12} = 0,\quad r_{13} = 0{,}5000 \\
+  r_{21} &= 0{,}7071 \cdot 0 + (-0{,}7071)(-0{,}5000) = 0{,}3536 \\
+  r_{22} &= 0{,}7071 \\
+  r_{23} &= 0{,}7071 \cdot 0 + (-0{,}7071)(0{,}8660) = -0{,}6124 \\
+  r_{31} &= 0{,}7071 \cdot 0 + 0{,}7071 \cdot(-0{,}5000) = -0{,}3536 \\
+  r_{32} &= 0{,}7071 \\
+  r_{33} &= 0{,}7071 \cdot 0{,}8660 = 0{,}6124
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+  \mathbf{R} = \Rx{45\degr}\,\Ry{30\degr} =
+  \begin{pmatrix}
+    0{,}8660  &  0        &  0{,}5000 \\
+    0{,}3536  &  0{,}7071 & -0{,}6124 \\
+   -0{,}3536  &  0{,}7071 &  0{,}6124
+  \end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 2
+%==============================================================
+\section{Transformação Homogênea --- Rotação em $\hat{Z}$ e Translação em $X$, $Y$}
+
+\subsection*{Enunciado}
+O sistema $\{B\}$ é rotacionado $45\degr$ em torno de $\hat{Z}$, transladado $15$ u.c.\ em $\hat{X}_A$ e $5$ u.c.\ em $\hat{Y}_A$.
+Encontrar ${}^{A}\mathbf{p}$ dado ${}^{B}\mathbf{p} = [2{,}5\;\;10{,}0\;\;0{,}0]^T$.
+
+\subsection{Matriz de Transformação Homogênea}
+
+\[
+\Trans{A}{B} =
+\begin{pmatrix}
+  \cos 45\degr & -\sin 45\degr & 0 & 15 \\
+  \sin 45\degr &  \cos 45\degr & 0 &  5 \\
+  0            &  0            & 1 &  0 \\
+  0            &  0            & 0 &  1
+\end{pmatrix}
+=
+\begin{pmatrix}
+  0{,}7071 & -0{,}7071 & 0 & 15 \\
+  0{,}7071 &  0{,}7071 & 0 &  5 \\
+  0        &  0        & 1 &  0 \\
+  0        &  0        & 0 &  1
+\end{pmatrix}
+\]
+
+\subsection{Cálculo de ${}^{A}\mathbf{p}$}
+
+\[
+{}^{A}\mathbf{p} = \Trans{A}{B}\,{}^{B}\mathbf{p}
+\]
+
+\begin{align*}
+  {}^{A}p_x &= 0{,}7071 \cdot 2{,}5 + (-0{,}7071)\cdot 10{,}0 + 0 + 15
+             = 1{,}7678 - 7{,}0711 + 15 = 9{,}6967 \\[4pt]
+  {}^{A}p_y &= 0{,}7071 \cdot 2{,}5 + 0{,}7071 \cdot 10{,}0 + 0 + 5
+             = 1{,}7678 + 7{,}0711 + 5 = 13{,}8389 \\[4pt]
+  {}^{A}p_z &= 0{,}0 + 0{,}0 + 0{,}0 + 0 = 0{,}0000
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+  {}^{A}\mathbf{p} =
+  \begin{pmatrix} 9{,}70 \\ 13{,}84 \\ 0{,}00 \end{pmatrix} \text{ u.c.}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 3
+%==============================================================
+\section{Transformação Homogênea --- Rotação em $\hat{Y}$ e Translação em $X$, $Z$}
+
+\subsection*{Enunciado}
+O sistema $\{B\}$ é rotacionado $50\degr$ em torno de $\hat{Y}$, transladado $8$ u.c.\ em $\hat{X}_A$ e $9$ u.c.\ em $\hat{Z}_A$.
+Encontrar ${}^{A}\mathbf{p}$ dado ${}^{B}\mathbf{p} = [15{,}5\;\;0{,}0\;\;5{,}5]^T$.
+
+\subsection{Matriz de Transformação Homogênea}
+
+\[
+\Trans{A}{B} =
+\begin{pmatrix}
+  \cos 50\degr  & 0 & \sin 50\degr & 8 \\
+  0             & 1 & 0            & 0 \\
+  -\sin 50\degr & 0 & \cos 50\degr & 9 \\
+  0             & 0 & 0            & 1
+\end{pmatrix}
+=
+\begin{pmatrix}
+  0{,}6428  & 0 & 0{,}7660 & 8 \\
+  0         & 1 & 0        & 0 \\
+ -0{,}7660  & 0 & 0{,}6428 & 9 \\
+  0         & 0 & 0        & 1
+\end{pmatrix}
+\]
+
+\subsection{Cálculo de ${}^{A}\mathbf{p}$}
+
+\begin{align*}
+  {}^{A}p_x &= 0{,}6428 \cdot 15{,}5 + 0 + 0{,}7660 \cdot 5{,}5 + 8
+             = 9{,}9634 + 4{,}2130 + 8 = 22{,}1764 \\[4pt]
+  {}^{A}p_y &= 0 + 1\cdot 0 + 0 + 0 = 0{,}0000 \\[4pt]
+  {}^{A}p_z &= -0{,}7660 \cdot 15{,}5 + 0 + 0{,}6428 \cdot 5{,}5 + 9
+             = -11{,}8730 + 3{,}5354 + 9 = 0{,}6624
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+  {}^{A}\mathbf{p} =
+  \begin{pmatrix} 22{,}18 \\ 0{,}00 \\ 0{,}66 \end{pmatrix} \text{ u.c.}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 4
+%==============================================================
+\section{Transformação Inversa ${}^{B}_{A}\mathbf{T}$ a partir de ${}^{A}_{B}\mathbf{T}$}
+
+\subsection*{Enunciado}
+$\{B\}$ é rotacionado $33{,}5\degr$ em torno de $\hat{X}$ e transladado $12$ u.c.\ em $\hat{Y}$ e $6$ u.c.\ em $\hat{Z}$.
+Encontrar ${}^{B}_{A}\mathbf{T}$ a partir de ${}^{A}_{B}\mathbf{T}$.
+
+\subsection{Construção de ${}^{A}_{B}\mathbf{T}$}
+
+Com $c_{33{,}5} = \cos 33{,}5\degr = 0{,}8348$ e $s_{33{,}5} = \sin 33{,}5\degr = 0{,}5505$:
+
+\[
+\Trans{A}{B} =
+\begin{pmatrix}
+  1 & 0            & 0             & 0  \\
+  0 & c_{33{,}5}  & -s_{33{,}5}   & 12 \\
+  0 & s_{33{,}5}  &  c_{33{,}5}   &  6 \\
+  0 & 0            & 0             &  1
+\end{pmatrix}
+=
+\begin{pmatrix}
+  1 & 0       & 0        &  0 \\
+  0 & 0{,}8348 & -0{,}5505 & 12 \\
+  0 & 0{,}5505 &  0{,}8348 &  6 \\
+  0 & 0       & 0        &  1
+\end{pmatrix}
+\]
+
+\subsection{Inversão da Transformação Homogênea}
+
+Para uma transformação homogênea com submatriz de rotação $\mathbf{R}$ e vetor de translação $\mathbf{p}$:
+\[
+  \Trans{B}{A} = \left(\Trans{A}{B}\right)^{-1} =
+  \begin{pmatrix} \mathbf{R}^T & -\mathbf{R}^T\mathbf{p} \\ \mathbf{0}^T & 1 \end{pmatrix}
+\]
+
+A submatriz transposta é:
+\[
+\mathbf{R}^T =
+\begin{pmatrix}
+  1 & 0        & 0        \\
+  0 & 0{,}8348 & 0{,}5505 \\
+  0 &-0{,}5505 & 0{,}8348
+\end{pmatrix}
+\]
+
+O vetor de translação inverso, com $\mathbf{p} = [0\;\;12\;\;6]^T$:
+\begin{align*}
+  -\mathbf{R}^T\mathbf{p} &= -
+  \begin{pmatrix}
+    1 & 0        & 0        \\
+    0 & 0{,}8348 & 0{,}5505 \\
+    0 &-0{,}5505 & 0{,}8348
+  \end{pmatrix}
+  \begin{pmatrix} 0 \\ 12 \\ 6 \end{pmatrix} \\[6pt]
+  &= -\begin{pmatrix}
+    0 \\
+    0{,}8348\cdot12 + 0{,}5505\cdot6 \\
+    -0{,}5505\cdot12 + 0{,}8348\cdot6
+  \end{pmatrix}
+  = -\begin{pmatrix} 0 \\ 13{,}3206 \\ -1{,}5972 \end{pmatrix}
+  = \begin{pmatrix} 0 \\ -13{,}3206 \\ 1{,}5972 \end{pmatrix}
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+\Trans{B}{A} =
+\begin{pmatrix}
+  1 & 0        &  0        &  0        \\
+  0 & 0{,}8348 &  0{,}5505 & -13{,}3206 \\
+  0 &-0{,}5505 &  0{,}8348 &   1{,}5972 \\
+  0 & 0        &  0        &   1
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 5
+%==============================================================
+\section{Composição de Transformações --- Posição e Orientação da Mão em Relação ao Parafuso}
+
+\subsection*{Enunciado}
+Dados os sistemas de referência:
+\begin{itemize}
+  \item $\{T\}$ (mão): rotação $25\degr$ em $\hat{Z}$, translação $[10, 15, 0]$ em $\{B\}$;
+  \item $\{S\}$ (mesa): rotação $90\degr$ em $\hat{Z}$, translação $[5, -10, 0]$ em $\{B\}$;
+  \item $\{G\}$ (parafuso): rotação $60\degr$ em $\hat{Z}$, translação $[5, 5, 0]$ em $\{S\}$.
+\end{itemize}
+Calcular ${}^{G}_{T}\mathbf{T}$.
+
+\subsection{Transformações Individuais}
+
+\textbf{Mão em relação à base} ($c_{25}=0{,}9063$, $s_{25}=0{,}4226$):
+\[
+\Trans{B}{T} =
+\begin{pmatrix}
+  0{,}9063 & -0{,}4226 & 0 & 10 \\
+  0{,}4226 &  0{,}9063 & 0 & 15 \\
+  0        &  0        & 1 &  0 \\
+  0        &  0        & 0 &  1
+\end{pmatrix}
+\]
+
+\textbf{Mesa em relação à base} ($c_{90}=0$, $s_{90}=1$):
+\[
+\Trans{B}{S} =
+\begin{pmatrix}
+  0 & -1 & 0 &   5 \\
+  1 &  0 & 0 & -10 \\
+  0 &  0 & 1 &   0 \\
+  0 &  0 & 0 &   1
+\end{pmatrix}
+\]
+
+\textbf{Parafuso em relação à mesa} ($c_{60}=0{,}5$, $s_{60}=0{,}8660$):
+\[
+\Trans{S}{G} =
+\begin{pmatrix}
+  0{,}5000 & -0{,}8660 & 0 & 5 \\
+  0{,}8660 &  0{,}5000 & 0 & 5 \\
+  0        &  0        & 1 & 0 \\
+  0        &  0        & 0 & 1
+\end{pmatrix}
+\]
+
+\subsection{Parafuso em Relação à Base}
+
+A orientação equivale à composição $\Rz{90\degr}\cdot\Rz{60\degr} = \Rz{150\degr}$, e a translação:
+\[
+  \mathbf{t}_{BG} = \mathbf{t}_{BS} + \Rot{B}{S}\,\mathbf{t}_{SG}
+  = \begin{pmatrix}5\\-10\\0\end{pmatrix}
+  + \begin{pmatrix}0 & -1 & 0\\1 & 0 & 0\\0 & 0 & 1\end{pmatrix}
+  \begin{pmatrix}5\\5\\0\end{pmatrix}
+  = \begin{pmatrix}5-5\\-10+5\\0\end{pmatrix}
+  = \begin{pmatrix}0\\-5\\0\end{pmatrix}
+\]
+
+Com $c_{150}=-0{,}8660$ e $s_{150}=0{,}5000$:
+\[
+\Trans{B}{G} =
+\begin{pmatrix}
+ -0{,}8660 & -0{,}5000 & 0 &  0 \\
+  0{,}5000 & -0{,}8660 & 0 & -5 \\
+  0        &  0        & 1 &  0 \\
+  0        &  0        & 0 &  1
+\end{pmatrix}
+\]
+
+\subsection{Inversão: ${}^{G}_{B}\mathbf{T}$}
+
+\[
+  \mathbf{R}_{GB} = \mathbf{R}_{BG}^T =
+  \begin{pmatrix}
+   -0{,}8660 & 0{,}5000 & 0 \\
+   -0{,}5000 &-0{,}8660 & 0 \\
+    0        & 0        & 1
+  \end{pmatrix}
+\]
+\[
+  \mathbf{t}_{GB} = -\mathbf{R}_{GB}\,\mathbf{t}_{BG}
+  = -\begin{pmatrix}-0{,}8660&0{,}5000&0\\-0{,}5000&-0{,}8660&0\\0&0&1\end{pmatrix}
+  \begin{pmatrix}0\\-5\\0\end{pmatrix}
+  = -\begin{pmatrix}-2{,}5\\4{,}3301\\0\end{pmatrix}
+  = \begin{pmatrix}2{,}5\\-4{,}3301\\0\end{pmatrix}
+\]
+
+\subsection{Transformação Final ${}^{G}_{T}\mathbf{T}$}
+
+A rotação composta:
+\[
+  \Rot{G}{T} = \Rot{G}{B}\cdot\Rot{B}{T} = \Rz{-150\degr}\cdot\Rz{25\degr} = \Rz{-125\degr}
+\]
+
+Com $\cos(-125\degr) = -0{,}5736$ e $\sin(-125\degr) = -0{,}8192$:
+
+Translação:
+\begin{align*}
+  \mathbf{t}_{GT} &= \mathbf{R}_{GB}\,\mathbf{t}_{BT} + \mathbf{t}_{GB} \\
+  &= \begin{pmatrix}-0{,}8660&0{,}5000&0\\-0{,}5000&-0{,}8660&0\\0&0&1\end{pmatrix}
+     \begin{pmatrix}10\\15\\0\end{pmatrix}
+  + \begin{pmatrix}2{,}5\\-4{,}3301\\0\end{pmatrix} \\
+  &= \begin{pmatrix}-8{,}660+7{,}500\\-5{,}000-12{,}990\\0\end{pmatrix}
+  + \begin{pmatrix}2{,}5\\-4{,}3301\\0\end{pmatrix}
+  = \begin{pmatrix}1{,}340\\-22{,}320\\0\end{pmatrix}
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+\Trans{G}{T} =
+\begin{pmatrix}
+ -0{,}5736 &  0{,}8192 & 0 &   1{,}340 \\
+ -0{,}8192 & -0{,}5736 & 0 & -22{,}320 \\
+  0        &  0        & 1 &   0{,}000 \\
+  0        &  0        & 0 &   1
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 6
+%==============================================================
+\section{Reorientação do Efetuador com Rotação Adicional em $\hat{Y}$}
+
+\subsection*{Enunciado}
+Recalcular ${}^{G}_{T}\mathbf{T}$ após o efetuador ser rotacionado adicionalmente $45\degr$ em torno de $\hat{Y}$ (eixo do corpo).
+
+\subsection{Nova Orientação de $\{T\}$}
+
+A rotação adicional em torno do eixo $\hat{Y}$ do corpo resulta em pós-multiplicação:
+\[
+  \Rot{B}{T'} = \Rot{B}{T}\cdot\Ry{45\degr} = \Rz{25\degr}\cdot\Ry{45\degr}
+\]
+
+Com $c_{25}=0{,}9063$, $s_{25}=0{,}4226$, $c_{45}=s_{45}=0{,}7071$:
+
+\[
+\Rot{B}{T'} =
+\begin{pmatrix}
+  c_{25}\,c_{45} & -s_{25} & c_{25}\,s_{45} \\
+  s_{25}\,c_{45} &  c_{25} & s_{25}\,s_{45} \\
+  -s_{45}        &  0      & c_{45}
+\end{pmatrix}
+=
+\begin{pmatrix}
+  0{,}6408 & -0{,}4226 & 0{,}6408 \\
+  0{,}2988 &  0{,}9063 & 0{,}2988 \\
+ -0{,}7071 &  0        & 0{,}7071
+\end{pmatrix}
+\]
+
+\subsection{Nova Rotação Total ${}^{G}_{T'}\mathbf{R}$}
+
+\[
+  \Rot{G}{T'} = \Rot{G}{B}\cdot\Rot{B}{T'} = \Rz{-125\degr}\cdot\Ry{45\degr}
+\]
+
+\begin{align*}
+  r_{11} &= (-0{,}5736)(0{,}7071) = -0{,}4055 \\
+  r_{12} &= (-0{,}5736)(0) + (0{,}8192)(1) = 0{,}8192 \\
+  r_{13} &= (-0{,}5736)(0{,}7071) = -0{,}4055 \\
+  r_{21} &= (-0{,}8192)(0{,}7071) = -0{,}5793 \\
+  r_{22} &= (-0{,}8192)(0) + (-0{,}5736)(1) = -0{,}5736 \\
+  r_{23} &= (-0{,}8192)(0{,}7071) = -0{,}5793 \\
+  r_{31} &= -0{,}7071,\quad r_{32} = 0,\quad r_{33} = 0{,}7071
+\end{align*}
+
+A translação permanece $\mathbf{t}_{GT} = [1{,}340\;\;{-}22{,}320\;\;0]^T$ (sem translação adicional).
+
+\begin{tcolorbox}[resultbox]
+\[
+\Trans{G}{T'} =
+\begin{pmatrix}
+ -0{,}4055 &  0{,}8192 & -0{,}4055 &   1{,}340 \\
+ -0{,}5793 & -0{,}5736 & -0{,}5793 & -22{,}320 \\
+ -0{,}7071 &  0        &  0{,}7071 &   0{,}000 \\
+  0        &  0        &  0        &   1
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 7
+%==============================================================
+\section{Representação em Ângulos Fixos X-Y-Z da Matriz ${}^{G}_{T}\mathbf{R}$ (Questão 6)}
+
+\subsection*{Enunciado}
+Representar a matriz ${}^{G}_{T'}\mathbf{R}$ obtida na Questão~6 em ângulos fixos X-Y-Z.
+
+\subsection{Fórmula de Extração}
+
+Para ângulos fixos X-Y-Z ($\gamma$, $\beta$, $\alpha$), a matriz de rotação tem a forma:
+\[
+  \mathbf{R} = \Rz{\alpha}\Ry{\beta}\Rx{\gamma} =
+  \begin{pmatrix}
+    c\alpha c\beta & c\alpha s\beta s\gamma - s\alpha c\gamma & c\alpha s\beta c\gamma + s\alpha s\gamma \\
+    s\alpha c\beta & s\alpha s\beta s\gamma + c\alpha c\gamma & s\alpha s\beta c\gamma - c\alpha s\gamma \\
+    -s\beta        & c\beta s\gamma                           & c\beta c\gamma
+  \end{pmatrix}
+\]
+
+As fórmulas de extração são:
+\begin{align}
+  \beta  &= \mathrm{atan2}\!\left(-r_{31},\;\sqrt{r_{11}^2+r_{21}^2}\right) \label{eq:beta}\\
+  \alpha &= \mathrm{atan2}\!\left(\frac{r_{21}}{c\beta},\;\frac{r_{11}}{c\beta}\right) \label{eq:alpha}\\
+  \gamma &= \mathrm{atan2}\!\left(\frac{r_{32}}{c\beta},\;\frac{r_{33}}{c\beta}\right) \label{eq:gamma}
+\end{align}
+
+\subsection{Extração dos Ângulos}
+
+Da matriz obtida na Questão~6:
+$r_{11}=-0{,}4055$, $r_{21}=-0{,}5793$, $r_{31}=-0{,}7071$, $r_{32}=0$, $r_{33}=0{,}7071$.
+
+\textbf{Ângulo $\beta$ (Pitch, em torno de $Y$):}
+\[
+  \beta = \mathrm{atan2}\!\left(0{,}7071,\;\sqrt{(-0{,}4055)^2+(-0{,}5793)^2}\right)
+        = \mathrm{atan2}\!\left(0{,}7071,\;\sqrt{0{,}4999}\right)
+        = \mathrm{atan2}(0{,}7071,\;0{,}7071) = 45\degr
+\]
+
+\textbf{Ângulo $\alpha$ (Yaw, em torno de $Z$):}
+\[
+  \alpha = \mathrm{atan2}\!\left(\frac{-0{,}5793}{0{,}7071},\;\frac{-0{,}4055}{0{,}7071}\right)
+         = \mathrm{atan2}(-0{,}8192,\;-0{,}5736) = -125\degr
+\]
+
+\textbf{Ângulo $\gamma$ (Roll, em torno de $X$):}
+\[
+  \gamma = \mathrm{atan2}\!\left(\frac{0}{0{,}7071},\;\frac{0{,}7071}{0{,}7071}\right)
+         = \mathrm{atan2}(0,\;1) = 0\degr
+\]
+
+\textbf{Verificação:} $\Rz{-125\degr}\Ry{45\degr}\Rx{0\degr} = \Rz{-125\degr}\Ry{45\degr}$ reproduz exatamente a matriz da Questão~6. $\checkmark$
+
+\begin{tcolorbox}[resultbox]
+\begin{center}
+\begin{tabular}{ccc}
+  \toprule
+  Ângulo & Eixo & Valor \\
+  \midrule
+  $\gamma$ & $X$ (Roll)  & $0\degr$ \\
+  $\beta$  & $Y$ (Pitch) & $45\degr$ \\
+  $\alpha$ & $Z$ (Yaw)   & $-125\degr$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\[
+  {}^{G}_{T'}\mathbf{R} \;\equiv\; \Rz{-125\degr}\,\Ry{45\degr}\,\Rx{0\degr}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 8
+%==============================================================
+\section{Ângulos de Euler Z-Y-X com $\alpha=30\degr$, $\beta=45\degr$, $\gamma=60\degr$}
+
+\subsection*{Enunciado}
+$\{B\}$ parte coincidente com $\{A\}$ e é rotacionado sequencialmente:
+$\hat{Z}_B$ por $\alpha=30\degr$, depois $\hat{Y}_B$ por $\beta=45\degr$, depois $\hat{X}_B$ por $\gamma=60\degr$.
+Determinar a matriz rotacional pelos ângulos de Euler Z-Y-X.
+
+\subsection{Definição}
+
+Para ângulos de Euler Z-Y-X (rotações em torno dos eixos do corpo):
+\[
+  \mathbf{R} = \Rz{\alpha}\,\Ry{\beta}\,\Rx{\gamma}
+\]
+
+\subsection{Matrizes Elementares}
+
+\[
+\Rz{30\degr} =
+\begin{pmatrix} 0{,}8660 & -0{,}5000 & 0 \\ 0{,}5000 & 0{,}8660 & 0 \\ 0 & 0 & 1 \end{pmatrix}
+\quad
+\Ry{45\degr} =
+\begin{pmatrix} 0{,}7071 & 0 & 0{,}7071 \\ 0 & 1 & 0 \\ -0{,}7071 & 0 & 0{,}7071 \end{pmatrix}
+\]
+\[
+\Rx{60\degr} =
+\begin{pmatrix} 1 & 0 & 0 \\ 0 & 0{,}5000 & -0{,}8660 \\ 0 & 0{,}8660 & 0{,}5000 \end{pmatrix}
+\]
+
+\subsection{Produto Intermediário $\Rz{30\degr}\Ry{45\degr}$}
+
+\[
+\Rz{30\degr}\Ry{45\degr} =
+\begin{pmatrix}
+  0{,}6124 & -0{,}5000 & 0{,}6124 \\
+  0{,}3536 &  0{,}8660 & 0{,}3536 \\
+ -0{,}7071 &  0        & 0{,}7071
+\end{pmatrix}
+\]
+
+\subsection{Produto Final com $\Rx{60\degr}$}
+
+\begin{align*}
+  r_{11} &= 0{,}6124 \\
+  r_{12} &= (-0{,}5000)(0{,}5000) + (0{,}6124)(0{,}8660) = -0{,}2500 + 0{,}5303 = 0{,}2803 \\
+  r_{13} &= (-0{,}5000)(-0{,}8660) + (0{,}6124)(0{,}5000) = 0{,}4330 + 0{,}3062 = 0{,}7392 \\
+  r_{21} &= 0{,}3536 \\
+  r_{22} &= (0{,}8660)(0{,}5000) + (0{,}3536)(0{,}8660) = 0{,}4330 + 0{,}3062 = 0{,}7392 \\
+  r_{23} &= (0{,}8660)(-0{,}8660) + (0{,}3536)(0{,}5000) = -0{,}7500 + 0{,}1768 = -0{,}5732 \\
+  r_{31} &= -0{,}7071 \\
+  r_{32} &= (0{,}7071)(0{,}8660) = 0{,}6124 \\
+  r_{33} &= (0{,}7071)(0{,}5000) = 0{,}3536
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+\mathbf{R}_{Z\text{-}Y\text{-}X} = \Rz{30\degr}\,\Ry{45\degr}\,\Rx{60\degr} =
+\begin{pmatrix}
+  0{,}6124 &  0{,}2803 &  0{,}7392 \\
+  0{,}3536 &  0{,}7392 & -0{,}5732 \\
+ -0{,}7071 &  0{,}6124 &  0{,}3536
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 9
+%==============================================================
+\section{Rotação em torno de Eixo Arbitrário Passando por um Ponto}
+
+\subsection*{Enunciado}
+$\{B\}$ parte coincidente com $\{A\}$ e é rotacionado $\theta=60\degr$ em torno de
+${}^{A}\hat{K} = [1{,}2\;\;0{,}5\;\;0{,}0]^T$ passando pelo ponto ${}^{A}\mathbf{p} = [1{,}25\;\;2{,}5\;\;5{,}0]^T$.
+Dar a descrição de $\{B\}$.
+
+\subsection{Normalização do Eixo de Rotação}
+
+\[
+  |\hat{K}| = \sqrt{1{,}2^2 + 0{,}5^2} = \sqrt{1{,}69} = 1{,}3
+\]
+\[
+  \hat{K} = \left[\frac{1{,}2}{1{,}3},\;\frac{0{,}5}{1{,}3},\;0\right]^T = [0{,}9231,\;0{,}3846,\;0]^T
+\]
+
+\subsection{Fórmula de Rodrigues}
+
+\[
+  \mathbf{R} = \cos\theta\,\mathbf{I} + (1-\cos\theta)\,\hat{K}\hat{K}^T + \sin\theta\,[\hat{K}\times]
+\]
+
+com $\cos 60\degr = 0{,}5$ e $\sin 60\degr = 0{,}8660$.
+
+\[
+  \hat{K}\hat{K}^T =
+  \begin{pmatrix}
+    0{,}8521 & 0{,}3551 & 0 \\
+    0{,}3551 & 0{,}1479 & 0 \\
+    0        & 0        & 0
+  \end{pmatrix}
+  \qquad
+  [\hat{K}\times] =
+  \begin{pmatrix}
+    0        & 0        &  0{,}3846 \\
+    0        & 0        & -0{,}9231 \\
+   -0{,}3846 & 0{,}9231 &  0
+  \end{pmatrix}
+\]
+
+\begin{align*}
+  \mathbf{R} &= 0{,}5\,\mathbf{I}
+    + 0{,}5 \begin{pmatrix} 0{,}8521 & 0{,}3551 & 0 \\ 0{,}3551 & 0{,}1479 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+    + 0{,}8660 \begin{pmatrix} 0 & 0 & 0{,}3846 \\ 0 & 0 & -0{,}9231 \\ -0{,}3846 & 0{,}9231 & 0 \end{pmatrix}
+\end{align*}
+
+\[
+\mathbf{R} =
+\begin{pmatrix}
+  0{,}9260 &  0{,}1776 &  0{,}3331 \\
+  0{,}1776 &  0{,}5740 & -0{,}7994 \\
+ -0{,}3331 &  0{,}7994 &  0{,}5000
+\end{pmatrix}
+\]
+
+\subsection{Translação da Origem de $\{B\}$}
+
+A rotação em torno de eixo que passa pelo ponto $\mathbf{p}$ translada a origem de $\{B\}$:
+\[
+  \mathbf{o}_B = \mathbf{p} + \mathbf{R}(\mathbf{0} - \mathbf{p}) = (\mathbf{I} - \mathbf{R})\,\mathbf{p}
+\]
+
+\[
+  \mathbf{I} - \mathbf{R} =
+  \begin{pmatrix}
+    0{,}0740 & -0{,}1776 & -0{,}3331 \\
+   -0{,}1776 &  0{,}4260 &  0{,}7994 \\
+    0{,}3331 & -0{,}7994 &  0{,}5000
+  \end{pmatrix}
+\]
+
+\begin{align*}
+  o_{Bx} &= 0{,}0740(1{,}25) + (-0{,}1776)(2{,}5) + (-0{,}3331)(5{,}0)
+           = 0{,}0925 - 0{,}4440 - 1{,}6655 = -2{,}0170 \\
+  o_{By} &= (-0{,}1776)(1{,}25) + 0{,}4260(2{,}5) + 0{,}7994(5{,}0)
+           = -0{,}2220 + 1{,}0650 + 3{,}9970 = 4{,}8400 \\
+  o_{Bz} &= 0{,}3331(1{,}25) + (-0{,}7994)(2{,}5) + 0{,}5000(5{,}0)
+           = 0{,}4164 - 1{,}9985 + 2{,}5000 = 0{,}9179
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+\[
+\Trans{A}{B} =
+\begin{pmatrix}
+  0{,}9260 &  0{,}1776 &  0{,}3331 & -2{,}0170 \\
+  0{,}1776 &  0{,}5740 & -0{,}7994 &  4{,}8400 \\
+ -0{,}3331 &  0{,}7994 &  0{,}5000 &  0{,}9179 \\
+  0        &  0        &  0        &  1
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 10
+%==============================================================
+\section{Matriz Rotacional via Parâmetros de Euler (Quaternion)}
+
+\subsection*{Enunciado}
+$\{B\}$ parte coincidente com $\{A\}$ e é rotacionado $\theta=45\degr$ em torno de
+${}^{A}\hat{K} = [1{,}0\;\;0{,}5\;\;0{,}0]^T$. Determinar a matriz rotacional pelos parâmetros de Euler.
+
+\subsection{Normalização do Eixo}
+
+\[
+  |\hat{K}| = \sqrt{1{,}0^2 + 0{,}5^2} = \sqrt{1{,}25} = 1{,}1180
+\]
+\[
+  \hat{k} = \left[\frac{1{,}0}{1{,}1180},\;\frac{0{,}5}{1{,}1180},\;0\right]^T
+           = [0{,}8944,\;0{,}4472,\;0]^T
+\]
+
+\subsection{Parâmetros de Euler (Quaternion Unitário)}
+
+Os parâmetros de Euler são definidos como:
+\[
+  \varepsilon_1 = k_x\sin\frac{\theta}{2},\quad
+  \varepsilon_2 = k_y\sin\frac{\theta}{2},\quad
+  \varepsilon_3 = k_z\sin\frac{\theta}{2},\quad
+  \varepsilon_4 = \cos\frac{\theta}{2}
+\]
+
+Com $\theta/2 = 22{,}5\degr$, $\sin 22{,}5\degr = 0{,}3827$, $\cos 22{,}5\degr = 0{,}9239$:
+
+\begin{align*}
+  \varepsilon_1 &= 0{,}8944 \times 0{,}3827 = 0{,}3423 \\
+  \varepsilon_2 &= 0{,}4472 \times 0{,}3827 = 0{,}1711 \\
+  \varepsilon_3 &= 0 \\
+  \varepsilon_4 &= 0{,}9239
+\end{align*}
+
+\textbf{Verificação:} $\varepsilon_1^2+\varepsilon_2^2+\varepsilon_3^2+\varepsilon_4^2 = 0{,}1172+0{,}0293+0+0{,}8536 = 1{,}0001 \approx 1$. $\checkmark$
+
+\subsection{Matriz Rotacional}
+
+\[
+\mathbf{R} =
+\begin{pmatrix}
+  1-2(\varepsilon_2^2+\varepsilon_3^2)       & 2(\varepsilon_1\varepsilon_2-\varepsilon_3\varepsilon_4) & 2(\varepsilon_1\varepsilon_3+\varepsilon_2\varepsilon_4) \\
+  2(\varepsilon_1\varepsilon_2+\varepsilon_3\varepsilon_4) & 1-2(\varepsilon_1^2+\varepsilon_3^2)       & 2(\varepsilon_2\varepsilon_3-\varepsilon_1\varepsilon_4) \\
+  2(\varepsilon_1\varepsilon_3-\varepsilon_2\varepsilon_4) & 2(\varepsilon_2\varepsilon_3+\varepsilon_1\varepsilon_4) & 1-2(\varepsilon_1^2+\varepsilon_2^2)
+\end{pmatrix}
+\]
+
+Calculando cada elemento:
+\begin{align*}
+  R_{11} &= 1 - 2(0{,}0293) = 0{,}9414 \\
+  R_{12} &= 2(0{,}3423\cdot0{,}1711) = 2(0{,}0586) = 0{,}1172 \\
+  R_{13} &= 2(0 + 0{,}1711\cdot0{,}9239) = 2(0{,}1580) = 0{,}3160 \\
+  R_{21} &= 2(0{,}3423\cdot0{,}1711 + 0) = 0{,}1172 \\
+  R_{22} &= 1 - 2(0{,}1172) = 0{,}7656 \\
+  R_{23} &= 2(0 - 0{,}3423\cdot0{,}9239) = 2(-0{,}3162) = -0{,}6324 \\
+  R_{31} &= 2(0 - 0{,}1711\cdot0{,}9239) = -0{,}3160 \\
+  R_{32} &= 2(0 + 0{,}3423\cdot0{,}9239) = 0{,}6324 \\
+  R_{33} &= 1 - 2(0{,}1172+0{,}0293) = 0{,}7070
+\end{align*}
+
+\textbf{Verificação cruzada via Rodrigues} ($\hat{k}=[0{,}8944;\;0{,}4472;\;0]$, $\theta=45\degr$):
+\[
+\mathbf{R}_{Rod} = 0{,}7071\,\mathbf{I} + 0{,}2929\,\hat{k}\hat{k}^T + 0{,}7071\,[\hat{k}\times]
+\]
+Resulta na mesma matriz, confirmando a equivalência. $\checkmark$
+
+\begin{tcolorbox}[resultbox]
+\textbf{Parâmetros de Euler:}
+$\quad\varepsilon_1 = 0{,}3423,\quad\varepsilon_2 = 0{,}1711,\quad\varepsilon_3 = 0,\quad\varepsilon_4 = 0{,}9239$
+
+\[
+\mathbf{R}_{Euler} =
+\begin{pmatrix}
+  0{,}9414 &  0{,}1172 &  0{,}3160 \\
+  0{,}1172 &  0{,}7656 & -0{,}6324 \\
+ -0{,}3160 &  0{,}6324 &  0{,}7070
+\end{pmatrix}
+\]
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% REFERÊNCIAS
+%==============================================================
+\section*{Referências}
+\addcontentsline{toc}{section}{Referências}
+
+\begin{enumerate}[label={[\arabic*]}]
+  \item CRAIG, J.\ J. \textit{Introduction to Robotics: Mechanics and Control}.
+        3.\ ed.\ Upper Saddle River: Pearson Prentice Hall, 2005.
+  \item SICILIANO, B.\ et al.\ \textit{Robotics: Modelling, Planning and Control}.
+        London: Springer, 2009.
+  \item SPONG, M.\ W.; HUTCHINSON, S.; VIDYASAGAR, M.\ \textit{Robot Modeling and Control}.
+        Hoboken: Wiley, 2006.
+\end{enumerate}
+
+\end{document}
