@@ -9,7 +9,8 @@
     openright,
     twoside,
     a4paper,
-    brazil
+    brazil,
+    english
 ]{abntex2}
 
 %--------------------------------------------------------------------------
@@ -19,7 +20,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
 \usepackage{microtype}
-\usepackage[brazil]{babel}
+\usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{mathtools}
@@ -147,6 +148,7 @@
 
     \vspace*{2cm}
 
+    \makeatletter
     \abntex@ifnotempty{\imprimirpreambulo}{%
       \hspace{.45\textwidth}
       \begin{minipage}{.5\textwidth}
@@ -158,6 +160,7 @@
         \textbf{Co-orientador:} \imprimircoorientador
       \end{minipage}%
     }%
+    \makeatother
 
     \vfill
 
@@ -506,7 +509,7 @@ Modelling} (PyBaMM) como base de simulação.
 
 \section{Hipóteses de Pesquisa}
 
-\begin{enumerate}[H1.]
+\begin{enumerate}[label=H\arabic*.]
   \item A combinação do modelo DFN com os mecanismos de degradação acoplados do
         conjunto OKane2022 reproduz com precisão (erro $< 5\%$) as curvas de
         capacidade de células reais submetidas a envelhecimento acelerado;
