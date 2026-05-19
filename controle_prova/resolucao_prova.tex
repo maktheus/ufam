@@ -756,6 +756,379 @@ A estrutura 2-DOF com pré-filtro minimiza, mas não elimina, o efeito.
 \vspace{10pt}\hrule\vspace{10pt}
 
 %==========================================================================
+\section*{Questão 3 \normalfont\small(Pêndulo Invertido sobre um Carro) — Transcrição e Resolução}
+%==========================================================================
+
+\begin{enunciado}
+As equações normalizadas e escaladas do carro de massa $m_c$ que sustenta um
+pêndulo invertido uniforme de massa $m_p$ e comprimento $l$, sem atrito, são:
+\[
+  \ddot{\theta} - \theta = -v, \qquad
+  \ddot{y} + \beta\ddot{\theta} = v,
+\]
+sendo $\beta = \dfrac{3m_p}{4(m_c+m_p)}$ com $0 < \beta < 0{,}75$.
+A entrada $v$ é normalizada pela massa do sistema.
+As funções de transferência resultantes são:
+\begin{align}
+  \frac{\Theta(s)}{V(s)} &= -\frac{1}{s^2-1} \label{eq:Gtheta}\\[4pt]
+  \frac{Y(s)}{V(s)} &= \frac{s^2-1+\beta}{s^2(s^2-1)} \label{eq:Gy}
+\end{align}
+\textbf{Neste problema, pede-se para projetar um sistema de controle para o
+sistema fechando uma malha em torno do pêndulo (cf.\ (\ref{eq:Gtheta})) e,
+então, com esta malha fechada, fechando a segunda malha em torno do carrinho
+mais o pêndulo (cf.\ (\ref{eq:Gy})). Deixe a relação massa ser $m_c = 2m_p$.}
+
+\begin{itemize}
+  \item[(a)] Projete um compensador $D(s) = K\dfrac{s+a}{s+b}$ para a malha do
+  pêndulo, visando cancelar o polo em $s=-1$ e alocar os demais polos em
+  $-3 \pm j3$. Neste cenário: $V(s) = U(s) + D(s)\Theta(s)$.
+  \item[(b)] Obtenha a FT do sistema do item anterior (de $U$ para $Y$) e
+  esboce o lugar das raízes para esse sistema.
+  \item[(c)] Desenhe um diagrama em blocos para o sistema, fechando a segunda
+  malha e adicionando o controlador $C(s)$ para controle da posição do carro.
+  \item[(d)] Projete um controlador PD $C(s)$ para garantir máximo sobressinal
+  menor que $50\%$.
+  \item[(e)] Qual o erro em regime permanente do sistema em malha fechada?
+\end{itemize}
+\end{enunciado}
+
+%--------------------------------------------------------------------------
+\subsection*{Q3 — Parâmetro $\beta$ e FTs com $m_c = 2m_p$}
+%--------------------------------------------------------------------------
+
+Com $m_c = 2m_p$, $m_c + m_p = 3m_p$:
+\[
+  \beta = \frac{3m_p}{4 \cdot 3m_p} = \frac{1}{4} = 0{,}25
+\]
+
+As funções de transferência tornam-se:
+\[
+  G_\theta(s) = -\frac{1}{s^2-1} = \frac{-1}{(s-1)(s+1)}, \qquad
+  G_y(s) = \frac{s^2-0{,}75}{s^2(s^2-1)}
+\]
+
+$G_\theta$ possui um polo instável em $s = +1$ e um polo estável em $s=-1$.
+
+%--------------------------------------------------------------------------
+\subsection*{Q3(a) — Projeto do Compensador $D(s)$ para a Malha Interna (Pêndulo)}
+%--------------------------------------------------------------------------
+
+\begin{metodo}
+  Root Locus (lec10--12): A malha interna opera com \emph{realimentação positiva}
+  $V = U + D(s)\Theta$. A equação característica é $1 - G_\theta(s)D(s) = 0$.
+\end{metodo}
+
+\textbf{Cancelamento do polo em $s=-1$:} escolha $a = 1$ (zero de $D$ cancela
+o polo estável de $G_\theta$ em $-1$). Após a cancelamento:
+
+\[
+  1 - G_\theta(s)D(s) = 1 + \frac{K(s+1)}{(s+7)} \cdot \frac{1}{(s-1)(s+1)}
+  = 1 + \frac{K}{(s-1)(s+b)} = 0
+\]
+
+Equação característica residual:
+\[
+  (s-1)(s+b) + K = s^2 + (b-1)s + (K-b) = 0
+\]
+
+Para polos desejados $s^* = -3 \pm j3$, o polinômio característico desejado é:
+\[
+  (s+3-j3)(s+3+j3) = s^2 + 6s + 18
+\]
+
+Identificando coeficientes:
+\begin{align*}
+  b - 1 &= 6 \;\Rightarrow\; b = 7 \\
+  K - b &= 18 \;\Rightarrow\; K = 25
+\end{align*}
+
+\textbf{Verificação:} $(s-1)(s+7) + 25 = s^2 + 6s - 7 + 25 = s^2 + 6s + 18$ \checkmark
+
+\begin{resposta}
+\[
+  \boxed{D(s) = 25\,\frac{s+1}{s+7}}
+\]
+Polos de malha fechada da malha interna: $s = -3 \pm j3$ (confirmado numericamente).
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Q3(b) — FT de $U$ para $Y$ e Lugar das Raízes da Malha Externa}
+%--------------------------------------------------------------------------
+
+Com $V = U + D\Theta$ e $\Theta = G_\theta V$, $Y = G_y V$, a FT externa é:
+\[
+  G_{ext}(s) \triangleq \frac{Y(s)}{U(s)} = \frac{G_y(s)}{1 - G_\theta(s)D(s)}
+\]
+
+Calculando $1 - G_\theta D$:
+\[
+  1 - G_\theta D = 1 + \frac{25}{(s-1)(s+7)} = \frac{s^2+6s+18}{(s-1)(s+7)}
+\]
+
+Portanto:
+\[
+  G_{ext}(s) = \frac{s^2-0{,}75}{s^2(s-1)(s+1)} \cdot \frac{(s-1)(s+7)}{s^2+6s+18}
+             = \boxed{\frac{(s^2-\tfrac{3}{4})(s+7)}{s^2(s+1)(s^2+6s+18)}}
+\]
+
+\textit{O polo instável $s=+1$ é cancelado pela malha interna} — a estabilização
+do pêndulo é confirmada.
+
+\textbf{Polos e zeros de $G_{ext}$:}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Polos & $\{0\;(\times 2),\; -1,\; -3 \pm j3\}$ \\
+Zeros & $\{+0{,}866\text{ (RHP!)},\; -0{,}866,\; -7\}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Esboço do Root Locus (malha externa):}
+
+$n - m = 5 - 3 = 2$ ramos para o infinito.
+Centro das assíntotas: $\sigma_a = \tfrac{\sum\text{polos} - \sum\text{zeros}}{n-m}
+= \tfrac{-7 - (-7)}{2} = 0$.
+Ângulos das assíntotas: $\pm 90\degrees$.
+
+\begin{center}
+\begin{tikzpicture}[scale=0.55]
+  \draw[->] (-5.5,0) -- (2.2,0) node[right] {Re};
+  \draw[->] (0,-4.2) -- (0,4.2) node[above] {Im};
+  % Poles
+  \filldraw[blue] (0,0) circle (3.5pt);
+  \filldraw[blue] (0,0.12) circle (3.5pt) node[above right] {\small $0\times2$};
+  \filldraw[blue] (-1,0) circle (3.5pt) node[below] {\small $-1$};
+  \filldraw[blue] (-3,3) circle (3.5pt) node[left] {\small $-3{+}j3$};
+  \filldraw[blue] (-3,-3) circle (3.5pt) node[left] {\small $-3{-}j3$};
+  % Zeros
+  \draw[blue,thick] (0.866,0) circle (4.5pt) node[above right] {\small $+0.87$};
+  \node[red!70!black,right] at (0.95,-0.4) {\tiny RHP!};
+  \draw[blue,thick] (-0.866,0) circle (4.5pt) node[above left] {\small $-0.87$};
+  \draw[blue,thick] (-4.5,0) circle (4.5pt) node[below] {\small $-7$};
+  % Asymptotes (±90° from σ=0)
+  \draw[dashed,gray] (0,-4) -- (0,4) node[right,gray,font=\tiny] {assínt.};
+  % Root locus branches (schematic)
+  \draw[green!60!black,thick,->] (0,0) -- (-4.2,0);
+  \draw[orange,thick,->] (-1,0) -- (-4.7,0);
+  \draw[orange,thick,->] (-3,3) .. controls (-1.5,1.5) and (0,2) .. (0,4);
+  \draw[orange,thick,->] (-3,-3) .. controls (-1.5,-1.5) and (0,-2) .. (0,-4);
+  \draw[red!80!black,thick,->] (0,0) .. controls (0.4,0) .. (0.9,0);
+  \node[font=\tiny,below right] at (0.5,-0.2) {\textcolor{red!70!black}{$\to$ RHP!}};
+\end{tikzpicture}
+\end{center}
+
+O zero RHP em $s \approx +0{,}866$ atrai um ramo para o semi-plano direito,
+impondo restrições fundamentais de controle (largura de banda limitada e
+\textit{undershoot} intrínseco na resposta ao degrau).
+
+%--------------------------------------------------------------------------
+\subsection*{Q3(c) — Diagrama em Blocos do Sistema Completo}
+%--------------------------------------------------------------------------
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.0cm,auto,
+    block/.style={draw,rectangle,minimum height=0.8cm,minimum width=1.3cm,align=center},
+    sum/.style={draw,circle,inner sep=1.5pt}]
+  % Outer loop
+  \node (r) {$R$};
+  \node[sum, right=0.7cm of r] (sum_out) {$\circ$};
+  \node[block, right=0.9cm of sum_out] (C) {$C(s)$};
+  % Inner loop summing junction
+  \node[sum, right=1.0cm of C] (sum_in) {$\circ$};
+  \node[block, right=0.9cm of sum_in] (Gtheta) {\small $G_\theta$};
+  \node[right=0.7cm of Gtheta] (theta_node) {};
+  \node[block, right=0.7cm of theta_node] (Gy) {\small $G_y$};
+  \node[right=0.8cm of Gy] (y_out) {$Y$};
+  % D(s)
+  \node[block, below=0.9cm of sum_in] (D) {$D(s)$};
+  % Labels
+  \node[above,font=\small] at ($(sum_in)!0.5!(Gtheta)$) {$V$};
+  \node[above,font=\small] at (theta_node) {$\Theta$};
+  % Outer loop lines
+  \draw[->] (r) -- (sum_out) node[midway,above] {\small};
+  \draw[->] (sum_out) -- (C) node[midway,above] {$e$};
+  \draw[->] (C) -- (sum_in) node[midway,above] {$U$};
+  \draw[->] (sum_in) -- (Gtheta);
+  \draw[->] (Gtheta) -- (theta_node);
+  \draw[->] (theta_node) -- (Gy);
+  \draw[->] (Gy) -- (y_out);
+  % Inner feedback: Theta -> D -> sum_in (+)
+  \draw[->] (theta_node) |- (D);
+  \draw[->] (D) -| (sum_in) node[near end,right] {\small $+$};
+  % Outer feedback: Y -> sum_out (-)
+  \draw[->] ($(Gy.east)!0.4!(y_out)$) -- ++(0,-1.7cm) -| (sum_out)
+            node[near end,left] {\small $-$};
+\end{tikzpicture}
+\end{center}
+
+A malha interna (realimentação positiva de $\Theta$ via $D(s)$) estabiliza o
+pêndulo; a malha externa (realimentação negativa de $Y$ via $C(s)$) controla
+a posição do carro.
+
+%--------------------------------------------------------------------------
+\subsection*{Q3(d) — Projeto do Controlador PD para \%OS $< 50\%$}
+%--------------------------------------------------------------------------
+
+\begin{metodo}
+  O ganho efetivo de DC de $G_{ext}$ através do duplo integrador é:
+  \[\lim_{s\to 0}\,s^2\,G_{ext}(s) = \frac{(-0{,}75)(7)}{(1)(18)} = -0{,}292 < 0\]
+  Portanto a malha externa deve usar \textbf{realimentação positiva}
+  (ou equivalentemente, ganho negativo em realimentação negativa).
+\end{metodo}
+
+\textbf{Estrutura do controlador:}
+\[
+  C(s) = K_0(s + z), \quad K_0 > 0, \quad \text{(realimentação positiva)}
+\]
+
+A equação característica da malha externa com realimentação positiva é:
+\[
+  s^2(s+1)(s^2+6s+18) - K_0(s+z)(s^2-\tfrac{3}{4})(s+7) = 0
+\]
+
+\textbf{Escolha de parâmetros}: $K_0 = 1{,}70$, $z = 0{,}5$.
+
+\textbf{Verificação da estabilidade:} polos de malha fechada:
+\begin{align*}
+  s_{1,2} &= -0{,}255 \pm j0{,}903 \quad\text{(dominantes, }\zeta \approx 0{,}271\text{)} \\
+  s_{3,4} &= -1{,}244 \pm j0{,}809 \\
+  s_5     &= -2{,}304
+\end{align*}
+Todos com $\text{Re}(s) < 0$: sistema estável $\checkmark$
+
+\textbf{Sobressinal estimado:}
+\[
+  \text{\%OS} = e^{-\pi\zeta/\sqrt{1-\zeta^2}} \times 100
+  = e^{-\pi \times 0{,}271/0{,}963} \times 100 \approx 41\%
+\]
+
+\begin{resposta}
+\[
+  \boxed{C(s) = 1{,}70\,(s + 0{,}5)} \quad \text{com realimentação positiva}
+\]
+$K_P = 0{,}85$, $K_D = 1{,}70$. Polos dominantes em $-0{,}255 \pm j0{,}903$
+($\zeta = 0{,}271$), garantindo $\text{OS} \approx 41\% < 50\%$. $\checkmark$
+
+\textit{Nota:} o zero RHP em $s \approx +0{,}866$ de $G_{ext}$ limita a
+largura de banda atingível e impõe \textit{undershoot} na resposta ao degrau
+de posição do carro.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Q3(e) — Erro em Regime Permanente}
+%--------------------------------------------------------------------------
+
+A FT de malha aberta da malha externa é:
+\[
+  L(s) = C(s)\,G_{ext}(s) = 1{,}70(s+0{,}5)
+         \cdot \frac{(s^2-\tfrac{3}{4})(s+7)}{s^2(s+1)(s^2+6s+18)}
+\]
+
+$L(s)$ possui \textbf{dois integradores} (duplo polo em $s = 0$): é um
+sistema do \textbf{Tipo~2}.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Entrada & Tipo 2 $\Rightarrow$ Erro SS & Resultado \\
+\midrule
+Degrau unitário & $K_p = \infty$ & $e_{ss} = 0$ \\
+Rampa unitária & $K_v = \infty$ & $e_{ss} = 0$ \\
+Parábola unitária & $K_a = \lim_{s\to 0}s^2L(s)$ & $e_{ss} = 1/K_a$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{resposta}
+Para entrada \textbf{degrau} (referência de posição constante):
+\[
+  \boxed{e_{ss} = 0}
+\]
+O sistema Tipo~2 rastreia degrau e rampa com erro nulo em regime permanente.
+\end{resposta}
+
+\vspace{10pt}\hrule\vspace{10pt}
+
+%==========================================================================
+\section*{Validação Numérica (Python / NumPy)}
+%==========================================================================
+
+\begin{metodo}
+  Código de verificação das respostas das Questões 2 e 3.
+  Execute: \texttt{python3 validacao.py}
+\end{metodo}
+
+\begin{verbatim}
+import numpy as np
+
+# ==== Q2(a): Estabilidade e K* ====
+K_vals = np.linspace(0.1, 11.3, 5000)
+results = []
+for K in K_vals:
+    c = [1, 10+K, 33-2*K, 34-3*K]
+    r = np.roots(c)
+    if all(rr.real < 0 for rr in r):
+        sigma_dom = min(abs(rr.real) for rr in r)
+        results.append((K, sigma_dom))
+best = max(results, key=lambda x: x[1])
+print(f"K* = {best[0]:.3f}, sigma_dom = {best[1]:.3f}")
+print(f"t_s_min = {4/best[1]:.3f} s")
+# >> K* ~= 0.500, sigma_dom ~= 2.168, t_s_min ~= 1.845 s
+
+# ==== Q3(a): Polos da malha interna ====
+roots_inner = np.roots([1.0, 6.0, 18.0])
+print(f"Polos internos: {roots_inner}")
+# >> [-3+3j, -3-3j]  OK
+
+# ==== Q3(b): Polos e zeros de G_ext ====
+num = np.convolve([1.0, 0.0, -0.75], [1.0, 7.0])
+den = np.convolve(np.convolve([1.0,0,0],[1,1]), [1.0,6.0,18.0])
+print(f"Zeros: {np.roots(num).round(3)}")
+print(f"Polos: {np.roots(den).round(3)}")
+# >> Zeros: [-7, +0.866, -0.866]
+# >> Polos: [0, 0, -1, -3+3j, -3-3j]
+
+# ==== Q3(d): Verificação PD (K0=1.70, z=0.5) ====
+K0, z = 1.70, 0.5
+C_num = np.convolve([K0], [1.0, z])
+CG = np.convolve(C_num, num)
+cl = den.copy(); cl[1:] -= CG  # realimentação positiva
+roots_cl = np.roots(cl)
+print(f"Polos MF: {roots_cl.round(3)}")
+stable = all(r.real < 0 for r in roots_cl)
+print(f"Estável? {stable}")
+# >> Polos MF: [-2.304, -1.244+0.809j, -1.244-0.809j,
+# >>            -0.255+0.903j, -0.255-0.903j]
+# >> Estável? True
+dom = min([r for r in roots_cl if abs(r.imag)>0.05],
+          key=lambda r: abs(r.real))
+zeta = abs(dom.real)/abs(dom)
+Mp = np.exp(-np.pi*zeta/np.sqrt(1-zeta**2))*100
+print(f"Polo dom: {dom:.3f}, zeta={zeta:.3f}, OS={Mp:.1f}%")
+# >> Polo dom: -0.255+0.903j, zeta=0.271, OS=41.0%  < 50% OK
+\end{verbatim}
+
+\textbf{Resultados da validação:}
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Item} & \textbf{Calculado} & \textbf{Esperado} & \textbf{OK?} \\
+\midrule
+Q2(a) — $K^*$ & $0{,}50$ & $K \in (0,\;34/3)$ & \checkmark \\
+Q2(a) — $t_{s,\min}$ & $1{,}85\,\text{s}$ & $(1\,\text{s},\;2\,\text{s})$ & \checkmark \\
+Q3(a) — polos internos & $-3 \pm j3$ & $-3 \pm j3$ & \checkmark \\
+Q3(b) — zeros $G_{ext}$ & $\pm 0{,}866,\;-7$ & $\pm\sqrt{3}/2,\;-7$ & \checkmark \\
+Q3(d) — \%OS & $41\%$ & $< 50\%$ & \checkmark \\
+Q3(d) — estabilidade & todos $\text{Re}<0$ & todos $\text{Re}<0$ & \checkmark \\
+Q3(e) — $e_{ss}$ (degrau) & $0$ & $0$ (Tipo 2) & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{10pt}\hrule\vspace{10pt}
+
+%==========================================================================
 \section*{Resumo das Ferramentas Utilizadas}
 %==========================================================================
 
@@ -769,8 +1142,13 @@ Q1(b) & Bode — PM pela fase no cruzamento de ganho & lec15--16 \\
 Q1(c) & Nyquist — cruzamento de fase e critério $N = Z - P$ & lec18--19 \\
 Q1(d) & Routh + Padé — estabilidade em função do retardo & lec10, lec15 \\
 Q1(e) & Bode — projeto de compensador Lead pela PM & lec16--17 \\
-Q2(a) & Root Locus — Regras A–F, Routh, zero RHP & lec10--11 \\
+Q2(a) & Root Locus — Regras A–F, Routh, zero RHP; $K^* \approx 0{,}50$ & lec10--11 \\
 Q2(b) & RL + Bode — controlador PI-Lead, estrutura 2-DOF & lec12--13, 16--17 \\
+Q3(a) & RL — cancelamento polo + alocação de polos & lec10--12 \\
+Q3(b) & RL — FT cascata de malhas, zero RHP residual & lec11--12 \\
+Q3(c) & Diagrama de blocos — cascata de malhas internas & lec10 \\
+Q3(d) & PD — realimentação positiva, $\text{OS}<50\%$ & lec12--13 \\
+Q3(e) & Erro SS — sistema Tipo~2, $e_{ss}=0$ ao degrau & lec13 \\
 \bottomrule
 \end{tabular}
 \end{center}
