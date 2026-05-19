@@ -1,0 +1,669 @@
+%==========================================================================
+% Segunda Lista de Engenharia de Software RT
+% Capítulo 2 — Ian Sommerville (trabalho individual)
+%==========================================================================
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=3cm}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{questao}[1]{colback=gray!8,colframe=gray!50,
+  fonttitle=\bfseries,title=#1,breakable}
+\newtcolorbox{resposta}{colback=blue!4,colframe=blue!50!black,
+  fonttitle=\bfseries,title=Resposta,breakable}
+\newtcolorbox{nota}{colback=orange!5,colframe=orange!60!black,
+  fonttitle=\bfseries,title=Nota,breakable,before upper=\small}
+
+%==========================================================================
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Segunda Lista de Engenharia de Software RT}\\[6pt]
+  {\large Capítulo 2 — Processos de Software}\\[4pt]
+  {\normalsize Ian Sommerville — \textit{Software Engineering}, 10ª ed.}\\[2pt]
+  {\small Trabalho Individual}
+\end{center}
+\hrule\vspace{8pt}
+
+%==========================================================================
+\section*{Questão 1}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Justificando sua resposta com base no tipo de sistema a ser desenvolvido,
+sugira o modelo genérico de processo de software mais adequado para ser
+usado como base para a gerência do desenvolvimento dos sistemas a seguir:
+\begin{enumerate}[label=\alph*.]
+  \item Um sistema para controlar o antibloqueio de frenagem de um carro (ABS).
+  \item Um sistema de realidade virtual para dar apoio à manutenção de software.
+  \item Um sistema de contabilidade para uma universidade, que substitua um sistema já existente.
+  \item Um sistema interativo de planejamento de viagens que ajude os usuários a
+        planejar viagens com menor impacto ambiental.
+\end{enumerate}
+\end{questao}
+
+\begin{resposta}
+
+\textbf{(a) Sistema ABS — Modelo em Cascata (Waterfall)}
+
+Um sistema de antibloqueio de frenagem é um \textbf{sistema crítico de tempo real}
+embarcado com requisitos de segurança altamente rigorosos e definidos antes do
+início do desenvolvimento. Falhas podem custar vidas. Por isso, exige:
+\begin{itemize}[nosep]
+  \item Especificação completa e formal de requisitos antes da implementação;
+  \item Validação e verificação formais em cada fase;
+  \item Rastreabilidade total entre requisitos, projeto, código e testes.
+\end{itemize}
+
+O \textbf{modelo em cascata} é o mais adequado porque impõe uma sequência rígida
+de fases (requisitos → projeto → implementação → verificação → manutenção) com
+saídas documentadas em cada etapa, atendendo a padrões como IEC~61508 (segurança
+funcional). A completeza dos requisitos antes da codificação é viável pois os
+requisitos físicos do sistema são bem compreendidos e estáveis.
+
+\vspace{8pt}
+\textbf{(b) Sistema de Realidade Virtual para Manutenção de Software — Desenvolvimento Evolucionário / Espiral}
+
+Sistemas de realidade virtual são inerentemente exploratórios: as interfaces,
+metáforas de interação e as necessidades dos usuários só ficam claras na prática.
+Os requisitos \emph{não podem ser completamente especificados} antecipadamente.
+
+O \textbf{modelo evolucionário} (ou o \textbf{modelo espiral de Boehm}) é mais
+adequado porque:
+\begin{itemize}[nosep]
+  \item Permite protótipos sucessivos com avaliação de usuários a cada ciclo;
+  \item Incorpora gerência de riscos explícita (fundamental em tecnologia nova);
+  \item Evoluções do sistema são esperadas conforme os usuários descobrem novas necessidades.
+\end{itemize}
+
+\vspace{8pt}
+\textbf{(c) Sistema de Contabilidade Universitário (substituição) — Desenvolvimento Baseado em Reuso / Incremental}
+
+Como já existe um sistema legado em operação, os requisitos são relativamente
+conhecidos (mesmo fluxo contábil) e há grande disponibilidade de componentes
+reutilizáveis (frameworks ERP, módulos de relatórios fiscais, bibliotecas
+contábeis). O risco principal é a migração de dados e a aceitação dos usuários.
+
+O \textbf{modelo baseado em reuso} é o mais adequado porque:
+\begin{itemize}[nosep]
+  \item Maximiza o uso de software pronto (reduz custo e prazo);
+  \item Entregas incrementais permitem migração gradual com menor risco operacional;
+  \item Requisitos derivam do sistema existente, minimizando incertezas.
+\end{itemize}
+
+\vspace{8pt}
+\textbf{(d) Sistema Interativo de Planejamento de Viagens — Desenvolvimento Incremental / Ágil}
+
+Este é um sistema voltado a usuários finais em um domínio em constante evolução
+(regulamentações ambientais, bases de dados de emissões, preferências de viajantes).
+Os requisitos mudarão ao longo do desenvolvimento conforme os usuários interagem
+com o produto.
+
+O \textbf{desenvolvimento incremental} (base para métodos ágeis) é o mais adequado:
+\begin{itemize}[nosep]
+  \item Entregas frequentes de funcionalidades priorizadas;
+  \item Feedback contínuo dos usuários incorporado em cada incremento;
+  \item Facilidade de adaptação a novas fontes de dados ambientais ou regulamentações.
+\end{itemize}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 2}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Explique por que o desenvolvimento incremental é o método mais eficaz para
+o desenvolvimento de sistemas de software de negócios. Por que esse modelo
+é menos adequado para a engenharia de sistemas de tempo real?
+\end{questao}
+
+\begin{resposta}
+
+\textbf{Eficácia no desenvolvimento de sistemas de negócios:}
+
+Sistemas de negócios operam em ambientes dinâmicos onde requisitos mudam
+continuamente em resposta a alterações regulatórias, de mercado e
+organizacionais. O desenvolvimento incremental é mais eficaz porque:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Entrega de valor antecipada:} versões funcionais do sistema são
+        disponibilizadas cedo, gerando retorno sobre o investimento antes da
+        conclusão total do projeto.
+  \item \textbf{Validação contínua:} usuários de negócio verificam cada incremento
+        e fornecem feedback, reduzindo o risco de o sistema final não atender
+        às necessidades reais.
+  \item \textbf{Acomodação de mudanças:} como os requisitos de negócio evoluem,
+        incrementos futuros absorvem as mudanças sem comprometer o que já foi entregue.
+  \item \textbf{Redução do risco financeiro:} problemas são detectados cedo, quando
+        o custo de correção ainda é baixo.
+  \item \textbf{Gerenciamento do escopo:} funcionalidades prioritárias são entregues
+        primeiro, garantindo que o sistema seja útil mesmo se o projeto não for
+        concluído integralmente.
+\end{enumerate}
+
+\textbf{Inadequação para sistemas de tempo real:}
+
+Sistemas de tempo real (controle industrial, aviônicos, sistemas médicos)
+têm \textbf{requisitos não-funcionais críticos} --- latência, taxa de resposta,
+determinismo temporal --- que não podem ser validados em incrementos isolados:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Integração indivisível:} o comportamento temporal emergente só pode
+        ser verificado quando todos os componentes estão integrados. Um incremento
+        parcial pode satisfazer requisitos funcionais mas violar garantias de tempo.
+  \item \textbf{Certificação formal:} normas de segurança (DO-178C, IEC~61508)
+        exigem documentação e rastreabilidade completas desde os requisitos, o que
+        conflita com a natureza evolutiva do modelo incremental.
+  \item \textbf{Hardware acoplado:} o comportamento de tempo real depende da
+        interação precisa entre software e hardware; mudanças incrementais no
+        software podem invalidar análises de \textit{worst-case execution time}.
+  \item \textbf{Custo de falha catastrófico:} em sistemas críticos, uma falha
+        entregue em produção pode custar vidas, inviabilizando a entrega precoce
+        de versões incompletas.
+\end{enumerate}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 3}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Considere o modelo de processo baseado em reuso da Figura~2.3. Explique por
+que, nesse processo, é essencial ter duas atividades distintas de engenharia
+de requisitos.
+\end{questao}
+
+\begin{resposta}
+
+No modelo baseado em reuso, o processo possui duas atividades de engenharia
+de requisitos:
+
+\begin{enumerate}
+  \item \textbf{Especificação de Requisitos Iniciais} — captura o que o cliente
+        \emph{realmente precisa}, sem considerar o que está disponível para reuso.
+        É necessária para estabelecer uma linha de base das necessidades do sistema.
+
+  \item \textbf{Modificação de Requisitos} — após a descoberta e avaliação dos
+        componentes reutilizáveis disponíveis, os requisitos originais são
+        \emph{revisados e adaptados} para refletir o que os componentes
+        conseguem oferecer.
+\end{enumerate}
+
+\textbf{Por que as duas atividades são essenciais:}
+
+A primeira especificação (independente de reuso) é necessária porque os
+componentes disponíveis são descobertos \emph{após} a elicitação inicial. Sem
+ela, não é possível avaliar quais requisitos podem ser satisfeitos por reuso e
+quais precisam de desenvolvimento novo.
+
+A segunda atividade existe porque os componentes reutilizados raramente satisfazem
+os requisitos originais \textbf{exatamente}. Há um \textit{gap} entre o que o
+cliente deseja e o que o componente oferece. Ajustar os requisitos ao invés de
+forçar a adaptação do componente preserva a integridade arquitetural e reduz
+custos de manutenção. Sem essa segunda fase, o sistema seria desenvolvido com
+discrepâncias não documentadas entre requisitos e funcionalidade real, gerando
+insatisfação do cliente e dívida técnica.
+
+\begin{nota}
+Sommerville destaca que a principal desvantagem do modelo baseado em reuso é
+exatamente essa negociação de requisitos: o cliente pode precisar aceitar um
+sistema que não atende completamente suas necessidades originais.
+\end{nota}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 4}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Sugira porque é importante, no processo de engenharia de requisitos, fazer
+uma distinção entre desenvolvimento dos requisitos do usuário e
+desenvolvimento de requisitos de sistema.
+\end{questao}
+
+\begin{resposta}
+
+\textbf{Requisitos do usuário} descrevem, em linguagem natural acessível, o que
+os usuários e demais \textit{stakeholders} esperam que o sistema faça para apoiar
+seu trabalho. São \textbf{orientados a objetivos} e independentes de como o sistema
+será implementado.
+
+\textbf{Requisitos de sistema} são especificações técnicas detalhadas, precisas e
+completas de \emph{como} o sistema deve realizar o que foi pedido, incluindo
+restrições de desempenho, protocolos, interfaces, segurança e consistência de dados.
+
+\textbf{Por que a distinção é importante:}
+
+\begin{enumerate}
+  \item \textbf{Audiências diferentes:} gerentes, clientes e usuários finais leem
+        os requisitos de usuário para validar que o sistema resolve seus problemas;
+        arquitetos e desenvolvedores leem os requisitos de sistema para implementá-lo.
+        Misturar os dois níveis confunde cada grupo.
+
+  \item \textbf{Comprometimento contratual:} os requisitos de usuário costumam
+        compor o contrato entre cliente e fornecedor. Requisitos de sistema são
+        internos à equipe de desenvolvimento. Confundir os dois pode gerar disputas
+        sobre o que foi contratado.
+
+  \item \textbf{Rastreabilidade:} a separação permite rastrear cada requisito de
+        sistema a um ou mais requisitos de usuário, facilitando a verificação de
+        que todos os objetivos do cliente foram atendidos.
+
+  \item \textbf{Gerenciamento de mudanças:} mudanças em requisitos de usuário têm
+        impacto diferente de mudanças em requisitos de sistema. Separar os dois
+        permite avaliar o impacto de cada mudança com precisão.
+
+  \item \textbf{Detalhamento progressivo:} permite um processo de engenharia
+        gradual — primeiro valida-se o \emph{o quê} com os stakeholders, depois
+        especifica-se o \emph{como} com a equipe técnica, evitando refazer trabalho
+        técnico por mal entendimento de objetivos.
+\end{enumerate}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 5}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Descreva as principais atividades do processo de projeto de software e as
+saídas dessas atividades. Usando um diagrama, mostre as possíveis relações
+entre as saídas dessas atividades.
+\end{questao}
+
+\begin{resposta}
+
+As principais atividades do processo de projeto de software, conforme
+Sommerville, são:
+
+\begin{center}
+\begin{tabular}{p{4.5cm}p{8.5cm}}
+\toprule
+\textbf{Atividade} & \textbf{Saída} \\
+\midrule
+Projeto de arquitetura & Diagrama de componentes/módulos; estilo arquitetural
+                         (camadas, cliente-servidor, MVC etc.) \\
+\midrule
+Projeto de banco de dados & Modelo entidade-relacionamento; esquema lógico/físico;
+                            dicionário de dados \\
+\midrule
+Projeto de interface & Protótipos de telas; descrição de fluxo de navegação;
+                       especificação de API/protocolo de comunicação \\
+\midrule
+Projeto de componentes & Especificação detalhada de cada módulo; algoritmos;
+                         pré/pós-condições; pseudocódigo ou UML de classe \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Diagrama de relações entre as saídas:}
+
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.6cm and 2.4cm,
+    box/.style={draw,rounded corners,fill=blue!8,minimum width=3.2cm,
+                minimum height=1cm,align=center,font=\small},
+    doc/.style={draw,fill=orange!10,minimum width=2.8cm,
+                minimum height=0.8cm,align=center,font=\footnotesize},
+    arr/.style={-{Stealth},thick},
+    darr/.style={dashed,-{Stealth},gray}]
+
+  % Activities
+  \node[box] (arq) {Projeto de\\Arquitetura};
+  \node[box, right=2.5cm of arq] (bd)  {Projeto de\\Banco de Dados};
+  \node[box, below=1.6cm of arq] (iface) {Projeto de\\Interface};
+  \node[box, below=1.6cm of bd] (comp)  {Projeto de\\Componentes};
+
+  % Outputs
+  \node[doc, below=0.5cm of arq]  (d_arq)  {Diagrama de\\Arquitetura};
+  \node[doc, below=0.5cm of bd]   (d_bd)   {Esquema de BD\\+ Dicionário};
+  \node[doc, below=0.5cm of iface](d_iface){Protótipos\\+ API spec};
+  \node[doc, below=0.5cm of comp] (d_comp) {Especificação\\de Módulos};
+
+  % Arrows activity -> output
+  \draw[arr] (arq)   -- (d_arq);
+  \draw[arr] (bd)    -- (d_bd);
+  \draw[arr] (iface) -- (d_iface);
+  \draw[arr] (comp)  -- (d_comp);
+
+  % Relations between outputs
+  \draw[darr] (d_arq)  -- node[above,font=\tiny]{refina} (d_bd);
+  \draw[darr] (d_arq)  -- node[left,font=\tiny]{guia} (d_iface);
+  \draw[darr] (d_bd)   -- node[right,font=\tiny]{detalha} (d_comp);
+  \draw[darr] (d_iface)-- node[below,font=\tiny]{especifica} (d_comp);
+  \draw[darr] (d_arq.south) .. controls +(0,-0.6) and +(0,0.6) ..
+              node[right,font=\tiny,pos=0.5]{decompõe} (d_comp.north);
+\end{tikzpicture}
+\end{center}
+
+O \textbf{diagrama de arquitetura} é a saída central: define os subsistemas e
+suas interfaces, orientando todas as demais atividades. O projeto de banco de
+dados refina a arquitetura de dados; o projeto de interface especifica os
+contratos entre componentes; e o projeto de componentes detalha cada módulo
+individualmente. Todas as saídas se integram na documentação final de projeto
+que orienta a fase de implementação.
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 6}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Explique por que, em sistemas complexos, as mudanças são inevitáveis.
+Exemplifique as atividades de processo de software que ajudam a prever as
+mudanças e fazer com que o software seja desenvolvido mais tolerante a
+mudanças (desconsidere prototipação e entrega incremental).
+\end{questao}
+
+\begin{resposta}
+
+\textbf{Por que mudanças são inevitáveis em sistemas complexos:}
+
+\begin{enumerate}[nosep]
+  \item \textbf{Ambiente externo mutável:} legislação, regulamentações,
+        condições de mercado e tecnologias de suporte mudam independentemente
+        da vontade do time de desenvolvimento.
+  \item \textbf{Requisitos mal compreendidos:} em sistemas complexos, os
+        stakeholders frequentemente só descobrem o que realmente precisam
+        após ver o sistema em operação.
+  \item \textbf{Conflito de interesses:} diferentes stakeholders têm visões
+        conflitantes que só emergem durante o desenvolvimento.
+  \item \textbf{Evolução do negócio:} a organização que solicitou o sistema pode
+        se reestruturar, mudar de estratégia ou ser adquirida durante o projeto.
+  \item \textbf{Descoberta de falhas:} erros nos requisitos e no projeto só
+        são revelados em fases posteriores, exigindo revisões retroativas.
+\end{enumerate}
+
+\textbf{Atividades que ajudam a prever e tolerar mudanças}
+(excluindo prototipação e entrega incremental):
+
+\begin{itemize}
+  \item \textbf{Antecipação de mudanças (prevenção):}
+  \begin{itemize}[nosep]
+    \item \textit{Revisões de requisitos (\textit{requirements reviews}):} análise
+          sistemática dos requisitos com os stakeholders para identificar
+          inconsistências, ambiguidades e itens provavelmente instáveis, antes
+          da implementação.
+    \item \textit{Rastreabilidade de requisitos:} manter matrizes de rastreabilidade
+          entre requisitos e artefatos de projeto permite avaliar o impacto de
+          mudanças antes de implementá-las.
+  \end{itemize}
+
+  \item \textbf{Tolerância a mudanças (acomodação):}
+  \begin{itemize}[nosep]
+    \item \textit{Projeto orientado a mudanças (\textit{change-oriented design}):}
+          uso de princípios como alta coesão, baixo acoplamento e ocultamento de
+          informação (\textit{information hiding}) isola módulos, de modo que uma
+          mudança em um componente não propague efeitos para outros.
+    \item \textit{Gerenciamento de configuração:} controle de versões, baselines e
+          gestão de mudanças formais garantem que alterações sejam rastreadas e
+          revertidas se necessário, sem comprometer a integridade do sistema.
+  \end{itemize}
+\end{itemize}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 7}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Explique por que os sistemas desenvolvidos como protótipos normalmente não
+devem ser usados como sistemas de produção.
+\end{questao}
+
+\begin{resposta}
+
+Protótipos são construídos sob restrições fundamentalmente diferentes das de um
+sistema de produção:
+
+\begin{enumerate}
+  \item \textbf{Requisitos não-funcionais ignorados:} protótipos priorizam
+        demonstrar funcionalidades visíveis. Desempenho, segurança, disponibilidade,
+        escalabilidade e tolerância a falhas são deliberadamente omitidos para
+        acelerar o desenvolvimento.
+
+  \item \textbf{Dívida técnica intencional:} atalhos de implementação, ausência de
+        tratamento de erros, hardcoding de valores e falta de modularização são
+        aceitáveis em protótipos mas comprometem a manutenibilidade e confiabilidade
+        em produção.
+
+  \item \textbf{Ausência de testes rigorosos:} um protótipo raramente passa por
+        ciclos completos de testes de sistema, regressão e segurança. Usá-lo
+        em produção expõe os usuários a falhas não descobertas.
+
+  \item \textbf{Tecnologias inadequadas:} linguagens, frameworks ou bancos de
+        dados escolhidos pela velocidade de prototipagem podem não ser adequados
+        para escala, manutenção de longo prazo ou integração com sistemas legados.
+
+  \item \textbf{Ausência de documentação:} protótipos carecem de documentação de
+        arquitetura, requisitos rastreáveis e documentação de manutenção,
+        tornando a evolução futura extremamente custosa.
+
+  \item \textbf{Pressão organizacional indevida:} transformar um protótipo em
+        sistema de produção cria uma \textit{proto-trap} — a organização fica
+        presa a decisões técnicas ruins tomadas sob pressão de prazo, pagando
+        juros de dívida técnica indefinidamente.
+\end{enumerate}
+
+A conclusão de Sommerville é que protótipos devem ser \textbf{descartados} após
+cumprir seu propósito de elicitação/validação de requisitos, e o sistema real
+deve ser desenvolvido do zero com base nos aprendizados obtidos.
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 8}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Explique por que o modelo em espiral de Boehm é um modelo adaptável que
+apoia tanto as atividades de prevenção de mudanças quanto as de tolerância a
+mudanças. Na prática, esse modelo não tem sido amplamente usado. Sugira as
+possíveis razões para isso.
+\end{questao}
+
+\begin{resposta}
+
+\textbf{O modelo espiral como modelo adaptável:}
+
+O modelo espiral de Boehm organiza o processo em \textbf{ciclos iterativos},
+cada um com quatro quadrantes: (1) definição de objetivos e alternativas,
+(2) \emph{avaliação de riscos e prototipação}, (3) desenvolvimento e validação,
+(4) planejamento da próxima iteração.
+
+\begin{itemize}
+  \item \textbf{Prevenção de mudanças:} a análise explícita de riscos em cada
+        ciclo identifica antecipadamente áreas de incerteza (técnica, de
+        requisitos, organizacional). Prototipação e avaliação antecipam problemas
+        antes de grandes investimentos, funcionando como atividade de
+        ``antecipação de mudanças''.
+
+  \item \textbf{Tolerância a mudanças:} a estrutura iterativa permite que cada
+        ciclo incorpore mudanças descobertas no ciclo anterior. Não há
+        comprometimento irreversível com uma arquitetura específica no início
+        do projeto; o design evolui com o crescente entendimento do problema.
+\end{itemize}
+
+\textbf{Por que o modelo espiral não é amplamente adotado na prática:}
+
+\begin{enumerate}
+  \item \textbf{Complexidade de gestão:} cada ciclo exige análise de riscos
+        formal por profissionais especializados. Poucos times têm expertise
+        em gerenciamento de riscos quantitativo, e a documentação necessária
+        é extensa.
+
+  \item \textbf{Custo e overhead:} a cerimônia de cada ciclo (documentação,
+        revisão de riscos, planejamento) é custosa para projetos pequenos ou
+        médios, nos quais a relação custo-benefício não se justifica.
+
+  \item \textbf{Dificuldade contratual:} contratos de desenvolvimento de software
+        geralmente exigem escopo, prazo e custo fixos. O modelo espiral pressupõe
+        escopo emergente, o que é incompatível com contratos de preço fixo.
+
+  \item \textbf{Surgimento de métodos ágeis:} a partir dos anos 2000, métodos
+        ágeis (Scrum, XP, Kanban) ofereceram adaptabilidade similar com muito
+        menos overhead, tornando o modelo espiral menos atrativo.
+
+  \item \textbf{Falta de ferramentas de suporte:} não há ferramentas amplamente
+        adotadas que automatizem ou guiem a avaliação de riscos periódica
+        exigida pelo modelo espiral.
+\end{enumerate}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 9}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Quais são as vantagens de proporcionar visões estáticas e dinâmicas do
+processo de software, assim como no Rational Unified Process?
+\end{questao}
+
+\begin{resposta}
+
+O \textbf{Rational Unified Process (RUP)} oferece simultaneamente:
+
+\begin{itemize}
+  \item \textbf{Visão dinâmica (eixo temporal):} organizada em quatro fases ---
+        Iniciação, Elaboração, Construção e Transição --- que descrevem
+        \emph{quando} as atividades ocorrem ao longo do projeto, com marcos
+        e objetivos específicos em cada fase.
+
+  \item \textbf{Visão estática (fluxos de trabalho):} organizada em disciplinas
+        --- Requisitos, Análise e Projeto, Implementação, Testes, Implantação
+        etc. --- que descrevem \emph{o que} é feito, independentemente do tempo.
+\end{itemize}
+
+\textbf{Vantagens da combinação de ambas as visões:}
+
+\begin{enumerate}
+  \item \textbf{Planejamento e execução alinhados:} a visão dinâmica permite ao
+        gerente de projeto planejar cronogramas e marcos. A visão estática garante
+        que os engenheiros saibam quais práticas aplicar em cada disciplina.
+
+  \item \textbf{Comunicação clara com diferentes audiências:} gestores entendem
+        o processo pelo eixo temporal (fases, entregas); engenheiros o entendem
+        pelo eixo das disciplinas (o que fazer e como). As duas visões atendem
+        a ambos sem perda de informação.
+
+  \item \textbf{Adaptabilidade controlada:} todas as disciplinas ocorrem em
+        todas as fases, mas com intensidade variável. Isso deixa explícito que
+        testes, por exemplo, não são atividades apenas do final do projeto, sem
+        perder a estrutura temporal que orienta prioridades.
+
+  \item \textbf{Rastreabilidade:} a intersecção fase $\times$ disciplina
+        permite identificar com precisão quando e onde artefatos específicos
+        devem ser produzidos, facilitando auditorias e revisões.
+
+  \item \textbf{Suporte a iteratividade:} as fases dinâmicas acomodam iterações
+        dentro de cada fase, enquanto as disciplinas estáticas garantem que
+        boas práticas de engenharia sejam aplicadas consistentemente em cada
+        iteração, independentemente do ponto do projeto.
+\end{enumerate}
+
+\end{resposta}
+
+%==========================================================================
+\section*{Questão 10}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Historicamente, a introdução de tecnologia provocou mudanças profundas no
+mercado de trabalho e, pelo menos temporariamente, deixou muitas pessoas
+desempregadas. Discuta se a introdução da automação extensiva em processos
+pode vir a ter as mesmas consequências para os engenheiros de software. Se
+sua resposta for não, justifique. Se você acha que sim, que vai reduzir as
+oportunidades de emprego, é ética a resistência passiva ou ativa, pelos
+engenheiros afetados, a introdução dessa tecnologia?
+\end{questao}
+
+\begin{resposta}
+
+\textbf{A automação do processo de software e o impacto sobre o emprego:}
+
+A resposta mais honesta é \textbf{sim, parcialmente}. A automação extensiva ---
+incluindo ferramentas de geração de código por IA, testes automatizados,
+integração contínua e plataformas \textit{low-code/no-code} --- tende a
+deslocar uma parte significativa de tarefas de engenharia de software,
+especialmente as mais rotineiras:
+
+\begin{itemize}[nosep]
+  \item Codificação de lógica de negócio simples e bem especificada;
+  \item Geração de testes unitários e de integração;
+  \item Refatoração e modernização de código legado;
+  \item Desenvolvimento de interfaces padrão (CRUD, dashboards).
+\end{itemize}
+
+No entanto, a automação \textbf{não elimina} a necessidade de engenheiros para:
+\begin{itemize}[nosep]
+  \item Elicitar e interpretar requisitos complexos e ambíguos dos stakeholders;
+  \item Tomar decisões arquiteturais com implicações de longo prazo;
+  \item Garantir segurança, privacidade e conformidade regulatória;
+  \item Validar criticamente a saída das ferramentas de IA (que cometem erros
+        sistemáticos não óbvios);
+  \item Sistemas críticos onde verificação formal é obrigatória.
+\end{itemize}
+
+O efeito mais provável é uma \textbf{transformação da profissão}, similar ao que
+ocorreu com outras disciplinas de engenharia com a chegada de ferramentas CAD:
+redução de papéis operacionais e elevação da demanda por papéis de julgamento,
+supervisão e domínio especializado.
+
+\textbf{Sobre a ética da resistência:}
+
+A resistência --- passiva ou ativa --- pelos engenheiros afetados é compreensível
+do ponto de vista humano, mas é \textbf{eticamente problemática} quando prejudica
+terceiros ou o bem público:
+
+\begin{itemize}
+  \item \textbf{Resistência passiva (sabotagem sutil, atraso intencional):}
+        viola os princípios de ética profissional de engenharia, que incluem
+        a responsabilidade de agir no melhor interesse do público e dos
+        empregadores. Atrasar a adoção de tecnologias que aumentam qualidade
+        ou reduzem custos prejudica usuários e organizações.
+
+  \item \textbf{Resistência ativa (lobby, organização sindical, pressão legal):}
+        é \textbf{eticamente legítima} quando exercida dentro dos marcos legais
+        e democráticos. Assim como trabalhadores industriais têm o direito de
+        negociar condições de transição, engenheiros têm o direito de exigir
+        políticas de requalificação, aviso prévio e reconhecimento da perda
+        de renda, desde que não prejudiquem a segurança dos sistemas ou os
+        usuários finais.
+\end{itemize}
+
+Em suma: adaptar-se, redirecionar esforços para atividades de maior valor
+agregado e participar ativamente da discussão sobre políticas de transição
+é mais ético e eficaz do que resistir à mudança tecnológica per se.
+
+\end{resposta}
+
+\vspace{10pt}\hrule\vspace{8pt}
+\begin{center}
+{\small \textit{Referência:} Ian Sommerville.
+\textbf{Software Engineering}, 10ª ed. Pearson, 2016. Capítulo 2:
+Software Processes.}
+\end{center}
+
+\end{document}
