@@ -1,0 +1,1066 @@
+%==========================================================================
+% Terceira Lista de Engenharia de Software RT
+% Capítulos 22 e 23 — Ian Sommerville + Exercícios de Project Management
+% (trabalho em grupo — 4 componentes)
+%==========================================================================
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,calc,matrix}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{hyperref}
+
+\geometry{top=2.2cm, bottom=2.2cm, left=2.8cm, right=2.8cm}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{questao}[1]{colback=gray!7,colframe=gray!45,
+  fonttitle=\bfseries,title=#1,breakable}
+\newtcolorbox{resposta}{colback=blue!4,colframe=blue!50!black,
+  fonttitle=\bfseries,title=Resposta,breakable}
+
+%==========================================================================
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries Terceira Lista de Engenharia de Software RT}\\[5pt]
+  {\large Capítulos 22 e 23 — Gerenciamento de Projetos de Software}\\[4pt]
+  {\normalsize Ian Sommerville — \textit{Software Engineering}, 10ª ed.
+   \quad|\quad Trabalho em grupo (4 componentes)}
+\end{center}
+\hrule\vspace{6pt}
+
+%==========================================================================
+\section*{Capítulo 22 — Gerenciamento de Projetos}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.1}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que a intangibilidade dos sistemas de software gera problemas
+especiais para gerenciamento de projetos de software.
+\end{questao}
+\begin{resposta}
+Ao contrário de sistemas físicos, o software não é visível: não é possível
+inspecionar um executável e avaliar seu progresso ou qualidade a olho nu.
+Isso cria três classes de problemas gerenciais:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Dificuldade de medir progresso:} marcos tangíveis (como um
+        componente mecânico entregue) não existem. Gerentes precisam confiar
+        em métricas indiretas (linhas de código, pontos de função, testes
+        passados), que são facilmente distorcidas. A síndrome ``90\%
+        completo'' é comum — o produto parece quase pronto por semanas.
+
+  \item \textbf{Invisibilidade de defeitos:} erros de lógica, condições de
+        corrida e vulnerabilidades de segurança não se manifestam visualmente,
+        podendo permanecer latentes até situações específicas de operação.
+        Isso torna difícil garantir qualidade ao longo do processo.
+
+  \item \textbf{Gerenciamento de contratos e expectativas:} clientes não
+        conseguem avaliar o que foi entregue sem executar o sistema. Isso
+        complica a aceitação formal, o pagamento por milestones e a
+        negociação de mudanças de escopo.
+
+  \item \textbf{Estimativas imprecisas:} sem componentes físicos de referência,
+        estimar custo e prazo depende de experiência anterior com sistemas
+        similares — dados raros em domínios novos.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.2}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que os melhores programadores nem sempre se tornam os melhores
+gerentes de software.
+\end{questao}
+\begin{resposta}
+Gerenciamento e programação são conjuntos de habilidades ortogonais.
+Conforme a Seção~22.1 de Sommerville, as principais atividades de um gerente
+incluem: escrever propostas, planejamento, monitoração, relatórios e
+gerenciamento de pessoas. Programação exige raciocínio lógico profundo,
+concentração em problemas técnicos e trabalho predominantemente individual.
+
+Conflitos específicos:
+\begin{itemize}[nosep]
+  \item \textbf{Comunicação interpessoal:} gerentes precisam negociar, motivar
+        equipes e transmitir informações a públicos não técnicos. Bons
+        programadores frequentemente preferem trabalho solitário e comunicação
+        direta e técnica.
+  \item \textbf{Tolerância à ambiguidade:} problemas gerenciais raramente têm
+        uma solução única e correta. Programadores costumam ser treinados a
+        buscar soluções ótimas, o que pode paralisar decisões gerenciais
+        necessariamente baseadas em informação incompleta.
+  \item \textbf{Perda de contribuição técnica:} gerentes deixam de codificar.
+        Programadores excepcionais podem perceber a promoção como perda de
+        produtividade e satisfação pessoal.
+  \item \textbf{Responsabilidade difusa:} o sucesso de um time não é
+        atribuível a um único indivíduo, o que contrasta com o reconhecimento
+        direto que bons programadores recebem por soluções técnicas elegantes.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.3}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Usando instâncias de problemas de projetos relatados na literatura, liste as
+dificuldades e os erros de gerenciamento que ocorreram em projetos de
+programação que falharam.
+\end{questao}
+\begin{resposta}
+Com base em \textit{The Mythical Man-Month} (Brooks, 1975) e outros casos:
+
+\begin{itemize}
+  \item \textbf{Lei de Brooks (IBM OS/360):} adicionar pessoal a um projeto
+        atrasado atrasa-o ainda mais. O overhead de comunicação cresce em
+        $O(n^2)$ com o número de pessoas. A IBM estimou errado a complexidade
+        do OS/360 e, ao adicionar equipes, multiplicou os atrasos.
+
+  \item \textbf{Estimativa otimista (segundo sistema de Brooks):} o segundo
+        sistema de um desenvolvedor tende ao excesso de complexidade e
+        funcionalidades. O OS/360 sofreu disso — funcionalidades desnecessárias
+        foram adicionadas, aumentando a complexidade sem valor correspondente.
+
+  \item \textbf{Denver Airport Baggage System (1994):} \$193 milhões em
+        prejuízo e 16 meses de atraso por subestimação da complexidade de
+        integração, falta de prototipação e pressões políticas sobre o
+        cronograma.
+
+  \item \textbf{Healthcare.gov (2013):} falha no lançamento do portal do
+        governo americano por gestão fragmentada entre múltiplos
+        contratantes, falta de um arquiteto-chefe e testes insuficientes
+        de integração até semanas antes do lançamento.
+
+  \item \textbf{Erros recorrentes identificados:} cronogramas não realistas
+        sob pressão comercial; ausência de controle de mudanças formal;
+        falta de comunicação entre subequipes; testes relegados ao final
+        do projeto; mitos de produtividade (``pessoas-mês'' como unidade
+        de medida de capacidade).
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.4}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Além dos riscos mostrados na Tabela~22.1, identifique pelo menos seis outros
+possíveis riscos que podem surgir em projetos de software.
+\end{questao}
+\begin{resposta}
+\begin{enumerate}[nosep]
+  \item \textbf{Risco de segurança cibernética:} vulnerabilidades descobertas
+        em componentes de terceiros (ex.: Log4Shell) podem invalidar decisões
+        arquiteturais tardias no projeto.
+  \item \textbf{Risco de integração de sistemas legados:} interfaces não
+        documentadas ou indisponíveis de sistemas legados podem impedir a
+        migração ou integração planejada.
+  \item \textbf{Risco de rotatividade de pessoal-chave:} saída de membros
+        com conhecimento crítico não documentado pode paralisar o projeto.
+  \item \textbf{Risco regulatório:} mudanças em legislação (ex.: LGPD,
+        GDPR) durante o desenvolvimento podem exigir retrabalho arquitetural
+        significativo.
+  \item \textbf{Risco de fornecedor/terceiro:} falência ou mudança de
+        estratégia de um fornecedor de componente crítico (ex.: descontinuação
+        de API) pode inviabilizar partes do sistema.
+  \item \textbf{Risco de desempenho:} o sistema atende aos requisitos
+        funcionais mas não às metas de desempenho sob carga real, exigindo
+        refatoração extensiva.
+  \item \textbf{Risco de adoção:} usuários resistem ao novo sistema por
+        questões de usabilidade ou mudança de processos, reduzindo o retorno
+        sobre o investimento.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.5}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Contratos de preço fixo podem mover o risco de projeto para o contratante.
+Sugira como o uso desses contratos pode aumentar a probabilidade de surgirem
+riscos de produtos.
+\end{questao}
+\begin{resposta}
+Em contratos de preço fixo, o contratante (desenvolvedor) absorve qualquer
+custo acima do valor contratado. Para proteger sua margem, o contratante
+tende a:
+
+\begin{itemize}[nosep]
+  \item \textbf{Cortar escopo de qualidade:} reduzir testes, revisões de
+        código e documentação — atividades que não são visíveis ao cliente
+        mas são críticas para a confiabilidade do produto final.
+  \item \textbf{Aceitar requisitos ambíguos sem negociá-los:} cada
+        esclarecimento posterior pode ser cobrado como mudança, incentivando
+        a entrega de um produto que atende à letra, mas não ao espírito dos
+        requisitos.
+  \item \textbf{Usar tecnologias ou arquiteturas de menor custo de
+        desenvolvimento:} que podem não ser as mais adequadas para
+        manutenibilidade ou desempenho a longo prazo.
+  \item \textbf{Subestimar deliberadamente:} para ganhar o contrato,
+        contratantes podem oferecer lances inviáveis, sabendo que a
+        recuperação virá por meio de cobranças de mudanças ou entregando
+        um produto de qualidade inferior.
+\end{itemize}
+
+Todos esses comportamentos aumentam o risco de produto: o sistema entregue
+pode ser frágil, inseguro ou não atender às necessidades reais, mesmo
+cumprindo formalmente o contrato.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.6}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que manter todos os membros de um grupo informados sobre
+progressos e decisões técnicas de um projeto pode melhorar a coesão de grupo.
+\end{questao}
+\begin{resposta}
+A coesão de grupo é fortalecida quando todos os membros compartilham um
+modelo mental comum do projeto. Informar progressos e decisões técnicas:
+
+\begin{enumerate}[nosep]
+  \item \textbf{Gera senso de pertencimento:} membros informados sentem que
+        contribuem para um objetivo compartilhado, não apenas para sua tarefa
+        isolada. Isso reduz o comportamento de ``silo''.
+  \item \textbf{Cria responsabilidade coletiva:} quando todos sabem o estado
+        do projeto, erros e atrasos são detectados mais cedo e a equipe age
+        de forma proativa.
+  \item \textbf{Facilita decisões distribuídas:} membros informados podem
+        tomar micro-decisões alinhadas às decisões estratégicas sem precisar
+        escalar cada questão.
+  \item \textbf{Reduz rumores e ansiedade:} transparência sobre dificuldades
+        e riscos evita o ``jogo de telefone'' que frequentemente causa
+        conflitos e desmotivação.
+  \item \textbf{Promove aprendizado coletivo:} decisões técnicas explicadas
+        à equipe aumentam a competência coletiva e reduzem a dependência
+        de especialistas individuais.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.7}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Quais os problemas que podem surgir nas equipes de Extreme Programming em
+que muitas decisões de gerenciamento são atribuídas aos membros de equipe?
+\end{questao}
+\begin{resposta}
+\begin{itemize}[nosep]
+  \item \textbf{Conflitos não resolvidos:} sem uma autoridade clara,
+        divergências técnicas (ex.: escolha de arquitetura, prioridade de
+        histórias) podem se arrastar sem decisão, criando bloqueios.
+  \item \textbf{Planejamento inconsistente:} diferentes membros podem
+        ter visões conflitantes sobre velocidade de desenvolvimento e
+        estimativas de story points, dificultando o planejamento de releases.
+  \item \textbf{Falta de accountability:} quando decisões são coletivas,
+        ninguém é responsável pelos resultados. Erros gerenciais podem não
+        ser reconhecidos ou corrigidos.
+  \item \textbf{Pressão grupal:} membros menos assertivos podem silenciar
+        diante de colegas mais dominantes, perdendo-se perspectivas valiosas.
+  \item \textbf{Dificuldade com stakeholders externos:} clientes e gestores
+        precisam de um ponto de contato único. Uma equipe sem hierarquia
+        clara pode comunicar mensagens inconsistentes.
+  \item \textbf{Escalabilidade:} o modelo funciona bem em equipes pequenas
+        (até 10 pessoas). Em projetos maiores, a autogestão coletiva torna-se
+        caótica sem mecanismos formais de coordenação.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.8}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Escreva um estudo de caso, no estilo usado neste capítulo, para ilustrar a
+importância da comunicação em uma equipe de projeto com membros remotos.
+\end{questao}
+\begin{resposta}
+\textbf{Caso: Sistema de Monitoramento de Infraestrutura Hospitalar}
+
+Uma equipe de 8 desenvolvedores distribuídos em Manaus, São Paulo e Lisboa
+foi contratada para desenvolver um sistema de monitoramento de leitos
+hospitalares em 9 meses. O time de Manaus era responsável pelo backend
+(sensores IoT), o time de São Paulo pelo frontend web e o time de Lisboa
+pela integração com o sistema de prontuários.
+
+\textbf{Problema:} Os times de Manaus e Lisboa definiram, independentemente,
+formatos de mensagem JSON diferentes para os eventos de sensor. A discrepância
+só foi descoberta na integração (mês 7), quando o frontend exibia dados
+incorretos. A correção exigiu 3 semanas adicionais e refatoração do
+módulo de persistência.
+
+\textbf{Causa raiz:} As reuniões semanais de sincronização focavam em
+progresso funcional individual, sem revisão de contratos de API. Não havia
+um repositório central de especificações de interface revisado por todos
+os times. As diferenças de fuso horário (Manaus--Lisboa: -4h) dificultavam
+comunicação assíncrona e resolução rápida de dúvidas.
+
+\textbf{Lição:} Equipes distribuídas necessitam de um contrato de interface
+explícito (ex.: OpenAPI), revisado e aprovado por todos os times antes do
+início da implementação. Reuniões de sincronização devem incluir revisão
+de decisões técnicas de impacto transversal, não apenas relatórios de
+progresso. Uma ferramenta de comunicação com canais por componente e
+responsável único por decisões técnicas teria prevenido o problema.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.9}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Seu gerente solicitou que você entregue o software dentro do cronograma,
+o qual só poderá ser cumprido caso você peça à sua equipe que trabalhe horas
+extras não remuneradas. Todos os membros têm crianças pequenas. Discuta se
+você deve aceitar essa demanda ou convencer sua equipe a dar seu tempo à
+organização.
+\end{questao}
+\begin{resposta}
+\textbf{Fatores a considerar:}
+
+\begin{itemize}[nosep]
+  \item \textbf{Ético-profissional:} o Código de Ética da ACM e da IEEE-CS
+        exige que engenheiros tratem colegas com justiça e não permitam que
+        pressões comerciais comprometam o bem-estar da equipe.
+  \item \textbf{Responsabilidade parental:} solicitar horas extras a membros
+        com filhos pequenos impõe custo social real às suas famílias, que não
+        têm voz na negociação contratual.
+  \item \textbf{Qualidade do software:} equipes exaustas cometem mais erros.
+        Horas extras não remuneradas frequentemente resultam em dívida técnica
+        que, a longo prazo, atrasa projetos futuros.
+  \item \textbf{Comprometimento contratual:} se o cronograma foi estabelecido
+        com estimativas ruins, o problema é de planejamento — não de
+        esforço da equipe.
+\end{itemize}
+
+\textbf{Decisão recomendada:} Não aceitar a demanda silenciosamente. A postura
+ética é comunicar ao gerente o impacto humano e técnico da solicitação,
+propor renegociação do escopo ou do prazo com o cliente, e documentar
+formalmente as consequências da decisão. Se a demanda for imposta,
+comunicá-la à equipe de forma transparente — sem coerção velada — e deixar
+que cada membro decida individualmente se pode ou não contribuir com tempo
+adicional voluntário. Jamais pressionar quem recusar.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 22.10}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Como programador, você tem a possibilidade de ser promovido para gerente de
+projetos, mas sente que pode contribuir mais eficazmente como técnico. Discuta
+se você deve aceitar a promoção.
+\end{questao}
+\begin{resposta}
+\textbf{Argumentos para recusar:}
+\begin{itemize}[nosep]
+  \item Contribuição técnica de alta qualidade tem impacto direto e mensurável
+        em sistemas críticos; gerenciamento ruim pode neutralizar esse impacto.
+  \item Satisfação pessoal e motivação intrínseca são preditores fortes de
+        produtividade a longo prazo. Assumir um papel que não mobiliza as
+        competências valorizadas pelo profissional tende a gerar frustração.
+  \item Muitas organizações precisam mais de engenheiros sêniores do que
+        de gerentes adicionais.
+\end{itemize}
+
+\textbf{Argumentos para aceitar:}
+\begin{itemize}[nosep]
+  \item Gerentes com sólida base técnica tomam decisões melhores e ganham
+        credibilidade da equipe. A organização pode se beneficiar mais de
+        alguém que entende os detalhes técnicos do que de um gerente puramente
+        administrativo.
+  \item Exposição gerencial pode revelar aptidões não descobertas e abrir
+        novas perspectivas de carreira.
+\end{itemize}
+
+\textbf{Recomendação:} negociar com a organização alternativas como papel de
+\textit{Tech Lead} — responsabilidade técnica e alguma responsabilidade de
+coordenação, sem abandono da contribuição técnica. Se a promoção for aceita,
+deve-se fazê-lo com comprometimento genuíno e plano de desenvolvimento
+das habilidades gerenciais. Aceitar a promoção sem motivação apenas para
+progressão salarial é prejudicial ao profissional, à equipe e ao projeto.
+\end{resposta}
+
+%==========================================================================
+\section*{Capítulo 23 — Planejamento de Projetos}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.1}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Em quais circunstâncias uma empresa poderia, justificadamente, cobrar um
+preço muito mais elevado do que o custo estimado de software, além de uma
+margem de lucro razoável?
+\end{questao}
+\begin{resposta}
+\begin{enumerate}[nosep]
+  \item \textbf{Monopólio de conhecimento específico:} se a empresa é a única
+        com expertise no domínio do cliente (ex.: sistema de defesa ou
+        industrial específico), pode precificar o valor percebido, não o custo.
+  \item \textbf{Risco assumido pelo fornecedor:} em contratos de preço fixo
+        com requisitos altamente incertos, o prêmio de risco justifica uma
+        margem maior.
+  \item \textbf{Software crítico de segurança:} sistemas médicos, aviônicos
+        e nucleares exigem certificação formal, documentação extensiva e
+        processos de garantia de qualidade caros que elevam os custos reais.
+  \item \textbf{Entrega urgente:} prazos muito comprimidos exigem horas extras,
+        contratação rápida ou interrupção de outros projetos, justificando
+        preço premium.
+  \item \textbf{Propriedade intelectual:} quando o software incorpora
+        algoritmos proprietários ou pesquisa avançada, o valor intelectual
+        supera o custo de desenvolvimento.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.2}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que o processo de planejamento de projeto é iterativo e por que
+um plano deve ser continuamente revisto durante um projeto de software.
+\end{questao}
+\begin{resposta}
+O planejamento é iterativo porque as premissas iniciais são inevitavelmente
+incompletas ou incorretas:
+
+\begin{itemize}[nosep]
+  \item \textbf{Incerteza inicial:} no início do projeto, requisitos são
+        vagos, tecnologias não testadas e a capacidade da equipe é incerta.
+        Estimativas baseadas nessas premissas degradam-se rapidamente.
+  \item \textbf{Descobertas durante o desenvolvimento:} cada fase revela
+        complexidades não previstas. Um módulo estimado em 5 dias pode levar
+        15 após análise detalhada.
+  \item \textbf{Mudanças externas:} requisitos do cliente mudam; membros de
+        equipe entram ou saem; tecnologias de terceiros mudam de versão.
+  \item \textbf{Feedback de milestones:} revisões periódicas revelam desvios
+        entre o planejado e o executado, exigindo replanejamento.
+\end{itemize}
+
+Um plano não revisado torna-se desatualizado e perde seu valor como
+instrumento de controle. O plano iterativo é mais eficaz porque incorpora
+aprendizado contínuo e mantém as estimativas ancoradas na realidade corrente
+do projeto.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.3}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique rapidamente a finalidade de cada uma das seções em um plano de
+projeto de software.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tabular}{p{4cm}p{9.5cm}}
+\toprule
+\textbf{Seção} & \textbf{Finalidade} \\
+\midrule
+Introdução & Define escopo, objetivos e contexto; estabelece quem vai ler o
+             documento e o que se espera do projeto. \\
+\midrule
+Organização do projeto & Descreve a estrutura da equipe, papéis e responsabilidades,
+                         e a relação com o cliente. \\
+\midrule
+Análise de riscos & Identifica riscos, sua probabilidade e impacto, e define
+                    estratégias de mitigação e contingência. \\
+\midrule
+Req. de recursos de hardware e software & Lista ferramentas, infraestrutura e
+                                          ambientes necessários para desenvolvimento
+                                          e operação. \\
+\midrule
+Divisão do trabalho & Decompõe o projeto em atividades, atribui responsáveis
+                      e define dependências (WBS). \\
+\midrule
+Cronograma do projeto & Presenta o sequenciamento temporal das atividades (Gantt,
+                        CPM), marcos e datas de entrega. \\
+\midrule
+Mecanismos de monitoramento e relatórios & Define como o progresso será medido,
+                                           com que frequência e em que formato
+                                           relatórios serão produzidos. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.4}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Sugira quatro maneiras de reduzir o risco em uma estimativa de custo.
+\end{questao}
+\begin{resposta}
+\begin{enumerate}[nosep]
+  \item \textbf{Usar múltiplas técnicas de estimativa:} combinar COCOMO,
+        pontos de função e julgamento especializado. Convergência entre os
+        métodos aumenta a confiança; divergência sinaliza incerteza que
+        deve ser explicitada como risco.
+  \item \textbf{Estimativas incrementais (top-down + bottom-up):} decompor o
+        sistema em componentes e estimar cada um individualmente (bottom-up),
+        comparando com uma estimativa global (top-down). Discrepâncias revelam
+        itens omitidos.
+  \item \textbf{Usar dados históricos de projetos similares:} repositórios
+        organizacionais de projetos passados (com tamanho, custo real e
+        desvios) fornecem base empírica para calibrar estimativas.
+  \item \textbf{Inclusão explícita de reservas de contingência:} reservas
+        para risco (ex.: 20--30\% do esforço estimado) transformam a
+        incerteza de uma ameaça implícita em um buffer gerenciado e visível
+        para o cliente.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.5 — Gráfico de Barras da Tabela 23.7}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+A Tabela~23.7 define tarefas com durações e dependências. Desenhe um gráfico
+de barras mostrando o cronograma de projeto.
+\end{questao}
+\begin{resposta}
+Cronograma calculado (início mais cedo para cada tarefa):
+
+\begin{center}\small
+\begin{tabular}{cccp{5cm}}
+\toprule
+\textbf{Tarefa} & \textbf{ES} & \textbf{EF} & \textbf{Dependências} \\
+\midrule
+T1 & 0 & 10 & --- \\
+T2 & 10 & 25 & T1 \\
+T3 & 25 & 35 & T1, T2 \\
+T4 & 0 & 20 & --- \\
+T5 & 0 & 10 & --- \\
+T6 & 35 & 50 & T3, T4 \\
+T7 & 35 & 55 & T3 \\
+T8 & 55 & 90 & T7 \\
+T9 & 50 & 65 & T6 \\
+T10 & 65 & 70 & T5, T9 \\
+T11 & 65 & 75 & T9 \\
+T12 & 70 & 90 & T10 \\
+T13 & 35 & 70 & T3, T4 \\
+T14 & 90 & 100 & T8, T9 \\
+T15 & 100 & 120 & T2, T14 \\
+T16 & 120 & 130 & T15 \\
+\bottomrule
+\end{tabular}
+\quad \textbf{Duração total: 130 dias}
+\end{center}
+
+\textbf{Gráfico de Gantt (escala: 1 unidade = 10 dias):}
+
+\begin{center}
+\begin{tikzpicture}[xscale=0.09, yscale=0.38]
+  \foreach \x in {0,10,...,130} {
+    \draw[gray!30,thin] (\x,-0.3) -- (\x,17.3);
+    \node[below,font=\tiny] at (\x,-0.3) {\x};
+  }
+  \foreach \row/\name/\s/\f in {
+      1/T1/0/10, 2/T2/10/25, 3/T3/25/35, 4/T4/0/20,
+      5/T5/0/10, 6/T6/35/50, 7/T7/35/55, 8/T8/55/90,
+      9/T9/50/65, 10/T10/65/70, 11/T11/65/75, 12/T12/70/90,
+      13/T13/35/70, 14/T14/90/100, 15/T15/100/120, 16/T16/120/130} {
+    \pgfmathsetmacro{\y}{17-\row}
+    \fill[blue!50!cyan,draw=blue!70,rounded corners=1pt]
+      (\s,\y+0.1) rectangle (\f,\y+0.85);
+    \node[left,font=\tiny\bfseries] at (0,\y+0.48) {\name};
+  }
+  \draw[->] (0,-0.3) -- (135,-0.3) node[right,font=\small] {Dias};
+  \draw (0,-0.3) -- (0,17.3);
+  \node[above,font=\small\bfseries] at (65,17.5) {Cronograma — Tabela 23.7};
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.6 — Reorganização com T5 = 40 dias}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Suponha que ocorra um retrocesso grave e, em vez de levar 10 dias, a tarefa
+T5 leva 40 dias. Elabore novos gráficos de barras, mostrando como o projeto
+pode ser reorganizado.
+\end{questao}
+\begin{resposta}
+Com T5 = 40 dias:
+\begin{itemize}[nosep]
+  \item T5: EF passa de 10 para \textbf{40 dias}.
+  \item T10 depende de T5 e T9. Com T9 terminando no dia 65, a restrição
+        de T10 continua sendo T9:
+        $\text{ES}(\text{T10}) = \max(40, 65) = 65$.
+  \item \textbf{Nenhuma outra tarefa é afetada} — T5 não é caminho crítico.
+  \item \textbf{Duração total do projeto permanece 130 dias.}
+\end{itemize}
+
+\textbf{Impacto:} apenas o comprimento da barra de T5 no Gantt aumenta.
+A reorganização consiste em garantir que os recursos alocados a T5 sejam
+mantidos por 40 dias em vez de 10, sem impacto nas demais atividades.
+
+\begin{center}
+\begin{tikzpicture}[xscale=0.09, yscale=0.38]
+  \foreach \x in {0,10,...,130} {
+    \draw[gray!30,thin] (\x,-0.3) -- (\x,17.3);
+    \node[below,font=\tiny] at (\x,-0.3) {\x};
+  }
+  \foreach \row/\name/\s/\f in {
+      1/T1/0/10, 2/T2/10/25, 3/T3/25/35, 4/T4/0/20,
+      5/T5/0/10, 6/T6/35/50, 7/T7/35/55, 8/T8/55/90,
+      9/T9/50/65, 10/T10/65/70, 11/T11/65/75, 12/T12/70/90,
+      13/T13/35/70, 14/T14/90/100, 15/T15/100/120, 16/T16/120/130} {
+    \pgfmathsetmacro{\y}{17-\row}
+    \fill[blue!50!cyan,draw=blue!70,rounded corners=1pt]
+      (\s,\y+0.1) rectangle (\f,\y+0.85);
+    \node[left,font=\tiny\bfseries] at (0,\y+0.48) {\name};
+  }
+  % T5 extended to 40d (row 5 -> y=12)
+  \fill[red!60,draw=red!80,rounded corners=1pt]
+    (0,12.1) rectangle (40,12.85);
+  \node[font=\tiny\bfseries,white] at (20,12.48) {T5 (40d)};
+  \draw[->] (0,-0.3) -- (135,-0.3) node[right,font=\small] {Dias};
+  \draw (0,-0.3) -- (0,17.3);
+  \node[above,font=\small\bfseries] at (65,17.5) {Cronograma Reorganizado (T5=40 dias)};
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.7}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique os potenciais problemas com o jogo de planejamento do XP quando o
+software tem altos requisitos de desempenho ou de confiança.
+\end{questao}
+\begin{resposta}
+O jogo de planejamento do XP baseia-se em histórias de usuário priorizadas
+pelo cliente por valor de negócio. Problemas em sistemas de alto desempenho
+ou alta confiança:
+
+\begin{itemize}[nosep]
+  \item \textbf{Requisitos não-funcionais invisíveis nas histórias:} desempenho,
+        segurança e confiabilidade raramente aparecem como histórias de usuário
+        discretas. São propriedades emergentes da arquitetura e difíceis de
+        priorizar por valor de negócio percebido.
+  \item \textbf{Decisões arquiteturais adiadas:} o XP encoraja o design emergente
+        (YAGNI), mas sistemas de alta confiança precisam de uma arquitetura
+        de segurança definida cedo — mudar tarde é extremamente custoso.
+  \item \textbf{Ausência de análise formal de riscos:} histórias de segurança
+        crítica (ex.: ``o sistema não deve emitir dose de radiação errada'')
+        não são priorizáveis apenas por valor de negócio; são obrigações legais.
+  \item \textbf{Ciclos curtos vs. certificação:} certificações de sistemas
+        críticos (DO-178C, IEC~61508) exigem documentação de processo pesada,
+        incompatível com os ciclos semanais e baixa cerimônia do XP.
+  \item \textbf{Refatoração não é livre:} em sistemas de alto desempenho,
+        refatorar uma estrutura de dados pode quebrar garantias de tempo de
+        resposta garantidas previamente.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.8}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Sistema de radioterapia com estimativa COCOMO de 26 pessoas-mês, com todos
+os multiplicadores de driver de custo definidos como 1. Explique por que
+essa estimativa deve ser ajustada, cite quatro fatores e proponha valores.
+\end{questao}
+\begin{resposta}
+Definir todos os multiplicadores como 1 assume que o sistema é \emph{médio}
+em todas as dimensões — o que é claramente inadequado para um sistema médico
+crítico embarcado. Os fatores COCOMO II que precisam de ajuste:
+
+\begin{center}
+\small
+\begin{tabular}{p{3.5cm}p{5.5cm}cc}
+\toprule
+\textbf{Fator} & \textbf{Justificativa} & \textbf{Valor} & \textbf{Multiplicador} \\
+\midrule
+RELY (Confiabilidade) & Sistema de radioterapia — falha pode resultar em
+                        morte do paciente. Nível ``extra alto''. & Extra alto & 1,39 \\
+\midrule
+CPLX (Complexidade) & Controle em tempo real de hardware específico
+                      (processador dedicado, 256 MB RAM fixos), comunicação
+                      com BD hospitalar, interface crítica de segurança.
+                      Nível ``muito alto''. & Muito alto & 1,30 \\
+\midrule
+STOR (Restrição de armazenamento) & Execução em memória fixa de 256 MB com
+                      código de controle em tempo real. Restrição ``muito
+                      alta'' (uso acima de 70\% da memória). & Muito alto & 1,21 \\
+\midrule
+SECU (Segurança) & Restrição de segurança funcional (requisito de integridade
+                   de segurança nível SIL 3 ou 4). Exige análise formal,
+                   FMEA e rastreabilidade completa. & Extra alto & 1,30 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Produto dos multiplicadores: $1{,}39 \times 1{,}30 \times 1{,}21 \times 1{,}30 \approx 2{,}84$
+
+\textbf{Estimativa ajustada:} $26 \times 2{,}84 \approx \mathbf{74}$ pessoas-mês.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.9}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que os modelos de estimativa de esforço, como o COCOMO, podem
+não funcionar bem quando aplicados a sistemas muito grandes.
+\end{questao}
+\begin{resposta}
+\begin{enumerate}[nosep]
+  \item \textbf{Dados históricos escassos:} COCOMO foi calibrado com projetos
+        de até algumas centenas de KLOC. Sistemas com milhões de LOC são raros
+        e têm características únicas não capturadas na base de dados histórica.
+  \item \textbf{Não-linearidade da complexidade:} o expoente de escala ($E$)
+        em $\text{PM} = A \times (\text{KLOC})^E$ assume que a complexidade
+        cresce de forma regular com o tamanho. Em sistemas muito grandes, a
+        complexidade de integração, testes de sistema e comunicação organizacional
+        cresce de forma super-linear, além do que o expoente modela.
+  \item \textbf{Divisão em subsistemas:} sistemas muito grandes são
+        desenvolvidos por múltiplas equipes e organizações em paralelo,
+        com interfaces complexas. O COCOMO não modela adequadamente o custo
+        de integração entre grandes subsistemas.
+  \item \textbf{Evolução durante o desenvolvimento:} em projetos de vários
+        anos, os requisitos mudam significativamente. O LOC estimado no
+        início é uma meta-alvo instável, invalidando as estimativas baseadas
+        nele.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 23.10}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+É ético para uma empresa cotar um preço baixo para um contrato de software
+sabendo que os requisitos são ambíguos e que eles poderão cobrar um preço
+elevado para mudanças posteriores solicitadas pelo cliente?
+\end{questao}
+\begin{resposta}
+\textbf{Não, esta prática é eticamente problemática} pelas seguintes razões:
+
+\begin{itemize}[nosep]
+  \item \textbf{Enganosidade intencional:} a empresa conhece a assimetria
+        de informação (que os requisitos são ambíguos e gerarão mudanças
+        custosas) e a explora deliberadamente. Isso viola o princípio ético
+        de agir de boa-fé com o cliente.
+  \item \textbf{Dano ao cliente:} o cliente toma sua decisão de compra baseado
+        em um preço que não reflete o custo real. O orçamento será excedido,
+        potencialmente comprometendo outros projetos ou a viabilidade
+        financeira da organização compradora.
+  \item \textbf{Conflito com códigos de ética profissional:} o Código de
+        Ética da ACM (Princípio 1.3) determina que profissionais de computação
+        devem ser honestos e não enganar clientes ou empregadores.
+  \item \textbf{Efeito sistêmico:} a prática destrói a confiança no setor,
+        eleva custos de contratação (clientes precisam de auditorias extensas
+        e contratos mais complexos) e prejudica empresas éticas que propõem
+        preços justos e perdem contratos para a concorrência desonesta.
+\end{itemize}
+
+A alternativa ética é: identificar e documentar a ambiguidade dos requisitos
+antes da proposta, cotar um preço que inclua uma reserva de risco explícita,
+e propor uma fase de detalhamento de requisitos paga antes da estimativa final.
+\end{resposta}
+
+%==========================================================================
+\section*{Exercício 12.1 — Estimativa de Custo com COCOMO}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Sistema GUI-based com 75.000 LOC (complexo). Calcule: (a) esforço total em
+PM; (b) distribuição por fase; (c) esforço e custos por atividade em cada
+fase; (d) custo total do projeto.
+\end{questao}
+
+\textbf{(a) Esforço total:}
+\[
+  \text{PM} = 3{,}0 \times (\text{KLOC})^{1{,}12}
+             = 3{,}0 \times 75^{1{,}12}
+             = 3{,}0 \times 125{,}91
+             \approx \boxed{377{,}7 \text{ PM}}
+\]
+
+\textbf{(b) Distribuição por fase:}
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Fase} & \textbf{\%} & \textbf{PM} \\
+\midrule
+Requirements Analysis \& Conception & 8\% & 30,2 PM \\
+Design & 18\% & 68,0 PM \\
+Implementation & 48\% & 181,3 PM \\
+Integration \& Test & 26\% & 98,2 PM \\
+\midrule
+\textbf{Total} & 100\% & \textbf{377,7 PM} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{(c) Esforço e custos por atividade — Fase: Requirements Analysis \& Conception (30,2 PM):}
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Atividade} & \textbf{\%} & \textbf{PM} & \textbf{Taxa (€/PM)} & \textbf{Custo (€)} \\
+\midrule
+Requirements Analysis  & 42\% & 12,69 & 10.000 & 126.920 \\
+Product Design         & 16\% &  4,84 &  6.000 &  29.010 \\
+Programming            & 10\% &  3,02 &  6.000 &  18.130 \\
+Plan Tests             &  6\% &  1,81 &  9.000 &  16.320 \\
+Verification \& Validation & 10\% & 3,02 & 9.000 & 27.200 \\
+Project Management     &  8\% &  2,42 & 12.000 &  29.010 \\
+Configuration Mgmt     &  3\% &  0,91 &  7.000 &   6.350 \\
+Quality Assurance      &  5\% &  1,51 &  7.000 &  10.580 \\
+\midrule
+\textbf{Total RAC}     & 100\% & 30,22 & --- & \textbf{263.520} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textit{Os valores para Design (506.550 €), Implementation (1.292.770 €) e
+Integration \& Test (720.870 €) foram computados analogamente usando as
+colunas correspondentes da Figura~1.}
+
+\textbf{(d) Custo total do projeto:}
+
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+\textbf{Fase} & \textbf{Custo (€)} \\
+\midrule
+Requirements Analysis \& Conception & 263.520 \\
+Design & 506.550 \\
+Implementation & 1.292.770 \\
+Integration \& Test & 720.870 \\
+\midrule
+\textbf{TOTAL} & \textbf{2.783.710} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%==========================================================================
+\section*{Exercício 12.2 — Rede de Planejamento (CPM / MPM)}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Para o depósito automatizado, construa: (a) rede CPM com caminho crítico;
+(b) rede MPM; (c) gráfico de barras (Gantt).
+\end{questao}
+
+\textbf{(a) Rede CPM — Análise de Caminhos Críticos}
+
+Cálculo dos tempos mais cedo e mais tarde:
+
+\begin{center}\small
+\begin{tabular}{ccccccc}
+\toprule
+\textbf{Atividade} & \textbf{Dur.} & \textbf{ES} & \textbf{EF} & \textbf{LS} & \textbf{LF} & \textbf{Folga} \\
+\midrule
+A (Preparação)               & 2  & 0  & 2  & 0  & 2  & 0 \textbf{*} \\
+B (Projeto depósito)         & 4  & 2  & 6  & 3  & 7  & 1 \\
+C (Construção)               & 14 & 2  & 16 & 2  & 16 & 0 \textbf{*} \\
+D (Desenv. sist. controle)   & 9  & 6  & 15 & 7  & 16 & 1 \\
+E (Provisão mecânica)        & 3  & 6  & 9  & 16 & 19 & 10 \\
+F (Teste componentes edif.)  & 7  & 16 & 23 & 16 & 23 & 0 \textbf{*} \\
+G (Teste componentes mec.)   & 4  & 16 & 20 & 19 & 23 & 3 \\
+H (Instalação edif.)         & 4  & 16 & 20 & 19 & 23 & 3 \\
+I (Integração e introdução)  & 4  & 23 & 27 & 23 & 27 & 0 \textbf{*} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Caminho crítico:} $\mathbf{A \to C \to F \to I}$ \quad (duração: $2+14+7+4 = \mathbf{27}$ dias)
+
+\textbf{Diagrama CPM (Activity-on-Node):}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=1.5cm and 2.2cm,
+  act/.style={draw,rectangle,rounded corners=3pt,minimum width=2.2cm,
+              minimum height=1.1cm,align=center,font=\footnotesize},
+  crit/.style={act,fill=red!15,draw=red!70,very thick},
+  norm/.style={act,fill=blue!8,draw=blue!50},
+  arr/.style={-{Stealth[length=4pt]},thick},
+  carr/.style={-{Stealth[length=4pt]},very thick,red!70}]
+
+  \node[crit] (A) {\textbf{A}\\2d\\0|2|0|2};
+  \node[norm,right=1.8cm of A] (B) {B\\4d\\2|6|3|7};
+  \node[crit,below=0.6cm of B] (C) {\textbf{C}\\14d\\2|16|2|16};
+  \node[norm,right=1.8cm of B] (D) {D\\9d\\6|15|7|16};
+  \node[norm,below=0.6cm of D] (E) {E\\3d\\6|9|16|19};
+  \node[crit,right=1.8cm of D] (F) {\textbf{F}\\7d\\16|23|16|23};
+  \node[norm,below=0.6cm of F] (G) {G\\4d\\16|20|19|23};
+  \node[norm,below=0.6cm of G] (H) {H\\4d\\16|20|19|23};
+  \node[crit,right=1.8cm of F] (I) {\textbf{I}\\4d\\23|27|23|27};
+
+  % Legend inside nodes: Dur d / ES|EF|LS|LF
+  \draw[carr] (A) -- (C);
+  \draw[arr] (A) -- (B);
+  \draw[arr] (B) -- (D);
+  \draw[arr] (B) -- (E);
+  \draw[carr] (C) -- (F);
+  \draw[arr] (C) -- (G);
+  \draw[arr] (C) -- (H);
+  \draw[arr] (D) -- (F);
+  \draw[arr] (D) -- (G);
+  \draw[arr] (D) -- (H);
+  \draw[arr] (E) -- (G);
+  \draw[carr] (F) -- (I);
+  \draw[arr] (G) -- (I);
+  \draw[arr] (H) -- (I);
+
+  \node[below=0.15cm,font=\tiny,align=left] at (A.south)
+    {ES|EF|LS|LF};
+  \node[red!70,below right=0.1cm and 3cm of I,font=\small\bfseries]
+    {Caminho crítico: A→C→F→I};
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Rede MPM (Metra Potential Method / Activity-on-Node):}
+
+No MPM, os nós são as atividades e as arestas são ponderadas pela duração
+do predecessor (ou pela relação temporal explícita). Cada nó mostra:
+ES | EF na linha superior, LS | LF na linha inferior, com a duração ao centro.
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=1.2cm and 1.8cm,
+  mpm/.style={draw,rectangle,minimum width=2.0cm,minimum height=1.4cm,
+              align=center,font=\tiny},
+  cmpm/.style={draw,rectangle,minimum width=2.0cm,minimum height=1.4cm,
+              align=center,font=\tiny,fill=red!12,draw=red!70,thick},
+  arr/.style={-{Stealth[length=3.5pt]},gray!70},
+  carr/.style={-{Stealth[length=3.5pt]},red!70,very thick}]
+
+  \node[cmpm] (A) {\textbf{A}\\\textbf{dur=2}\\0 | 2\\0 | 2};
+  \node[mpm,right=2.5cm of A,yshift=0.7cm] (B) {B\\dur=4\\2 | 6\\3 | 7};
+  \node[cmpm,right=2.5cm of A,yshift=-0.7cm] (C) {\textbf{C}\\\textbf{dur=14}\\2 | 16\\2 | 16};
+  \node[mpm,right=2.2cm of B,yshift=0.5cm] (D) {D\\dur=9\\6 | 15\\7 | 16};
+  \node[mpm,right=2.2cm of B,yshift=-0.5cm] (E) {E\\dur=3\\6 | 9\\16 | 19};
+  \node[cmpm,right=2.2cm of D,yshift=0.7cm] (F) {\textbf{F}\\\textbf{dur=7}\\16 | 23\\16 | 23};
+  \node[mpm,right=2.2cm of D,yshift=-0.3cm] (G) {G\\dur=4\\16 | 20\\19 | 23};
+  \node[mpm,right=2.2cm of E,yshift=-0.3cm] (H) {H\\dur=4\\16 | 20\\19 | 23};
+  \node[cmpm,right=2.2cm of F] (I) {\textbf{I}\\\textbf{dur=4}\\23 | 27\\23 | 27};
+
+  \draw[carr] (A) -- node[above,font=\tiny]{2} (C);
+  \draw[arr]  (A) -- node[above,font=\tiny]{2} (B);
+  \draw[arr]  (B) -- node[above,font=\tiny]{4} (D);
+  \draw[arr]  (B) -- node[below,font=\tiny]{4} (E);
+  \draw[carr] (C) -- node[above,font=\tiny]{14} (F);
+  \draw[arr]  (C) -- node[above,font=\tiny]{14} (G);
+  \draw[arr]  (C) -- node[below,font=\tiny]{14} (H);
+  \draw[arr]  (D) -- node[above,font=\tiny]{9} (F);
+  \draw[arr]  (D) -- node[font=\tiny]{9} (G);
+  \draw[arr]  (D) -- node[font=\tiny]{9} (H);
+  \draw[arr]  (E) -- node[font=\tiny]{3} (G);
+  \draw[carr] (F) -- node[above,font=\tiny]{7} (I);
+  \draw[arr]  (G) -- node[font=\tiny]{4} (I);
+  \draw[arr]  (H) -- node[font=\tiny]{4} (I);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(c) Gráfico de Barras (Gantt) para o Depósito Automatizado:}
+
+\begin{center}
+\begin{tikzpicture}[xscale=0.43, yscale=0.48]
+  \foreach \x in {0,...,27} {
+    \draw[gray!25,thin] (\x,-0.3) -- (\x,9.3);
+    \node[below,font=\tiny] at (\x,-0.3) {\x};
+  }
+  % row/name/ES/EF/LS/LF
+  \foreach \row/\name/\s/\f/\ls/\lf in {
+      1/A/0/2/0/2,   2/B/2/6/3/7,
+      3/C/2/16/2/16, 4/D/6/15/7/16,
+      5/E/6/9/16/19, 6/F/16/23/16/23,
+      7/G/16/20/19/23, 8/H/16/20/19/23,
+      9/I/23/27/23/27} {
+    \pgfmathsetmacro{\y}{9-\row}
+    % Float bar
+    \fill[orange!20,draw=orange!40,dashed]
+      (\f,\y+0.1) rectangle (\lf,\y+0.8);
+    % Activity bar
+    \fill[blue!55,draw=blue!80,rounded corners=0.5pt]
+      (\s,\y+0.1) rectangle (\f,\y+0.8);
+    \node[left,font=\small\bfseries] at (0,\y+0.45) {\name};
+  }
+  % Critical path: A(row1), C(row3), F(row6), I(row9)
+  \foreach \row/\s/\f in {1/0/2, 3/2/16, 6/16/23, 9/23/27} {
+    \pgfmathsetmacro{\y}{9-\row}
+    \fill[red!55,draw=red!80,rounded corners=0.5pt]
+      (\s,\y+0.1) rectangle (\f,\y+0.8);
+  }
+  \draw[->] (0,-0.3) -- (28.5,-0.3) node[right,font=\small] {Dias};
+  \draw (0,-0.3) -- (0,9.3);
+  \node[above,font=\small\bfseries] at (13.5,9.5) {Gantt --- Dep\'osito Automatizado};
+  \fill[red!55] (15,0.5) rectangle (16,0.9);
+  \node[right,font=\tiny] at (16,0.7) {Cr\'itico};
+  \fill[blue!55] (15,0.0) rectangle (16,0.4);
+  \node[right,font=\tiny] at (16,0.2) {Normal};
+  \fill[orange!20,draw=orange!40] (19,0.5) rectangle (20,0.9);
+  \node[right,font=\tiny] at (20,0.7) {Folga};
+\end{tikzpicture}
+\end{center}
+
+%==========================================================================
+\section*{Exercício 12.3 — Net Plans vs.\ Diagramas de Gantt}
+%==========================================================================
+
+\begin{questao}{Enunciado}
+Nomeie as vantagens e desvantagens de net plans e diagramas de Gantt.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tabular}{p{3cm}p{5.5cm}p{5.5cm}}
+\toprule
+ & \textbf{Net Plan (CPM/MPM)} & \textbf{Diagrama de Gantt} \\
+\midrule
+\textbf{Vantagens}
+& \begin{itemize}[nosep,leftmargin=*]
+    \item Representa explicitamente dependências entre atividades
+    \item Identifica o caminho crítico e as folgas de cada atividade
+    \item Permite análise formal do impacto de atrasos (``what-if'')
+    \item Útil para projetos complexos com muitas interdependências
+  \end{itemize}
+& \begin{itemize}[nosep,leftmargin=*]
+    \item Visualização intuitiva do cronograma temporal
+    \item Fácil de ler por não-especialistas e clientes
+    \item Mostra claramente quem faz o quê e quando
+    \item Ferramentas amplamente disponíveis (MS Project, etc.)
+  \end{itemize} \\
+\midrule
+\textbf{Desvantagens}
+& \begin{itemize}[nosep,leftmargin=*]
+    \item Difícil de ler para não-especialistas
+    \item Não mostra diretamente alocação de recursos
+    \item Construção e manutenção manual são trabalhosas
+    \item Para projetos muito grandes, torna-se visualmente incompreensível
+  \end{itemize}
+& \begin{itemize}[nosep,leftmargin=*]
+    \item Não representa explicitamente as dependências
+    \item Não identifica o caminho crítico automaticamente
+    \item Atualizações frequentes exigem redesenho
+    \item Menos adequado para análise formal de riscos de prazo
+  \end{itemize} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Conclusão:} Projetos complexos se beneficiam de ambas as ferramentas
+complementarmente: a rede (CPM/MPM) para análise e planejamento técnico, e
+o Gantt para comunicação com a equipe e stakeholders.
+\end{resposta}
+
+\vspace{8pt}\hrule\vspace{6pt}
+\begin{center}
+  {\small \textit{Referência:} Ian Sommerville.
+  \textbf{Software Engineering}, 10ª ed. Pearson, 2016.
+  Capítulos 22 (Gerenciamento de Projetos) e 23 (Planejamento de Projetos).}
+\end{center}
+
+\end{document}
