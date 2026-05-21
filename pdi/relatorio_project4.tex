@@ -150,20 +150,20 @@ copiando em seguida as bordas conforme o \texttt{padtype} escolhido.
 
 \subsection{Imagem de Teste}
 
-Foi utilizado um padrão de teste sintético de $512 \times 512$ pixels
-(equivalente ao \texttt{testpattern1024.tif}) contendo quatro regiões
-distintas: franjas senoidais verticais, gradiente horizontal, tabuleiro
-(\emph{checkerboard}) e anéis concêntricos. Essa combinação de texturas
-permite avaliar visualmente o comportamento de cada tipo de padding em
-regiões de alta e baixa frequência espacial.
+Foi utilizada a imagem \texttt{testpattern1024.tif} ($1024 \times 1024$
+pixels, 8\,bits, tons de cinza) do livro \emph{Digital Image Processing
+Using MATLAB} (Gonzalez, Woods \& Eddins). A imagem contém múltiplas
+regiões com características distintas de textura e frequência espacial,
+tornando-a ideal para avaliar visualmente o comportamento de cada tipo
+de padding.
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=\linewidth]{images/comparison.png}
-  \caption{Comparação entre a imagem original ($512\times512$) e as imagens
-           com zero padding e replicate padding ($672\times672$, i.e.\ $r=c=80$
-           pixels). O retângulo vermelho tracejado delimita a região da imagem
-           original dentro do resultado padded.}
+  \caption{Comparação entre a imagem original (\texttt{testpattern1024.tif},
+           $1024\times1024$) e as imagens com zero padding e replicate padding
+           ($1184\times1184$, i.e.\ $r=c=80$ pixels). O retângulo vermelho
+           tracejado delimita a região da imagem original.}
   \label{fig:comparison}
 \end{figure}
 
@@ -198,11 +198,11 @@ das imagens resultantes, tornando evidente a diferença entre os dois métodos:
     \toprule
     \textbf{Imagem} & \textbf{Linhas} & \textbf{Colunas} \\
     \midrule
-    Original                 & 512 & 512 \\
-    Zero Padding             & 672 & 672 \\
-    Replicate Padding        & 672 & 672 \\
+    Original                 & 1024 & 1024 \\
+    Zero Padding             & 1184 & 1184 \\
+    Replicate Padding        & 1184 & 1184 \\
     \midrule
-    \multicolumn{3}{l}{\small $672 = 512 + 2\times80$} \\
+    \multicolumn{3}{l}{\small $1184 = 1024 + 2\times80$} \\
     \bottomrule
   \end{tabular}
 \end{table}
