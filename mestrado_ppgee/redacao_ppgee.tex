@@ -1,0 +1,138 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{mdframed}
+\usepackage{hyperref}
+\usepackage{setspace}
+
+\geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{230,240,255}
+\definecolor{metabg}{RGB}{245,245,245}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\color{ufamblue} PPGEE/UFAM --- Seleção Mestrado 2026}
+\lhead{\small\color{ufamblue} Redação Técnica Objetiva}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%==============================================================================
+\begin{document}
+%==============================================================================
+
+%-- Cabeçalho institucional ---------------------------------------------------
+\begin{center}
+  \textcolor{ufamblue}{\Large\bfseries Universidade Federal do Amazonas}\\[3pt]
+  \textcolor{ufamblue}{\large Programa de Pós-Graduação em Engenharia Elétrica}\\[2pt]
+  {\normalsize Edital N.\textordmasculine\ 023/2026-PROPESP/UFAM}\\[10pt]
+  \rule{\linewidth}{1.5pt}\\[6pt]
+  {\LARGE\bfseries Redação Técnica Objetiva}\\[4pt]
+  {\large\bfseries Seleção Mestrado Acadêmico 2026}\\[6pt]
+  \rule{\linewidth}{1.5pt}
+\end{center}
+
+\vspace{6mm}
+
+%-- Dados do candidato --------------------------------------------------------
+\begin{mdframed}[backgroundcolor=metabg,linecolor=ufamblue,linewidth=1pt,
+                 innertopmargin=8pt,innerbottommargin=8pt]
+\begin{tabular}{ll}
+  \textbf{Candidato:}       & Pedro Victor dos Santos Oliveira \\[3pt]
+  \textbf{Linha de pesquisa:} & Linha 1 --- Sistemas Inteligentes e Microeletrônica \\[3pt]
+  \textbf{Tema escolhido:}  & Aprendizado Profundo (\textit{deep learning}) \\[3pt]
+  \textbf{Data:}            & \today \\
+\end{tabular}
+\end{mdframed}
+
+\vspace{8mm}
+
+%-- Redação -------------------------------------------------------------------
+\begin{mdframed}[backgroundcolor=lightblue,linecolor=ufamblue,linewidth=1.2pt,
+                 innertopmargin=14pt,innerbottommargin=14pt,
+                 innerleftmargin=14pt,innerrightmargin=14pt]
+
+{\setstretch{1.5}
+
+O avanço do aprendizado profundo elevou substancialmente o desempenho em
+tarefas de visão computacional e processamento digital de imagens. Contudo, a
+execução desses modelos ainda depende, na maioria dos casos, de infraestrutura
+computacional de alto custo, tornando sua adoção inviável em dispositivos
+móveis e sistemas embarcados com recursos limitados.
+
+A inteligência artificial embarcada, ou \textit{Edge AI}, propõe deslocar o
+processamento dos servidores para a borda da rede, reduzindo latência, consumo
+de largura de banda e dependência de conectividade. Técnicas como quantização
+de pesos, poda de redes neurais e destilação de conhecimento permitem
+comprimir modelos de alta capacidade sem perda expressiva de acurácia,
+viabilizando sua execução em microcontroladores e \textit{smartphones} de
+entrada.
+
+Em regiões com infraestrutura de comunicação precária, como parte da Amazônia,
+essa abordagem é estratégica: sistemas de diagnóstico por imagem, monitoramento
+ambiental e reconhecimento de padrões agrícolas podem operar de forma autônoma,
+sem acesso contínuo à nuvem. A convergência entre PDI e \textit{Edge AI}
+representa uma fronteira de pesquisa com alto impacto social e científico.
+
+O ingresso no Mestrado do PPGEE/UFAM representa a oportunidade de investigar
+modelos eficientes de visão computacional voltados ao processamento embarcado,
+contribuindo com soluções tecnológicas adaptadas à realidade regional amazônica.
+
+}
+\end{mdframed}
+
+\vspace{8mm}
+
+%-- Metadados da redação ------------------------------------------------------
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\
+\midrule
+Caracteres com espaços & 1.413 \\
+Limite mínimo exigido  & 500 \\
+Limite máximo exigido  & 1.500 \\
+Situação               & \textcolor{green!50!black}{\bfseries Dentro do limite} \\
+\midrule
+Palavras               & 195 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{6mm}
+
+%-- Critérios de avaliação ----------------------------------------------------
+\begin{mdframed}[backgroundcolor=metabg,linecolor=gray!50,linewidth=0.8pt,
+                 innertopmargin=8pt,innerbottommargin=8pt]
+\textbf{\small Critérios de avaliação (Edital, item 4.1.3):}\\[4pt]
+\small
+\begin{tabular}{lc}
+Adequação e domínio do tema         & 50\% \\
+Organização textual e coerência     & 15\% \\
+Objetividade e capacidade de síntese & 15\% \\
+Estrutura (intro / arg. / discussão / conclusão) & 10\% \\
+Grafia, acentuação e gramática      & 10\% \\
+\end{tabular}
+\end{mdframed}
+
+\vspace{6mm}
+
+%-- Nota de revisão -----------------------------------------------------------
+\begin{mdframed}[backgroundcolor=yellow!15,linecolor=orange!60,linewidth=1pt,
+                 innertopmargin=8pt,innerbottommargin=8pt]
+\small\textbf{Nota para revisão:} reescreva a redação com suas próprias
+experiências antes de submeter. Substitua trechos genéricos por referências
+a projetos reais que você realizou (ex.: trabalhos de PDI, iniciação
+científica, TCC). O formulário eletrônico do PPGEE aceita apenas texto
+digitado diretamente no campo --- não é permitido anexar documento.
+\end{mdframed}
+
+\end{document}
