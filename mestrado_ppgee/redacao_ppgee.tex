@@ -5,23 +5,24 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 \usepackage{fancyhdr}
-\usepackage{titlesec}
 \usepackage{parskip}
 \usepackage{booktabs}
 \usepackage{mdframed}
-\usepackage{hyperref}
 \usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{hyperref}
 
 \geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm}
 
 \definecolor{ufamblue}{RGB}{0,51,102}
 \definecolor{lightblue}{RGB}{230,240,255}
 \definecolor{metabg}{RGB}{245,245,245}
+\definecolor{okgreen}{RGB}{0,120,60}
 
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{\small\color{ufamblue} PPGEE/UFAM --- Seleção Mestrado 2026}
-\lhead{\small\color{ufamblue} Redação Técnica Objetiva}
+\rhead{\small\color{ufamblue} PPGEE/UFAM --- Sele\c{c}\~ao Mestrado 2026}
+\lhead{\small\color{ufamblue} Reda\c{c}\~ao T\'ecnica Objetiva}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
@@ -29,14 +30,13 @@
 \begin{document}
 %==============================================================================
 
-%-- Cabeçalho institucional ---------------------------------------------------
 \begin{center}
   \textcolor{ufamblue}{\Large\bfseries Universidade Federal do Amazonas}\\[3pt]
-  \textcolor{ufamblue}{\large Programa de Pós-Graduação em Engenharia Elétrica}\\[2pt]
+  \textcolor{ufamblue}{\large Programa de P\'os-Gradua\c{c}\~ao em Engenharia El\'etrica}\\[2pt]
   {\normalsize Edital N.\textordmasculine\ 023/2026-PROPESP/UFAM}\\[10pt]
   \rule{\linewidth}{1.5pt}\\[6pt]
-  {\LARGE\bfseries Redação Técnica Objetiva}\\[4pt]
-  {\large\bfseries Seleção Mestrado Acadêmico 2026}\\[6pt]
+  {\LARGE\bfseries Reda\c{c}\~ao T\'ecnica Objetiva}\\[4pt]
+  {\large\bfseries Sele\c{c}\~ao Mestrado Acad\^emico 2026}\\[6pt]
   \rule{\linewidth}{1.5pt}
 \end{center}
 
@@ -44,12 +44,14 @@
 
 %-- Dados do candidato --------------------------------------------------------
 \begin{mdframed}[backgroundcolor=metabg,linecolor=ufamblue,linewidth=1pt,
-                 innertopmargin=8pt,innerbottommargin=8pt]
+                 innertopmargin=8pt,innerbottommargin=8pt,
+                 innerleftmargin=10pt,innerrightmargin=10pt]
 \begin{tabular}{ll}
-  \textbf{Candidato:}       & Pedro Victor dos Santos Oliveira \\[3pt]
-  \textbf{Linha de pesquisa:} & Linha 1 --- Sistemas Inteligentes e Microeletrônica \\[3pt]
-  \textbf{Tema escolhido:}  & Aprendizado Profundo (\textit{deep learning}) \\[3pt]
-  \textbf{Data:}            & \today \\
+  \textbf{Candidato:}         & Matheus Serr\~ao Uch\^oa \\[3pt]
+  \textbf{E-mail:}            & maktheus@gmail.com \\[3pt]
+  \textbf{Linha de pesquisa:} & Linha 1 --- Sistemas Inteligentes e Microeletr\^onica \\[3pt]
+  \textbf{Tema escolhido:}    & Aprendizado Profundo (\textit{deep learning}) \\[3pt]
+  \textbf{Data:}              & \today \\
 \end{tabular}
 \end{mdframed}
 
@@ -57,82 +59,100 @@
 
 %-- Redação -------------------------------------------------------------------
 \begin{mdframed}[backgroundcolor=lightblue,linecolor=ufamblue,linewidth=1.2pt,
-                 innertopmargin=14pt,innerbottommargin=14pt,
-                 innerleftmargin=14pt,innerrightmargin=14pt]
+                 innertopmargin=16pt,innerbottommargin=16pt,
+                 innerleftmargin=16pt,innerrightmargin=16pt]
+{\setstretch{1.6}
 
-{\setstretch{1.5}
+A execu\c{c}\~ao de modelos de aprendizado profundo em dispositivos com
+recursos computacionais restritos representa um dos maiores desafios da IA
+aplicada. Ao longo de quatro anos como Engenheiro de IA na UFAM e pesquisador
+no CETELI, vivenciei esse desafio no desenvolvimento de sistemas industriais de
+vis\~ao computacional: no projeto Nimrod, uma \textit{pipeline} com Detectron2
+e AutoML atingiu 88\% de acu\'acia no reconhecimento de a\c{c}\~oes de
+operadores em linha de produ\c{c}\~ao industrial.
 
-O avanço do aprendizado profundo elevou substancialmente o desempenho em
-tarefas de visão computacional e processamento digital de imagens. Contudo, a
-execução desses modelos ainda depende, na maioria dos casos, de infraestrutura
-computacional de alto custo, tornando sua adoção inviável em dispositivos
-móveis e sistemas embarcados com recursos limitados.
+Paralelamente, o projeto Prometheus evidenciou que sistemas embarcados de baixo
+custo --- como o STM32 --- s\~ao capazes de realizar processamento de sinais
+em tempo real sem infraestrutura de nuvem, validando a viabilidade do
+\textit{Edge AI} em ambientes industriais. Minha atua\c{c}\~ao no CESAR em
+otimiza\c{c}\~ao do \textit{framework} Android (AOSP) refor\c{c}ou esse
+entendimento: elevar a \textit{performance} em 45\% e reduzir falhas em 25\%
+em dispositivos m\'oveis exige o mesmo racioc\'inio de compress\~ao de recursos
+central ao TinyML.
 
-A inteligência artificial embarcada, ou \textit{Edge AI}, propõe deslocar o
-processamento dos servidores para a borda da rede, reduzindo latência, consumo
-de largura de banda e dependência de conectividade. Técnicas como quantização
-de pesos, poda de redes neurais e destilação de conhecimento permitem
-comprimir modelos de alta capacidade sem perda expressiva de acurácia,
-viabilizando sua execução em microcontroladores e \textit{smartphones} de
-entrada.
-
-Em regiões com infraestrutura de comunicação precária, como parte da Amazônia,
-essa abordagem é estratégica: sistemas de diagnóstico por imagem, monitoramento
-ambiental e reconhecimento de padrões agrícolas podem operar de forma autônoma,
-sem acesso contínuo à nuvem. A convergência entre PDI e \textit{Edge AI}
-representa uma fronteira de pesquisa com alto impacto social e científico.
-
-O ingresso no Mestrado do PPGEE/UFAM representa a oportunidade de investigar
-modelos eficientes de visão computacional voltados ao processamento embarcado,
-contribuindo com soluções tecnológicas adaptadas à realidade regional amazônica.
+O Mestrado no PPGEE/UFAM representa a continuidade natural dessa trajet\'oria,
+aprofundando a investiga\c{c}\~ao de modelos compactos de vis\~ao computacional
+para infer\^encia embarcada --- com publica\c{c}\~oes IEEE j\'a consolidadas
+nessa \'area --- e contribuindo com solu\c{c}\~oes inteligentes aplic\'aveis
+\`a realidade industrial e regional amaz\^onica.
 
 }
 \end{mdframed}
 
 \vspace{8mm}
 
-%-- Metadados da redação ------------------------------------------------------
+%-- Métricas ------------------------------------------------------------------
 \begin{center}
 \begin{tabular}{lc}
 \toprule
-\textbf{Métrica} & \textbf{Valor} \\
+\textbf{M\'etrica}           & \textbf{Valor} \\
 \midrule
-Caracteres com espaços & 1.413 \\
-Limite mínimo exigido  & 500 \\
-Limite máximo exigido  & 1.500 \\
-Situação               & \textcolor{green!50!black}{\bfseries Dentro do limite} \\
+Caracteres com espa\c{c}os   & 1.292 \\
+Limite m\'inimo exigido       & 500 \\
+Limite m\'aximo exigido       & 1.500 \\
+Situa\c{c}\~ao               & \textcolor{okgreen}{\bfseries Dentro do limite \checkmark} \\
 \midrule
-Palavras               & 195 \\
+Palavras                     & 190 \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \vspace{6mm}
 
-%-- Critérios de avaliação ----------------------------------------------------
+%-- Ancoras do CV usadas ------------------------------------------------------
 \begin{mdframed}[backgroundcolor=metabg,linecolor=gray!50,linewidth=0.8pt,
-                 innertopmargin=8pt,innerbottommargin=8pt]
-\textbf{\small Critérios de avaliação (Edital, item 4.1.3):}\\[4pt]
+                 innertopmargin=10pt,innerbottommargin=10pt,
+                 innerleftmargin=10pt,innerrightmargin=10pt]
+\textbf{\small Experi\^encias do CV utilizadas na reda\c{c}\~ao:}\\[6pt]
 \small
-\begin{tabular}{lc}
-Adequação e domínio do tema         & 50\% \\
-Organização textual e coerência     & 15\% \\
-Objetividade e capacidade de síntese & 15\% \\
-Estrutura (intro / arg. / discussão / conclusão) & 10\% \\
-Grafia, acentuação e gramática      & 10\% \\
+\begin{tabular}{p{3.5cm}p{10cm}}
+\toprule
+\textbf{Experi\^encia} & \textbf{Uso na reda\c{c}\~ao} \\
+\midrule
+Nimrod (CETELI/TPV) &
+  Pipeline Detectron2 + AutoML, 88\% de acu\'acia --- ancora t\'ecnica do
+  par\'agrafo 1 \\[4pt]
+Prometheus (STM32) &
+  Valida Edge AI embarcado sem nuvem --- ancora do par\'agrafo 2 \\[4pt]
+CESAR/Motorola (AOSP) &
+  Otimiza\c{c}\~ao de performance em dispositivos m\'oveis (+45\%, --25\%
+  crashes) --- liga\c{c}\~ao com TinyML no par\'agrafo 2 \\[4pt]
+12+ publica\c{c}\~oes IEEE &
+  Comprova produ\c{c}\~ao cient\'ifica --- ancora da conclus\~ao \\
+\bottomrule
 \end{tabular}
 \end{mdframed}
 
 \vspace{6mm}
 
-%-- Nota de revisão -----------------------------------------------------------
-\begin{mdframed}[backgroundcolor=yellow!15,linecolor=orange!60,linewidth=1pt,
-                 innertopmargin=8pt,innerbottommargin=8pt]
-\small\textbf{Nota para revisão:} reescreva a redação com suas próprias
-experiências antes de submeter. Substitua trechos genéricos por referências
-a projetos reais que você realizou (ex.: trabalhos de PDI, iniciação
-científica, TCC). O formulário eletrônico do PPGEE aceita apenas texto
-digitado diretamente no campo --- não é permitido anexar documento.
+%-- Critérios de avaliação ----------------------------------------------------
+\begin{mdframed}[backgroundcolor=metabg,linecolor=gray!50,linewidth=0.8pt,
+                 innertopmargin=8pt,innerbottommargin=8pt,
+                 innerleftmargin=10pt,innerrightmargin=10pt]
+\textbf{\small Crit\'erios de avalia\c{c}\~ao (Edital, item 4.1.3):}\\[4pt]
+\small
+\begin{tabular}{lc}
+Adequa\c{c}\~ao e dom\'inio do tema
+  & 50\% \\
+Organiza\c{c}\~ao textual e coer\^encia
+  & 15\% \\
+Objetividade e capacidade de s\'intese
+  & 15\% \\
+Estrutura (intro\,/\,arg.\,/\,discuss\~ao\,/\,conclus\~ao)
+  & 10\% \\
+Grafia, acentua\c{c}\~ao e gram\'atica
+  & 10\% \\
+\end{tabular}
 \end{mdframed}
 
 \end{document}
