@@ -10,7 +10,7 @@ void setup() {
 void loop() {
   Serial.println("Escaneando redes WiFi...");
 
-  // true = mostrar redes ocultas; WIFI_SCAN_ACTIVE = varredura 2.4 e 5 GHz
+  // true = mostrar redes ocultas; varredura 2.4 e 5 GHz
   int numRedes = WiFi.scanNetworks(false, true);
 
   if (numRedes == 0) {

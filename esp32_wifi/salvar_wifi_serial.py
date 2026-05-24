@@ -1,7 +1,7 @@
 import serial
 import time
 
-porta_serial = "COM6"   # ajuste para a porta correta (ex: COM3, /dev/ttyUSB0)
+porta_serial = "COM6"  # ajuste: COM3, /dev/ttyUSB0, etc.
 baudrate = 115200
 
 try:
@@ -12,7 +12,8 @@ try:
 
     with open("rssi_dados.txt", "w", encoding="utf-8") as arquivo:
         while True:
-            linha = ser.readline().decode("utf-8", errors="ignore").strip()
+            linha = ser.readline().decode("utf-8",
+                              errors="ignore").strip()
             if linha:
                 print(linha)
                 arquivo.write(linha + "\n")
