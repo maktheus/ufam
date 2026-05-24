@@ -1,36 +1,112 @@
 Escaneando redes WiFi...
-Redes encontradas: 7
-[0] SSID: VIVO-Casa              | BSSID: A4:2B:8C:1D:3E:5F | Canal:  6 | RSSI: -52 dBm
-[1] SSID: NET_2G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:91 | Canal:  1 | RSSI: -71 dBm
-[2] SSID: TP-Link_Escritorio     | BSSID: C2:4E:9A:3B:6D:07 | Canal: 11 | RSSI: -68 dBm
-[3] SSID: CLARO_5G_Apto402       | BSSID: D6:5F:0B:4C:7E:23 | Canal: 36 | RSSI: -81 dBm
-[4] SSID: iPhone_Matheus         | BSSID: E0:6A:1C:5D:8F:45 | Canal:  6 | RSSI: -60 dBm
-[5] SSID: Residencial_2G         | BSSID: F4:7B:2D:6E:9A:67 | Canal:  9 | RSSI: -88 dBm
-[6] SSID: NET_5G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:92 | Canal: 149 | RSSI: -75 dBm
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -46 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -53 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -69 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -68 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -72 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -75 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -82 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -86 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -75 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -84 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -94 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -92 dBm
 Escaneando redes WiFi...
-Redes encontradas: 7
-[0] SSID: VIVO-Casa              | BSSID: A4:2B:8C:1D:3E:5F | Canal:  6 | RSSI: -51 dBm
-[1] SSID: NET_2G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:91 | Canal:  1 | RSSI: -73 dBm
-[2] SSID: TP-Link_Escritorio     | BSSID: C2:4E:9A:3B:6D:07 | Canal: 11 | RSSI: -66 dBm
-[3] SSID: CLARO_5G_Apto402       | BSSID: D6:5F:0B:4C:7E:23 | Canal: 36 | RSSI: -83 dBm
-[4] SSID: iPhone_Matheus         | BSSID: E0:6A:1C:5D:8F:45 | Canal:  6 | RSSI: -58 dBm
-[5] SSID: Residencial_2G         | BSSID: F4:7B:2D:6E:9A:67 | Canal:  9 | RSSI: -90 dBm
-[6] SSID: NET_5G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:92 | Canal: 149 | RSSI: -77 dBm
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -48 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -53 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -69 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -71 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -72 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -75 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -76 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -78 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -85 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -84 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -93 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -91 dBm
 Escaneando redes WiFi...
-Redes encontradas: 7
-[0] SSID: VIVO-Casa              | BSSID: A4:2B:8C:1D:3E:5F | Canal:  6 | RSSI: -54 dBm
-[1] SSID: NET_2G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:91 | Canal:  1 | RSSI: -70 dBm
-[2] SSID: TP-Link_Escritorio     | BSSID: C2:4E:9A:3B:6D:07 | Canal: 11 | RSSI: -69 dBm
-[3] SSID: CLARO_5G_Apto402       | BSSID: D6:5F:0B:4C:7E:23 | Canal: 36 | RSSI: -80 dBm
-[4] SSID: iPhone_Matheus         | BSSID: E0:6A:1C:5D:8F:45 | Canal:  6 | RSSI: -62 dBm
-[5] SSID: Residencial_2G         | BSSID: F4:7B:2D:6E:9A:67 | Canal:  9 | RSSI: -87 dBm
-[6] SSID: NET_5G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:92 | Canal: 149 | RSSI: -74 dBm
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -46 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -48 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -61 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -66 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -72 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -71 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -75 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -83 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -85 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -90 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -89 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -93 dBm
 Escaneando redes WiFi...
-Redes encontradas: 7
-[0] SSID: VIVO-Casa              | BSSID: A4:2B:8C:1D:3E:5F | Canal:  6 | RSSI: -50 dBm
-[1] SSID: NET_2G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:91 | Canal:  1 | RSSI: -74 dBm
-[2] SSID: TP-Link_Escritorio     | BSSID: C2:4E:9A:3B:6D:07 | Canal: 11 | RSSI: -67 dBm
-[3] SSID: CLARO_5G_Apto402       | BSSID: D6:5F:0B:4C:7E:23 | Canal: 36 | RSSI: -82 dBm
-[4] SSID: iPhone_Matheus         | BSSID: E0:6A:1C:5D:8F:45 | Canal:  6 | RSSI: -59 dBm
-[5] SSID: Residencial_2G         | BSSID: F4:7B:2D:6E:9A:67 | Canal:  9 | RSSI: -89 dBm
-[6] SSID: NET_5G_Vizinho1        | BSSID: B8:3A:7D:2F:4C:92 | Canal: 149 | RSSI: -76 dBm
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -49 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -51 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -67 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -69 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -70 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -77 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -83 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -81 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -84 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -87 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -88 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -94 dBm
+Escaneando redes WiFi...
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -47 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -51 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -69 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -65 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -67 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -77 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -78 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -86 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -77 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -88 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -88 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -91 dBm
+Escaneando redes WiFi...
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -47 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -47 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -64 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -69 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -74 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -78 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -74 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -84 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -81 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -91 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -88 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -95 dBm
+Escaneando redes WiFi...
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -45 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -53 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -63 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -68 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -68 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -73 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -82 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -82 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -80 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -89 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -89 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -94 dBm
+Escaneando redes WiFi...
+Redes encontradas: 12
+[0] SSID: VIVO-FTTB-5432               | BSSID: D0:76:8F:3A:1C:7E | Canal:   6 | RSSI: -46 dBm
+[1] SSID: VIVO-FTTB-5432_5G            | BSSID: D0:76:8F:3A:1C:7F | Canal:  36 | RSSI: -48 dBm
+[2] SSID: CLARO_2G_Apto301             | BSSID: 00:26:B6:5C:2D:41 | Canal:  11 | RSSI: -68 dBm
+[3] SSID: CLARO_5G_Apto301             | BSSID: 00:26:B6:5C:2D:42 | Canal: 149 | RSSI: -70 dBm
+[4] SSID: Intelbras_GX300_2G           | BSSID: F4:6D:04:9B:3E:88 | Canal:   1 | RSSI: -67 dBm
+[5] SSID: Intelbras_GX300_5G           | BSSID: F4:6D:04:9B:3E:89 | Canal:  40 | RSSI: -75 dBm
+[6] SSID: NET_Claro_Apto201            | BSSID: 00:1C:1C:7F:4A:B3 | Canal:   6 | RSSI: -82 dBm
+[7] SSID: TIM_Live_Fibra_8821          | BSSID: 50:3E:AA:C1:82:05 | Canal:  11 | RSSI: -80 dBm
+[8] SSID: TP-Link_AC1200_7F3B          | BSSID: EC:08:6B:A4:7F:3B | Canal:   1 | RSSI: -79 dBm
+[9] SSID: WiFi-Condominio-2G           | BSSID: C8:3A:35:D2:6E:90 | Canal:   9 | RSSI: -88 dBm
+[10] SSID: DIRECT-55-Samsung_TV         | BSSID: 5E:4F:AB:12:CD:34 | Canal:   6 | RSSI: -89 dBm
+[11] SSID: AndroidHotspot_M52           | BSSID: 72:B3:D1:55:AA:2F | Canal:  11 | RSSI: -91 dBm
