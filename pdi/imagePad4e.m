@@ -22,7 +22,7 @@ function g = imagePad4e(f, r, c, padtype)
 %   g1 = imagePad4e(f, 50, 80);                   % zero padding
 %   g2 = imagePad4e(f, 50, 80, 'replicate');       % replicate padding
 %
-% Author: Matheus Serr~ao Uch^oa
+% Author: Matheus Serrao Uchoa
 % Disciplina: Processamento Digital de Imagens – UFAM (2026)
 
     % ----- argument validation ------------------------------------------------

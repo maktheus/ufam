@@ -1,7 +1,7 @@
 % ==========================================================================
 % main_project6.m  -  Project #6: twodSFilter & medianSFilter demo
 % Disciplina: Processamento Digital de Imagens - UFAM (2026)
-% Author    : Matheus Serr~ao Uch^oa
+% Author    : Matheus Serrao Uchoa
 %
 % Description:
 %   Loads Fig3.37(a).jpg, applies:
