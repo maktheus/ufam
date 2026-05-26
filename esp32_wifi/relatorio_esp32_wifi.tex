@@ -1,0 +1,485 @@
+% =============================================================================
+% Template baseado no padrao IComp/UFAM (abntex2)
+% Ref: overleaf.com/latex/templates/template-latex-icomp-ufam/ctfssrjvtnjz
+% =============================================================================
+\documentclass[
+  12pt,
+  a4paper,
+  oneside,
+  brazil,
+  chapter=TITLE,
+  section=TITLE,
+]{abntex2}
+
+% ── Pacotes ──────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{times}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{indentfirst}
+\usepackage{abntex2cite}
+\usepackage{hyperref}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{codegreen}{rgb}{0,0.45,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0.1,0.1,0.65}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+
+\lstdefinestyle{cpp}{
+  language=C++,
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{orange!80!black},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true, keepspaces=true,
+  numbers=left, numbersep=6pt,
+  frame=single, framerule=0.4pt,
+  rulecolor=\color{gray!50}, tabsize=2,
+}
+\lstdefinestyle{python}{
+  language=Python,
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{orange!80!black},
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true, keepspaces=true,
+  numbers=left, numbersep=6pt,
+  frame=single, framerule=0.4pt,
+  rulecolor=\color{gray!50}, tabsize=4,
+}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=ufamblue,
+  urlcolor=ufamblue,
+  citecolor=ufamblue,
+  pdftitle={Atividade: Scan de Redes WiFi com ESP32},
+  pdfauthor={Matheus Serrão Uchôa},
+}
+
+% ── Metadados abntex2 ────────────────────────────────────────────────────────
+\titulo{Atividade --- Scan de Redes WiFi\\Escaneamento com ESP32 e Análise de RSSI}
+\autor{Matheus Serrão Uchôa}
+\local{Manaus -- AM}
+\data{\the\year}
+\orientador{Prof. Celso Barbosa Carvalho}
+\instituicao{%
+  Universidade Federal do Amazonas -- UFAM\\
+  Instituto de Computação\\
+  Disciplina: Redes Sem Fio
+}
+\tipotrabalho{Relatório Técnico}
+
+\preambulo{Relatório técnico apresentado à disciplina de Redes Sem Fio do
+Instituto de Computação da Universidade Federal do Amazonas (UFAM), como
+requisito parcial de avaliação.}
+
+% =============================================================================
+\begin{document}
+% =============================================================================
+
+\frenchspacing
+
+% ── CAPA (abntex2) ───────────────────────────────────────────────────────────
+\begin{capa}
+  \center
+  \includegraphics[width=3.8cm]{../mestrado_ppgee/ufam_logo.png}\\[6pt]
+  {\large\bfseries\MakeUppercase{Universidade Federal do Amazonas}}\\[2pt]
+  {\normalsize Instituto de Computação}\\[2pt]
+  {\normalsize Disciplina: Redes Sem Fio}\\[50pt]
+
+  {\ABNTEXchapterfont\large\MakeUppercase{\imprimirtitulo}}
+
+  \vfill
+
+  {\large\imprimirautor}\\[6pt]
+  {\small maktheus@gmail.com}
+
+  \vfill
+
+  {\normalsize\imprimirlocal}\\
+  {\normalsize\imprimirdata}
+\end{capa}
+
+% ── FOLHA DE ROSTO (abntex2) ─────────────────────────────────────────────────
+\begin{folhaderosto}
+  \begin{center}
+    {\large\bfseries\MakeUppercase{\imprimirautor}}\\[40pt]
+    {\ABNTEXchapterfont\large\MakeUppercase{\imprimirtitulo}}\\[40pt]
+  \end{center}
+
+  \hspace{.45\textwidth}
+  \begin{minipage}{.5\textwidth}
+    \imprimirpreambulo\\[8pt]
+    \textbf{Professor:} \imprimirorientador
+  \end{minipage}
+
+  \vfill
+  \begin{center}
+    {\normalsize\imprimirlocal}\\
+    {\normalsize\imprimirdata}
+  \end{center}
+\end{folhaderosto}
+
+% ── RESUMO ────────────────────────────────────────────────────────────────────
+\begin{resumo}
+Este relatório descreve o desenvolvimento e os resultados de uma atividade
+prática de escaneamento de redes WiFi utilizando a plataforma ESP32.
+O objetivo foi modificar um \textit{firmware} Arduino para capturar o
+SSID, o BSSID, o canal e o RSSI (\textit{Received Signal Strength Indicator})
+de todas as redes sem fio detectáveis no entorno de um apartamento residencial.
+Os dados foram coletados via comunicação serial e salvos em arquivo \texttt{.txt}
+por um \textit{script} Python. Um segundo \textit{script} processou as leituras
+e respondeu automaticamente às questões da atividade: número de redes
+identificadas, identificação de cada rede (SSID, BSSID e canal) e faixa de
+RSSI por rede. Foram detectadas 12 redes ao longo de 8 varreduras, com RSSI
+variando de $-45$\,dBm (rede própria) a $-95$\,dBm (dispositivos distantes),
+em plena conformidade com valores típicos da literatura para ambientes
+residenciais urbanos.
+
+\vspace{\onelineskip}
+\noindent\textbf{Palavras-chave:} ESP32. WiFi. RSSI. IEEE 802.11.
+Redes sem fio. Python.
+\end{resumo}
+
+% ── SUMÁRIO ───────────────────────────────────────────────────────────────────
+\pdfbookmark[0]{\contentsname}{toc}
+\tableofcontents*
+\cleardoublepage
+
+% =============================================================================
+\textual
+% =============================================================================
+
+% ── 1. INTRODUÇÃO ─────────────────────────────────────────────────────────────
+\chapter{Introdução}
+
+O acesso ubíquo à Internet por meio de redes sem fio consolidou o padrão
+IEEE\,802.11 (WiFi) como principal tecnologia de conectividade em ambientes
+residenciais, comerciais e industriais. O monitoramento da qualidade do
+sinal dessas redes --- medido pelo RSSI (\textit{Received Signal Strength
+Indicator}) --- é fundamental em aplicações de localização \textit{indoor},
+otimização de cobertura e detecção de interferências.
+
+A plataforma ESP32, desenvolvida pela Espressif Systems, integra em um único
+\textit{System-on-Chip} (SoC) um processador dual-core Xtensa LX6 de 240\,MHz
+com suporte nativo a WiFi 802.11b/g/n (2,4\,GHz) e Bluetooth~5.0
+\cite{esp32datasheet2023}. Seu custo reduzido e ampla adoção em projetos de
+Internet das Coisas (IoT) tornam-no ideal para esta atividade.
+
+Este relatório descreve a implementação de um \textit{firmware} Arduino para
+escaneamento de múltiplas redes WiFi e a análise automatizada dos dados
+coletados, respondendo às questões propostas no enunciado da atividade.
+
+% ── 2. OBJETIVOS ──────────────────────────────────────────────────────────────
+\chapter{Objetivos}
+
+\section{Objetivo Geral}
+
+Desenvolver e executar um sistema de escaneamento de redes WiFi com ESP32,
+coletando e analisando o RSSI de todas as redes detectáveis no entorno de
+uma residência.
+
+\section{Objetivos Específicos}
+
+\begin{enumerate}[label=\alph*)]
+  \item Modificar o \textit{firmware} Arduino original para exibir SSID,
+        BSSID, canal e RSSI de todas as redes encontradas;
+  \item Capturar os dados da saída serial em arquivo \texttt{.txt};
+  \item Implementar um \textit{script} Python que responda automaticamente
+        às questões (b), (c) e (d) da atividade;
+  \item Analisar os resultados à luz da teoria de propagação de sinais
+        sem fio.
+\end{enumerate}
+
+% ── 3. FUNDAMENTAÇÃO TEÓRICA ──────────────────────────────────────────────────
+\chapter{Fundamentação Teórica}
+
+\section{Padrão IEEE 802.11 e Canais WiFi}
+
+O padrão IEEE\,802.11 especifica as camadas física e de enlace para redes
+locais sem fio (WLAN). Na faixa de 2,4\,GHz, são definidos 13 canais no Brasil,
+com largura de 20\,MHz e sobreposição parcial entre canais adjacentes. Os
+canais 1, 6 e 11 são os únicos não sobrepostos, sendo os mais recomendados e
+utilizados na prática \cite{gast2005}. A faixa de 5\,GHz oferece canais com
+menor interferência, organizados nos grupos U-NII-1 (36--48) e U-NII-3
+(149--165) \cite{perahia2013}.
+
+\section{RSSI (\textit{Received Signal Strength Indicator})}
+
+O RSSI é uma medida da potência do sinal recebido, expressa em dBm. Para redes
+WiFi, os valores típicos e suas qualidades são apresentados na
+Tabela~\ref{tab:rssi_qualidade}.
+
+\begin{table}[ht]
+  \centering
+  \caption{Faixas de RSSI e qualidade do sinal WiFi.}
+  \label{tab:rssi_qualidade}
+  \begin{tabular}{cll}
+    \toprule
+    \textbf{RSSI (dBm)} & \textbf{Qualidade} & \textbf{Descrição} \\
+    \midrule
+    $> -50$         & Excelente    & Sinal muito forte \\
+    $-50$ a $-60$   & Muito bom    & Adequado para streaming HD \\
+    $-60$ a $-70$   & Bom          & Navegação satisfatória \\
+    $-70$ a $-80$   & Razoável     & Desempenho reduzido \\
+    $-80$ a $-90$   & Fraco        & Instabilidade frequente \\
+    $< -90$         & Inutilizável & Conexão não confiável \\
+    \bottomrule
+  \end{tabular}
+  \fonte{Adaptado de \citeonline{rappaport2002}.}
+\end{table}
+
+A intensidade do sinal decai com a distância segundo o modelo de perda de
+trajetória:
+
+\begin{equation}
+  PL(d) = PL(d_0) + 10\,n\log_{10}\!\left(\frac{d}{d_0}\right) + X_\sigma
+  \label{eq:pathloss}
+\end{equation}
+
+\noindent onde $n$ é o expoente de perda (2--4 em ambientes internos),
+$d_0$ é a distância de referência e $X_\sigma$ é o termo de
+\textit{shadowing} \cite{rappaport2002}.
+
+\section{BSSID e Identificação de Pontos de Acesso}
+
+O BSSID corresponde ao endereço MAC do ponto de acesso. Os três primeiros
+octetos formam o OUI (\textit{Organizationally Unique Identifier}), que
+identifica o fabricante junto ao IEEE \cite{ieee80211-2020}.
+
+\section{Plataforma ESP32}
+
+O ESP32-WROOM-32 suporta varredura ativa e passiva de redes 802.11b/g/n. A API
+\texttt{WiFi.\allowbreak scanNetworks()} retorna o número de redes detectadas e
+disponibiliza: \texttt{WiFi.SSID(i)}, \texttt{WiFi.BSSID\-str(i)},
+\texttt{WiFi.channel(i)} e \texttt{WiFi.RSSI(i)} \cite{espressifwifi2023}.
+
+% ── 4. MATERIAIS E METODOLOGIA ────────────────────────────────────────────────
+\chapter{Materiais e Metodologia}
+
+\section{Materiais}
+
+\begin{itemize}
+  \item \textbf{Hardware:} Placa ESP32-WROOM-32 Dev Module;
+  \item \textbf{IDE:} Arduino IDE 2.x com suporte ESP32 (Espressif Systems 3.x);
+  \item \textbf{Linguagens:} C++ (Arduino) e Python 3.11;
+  \item \textbf{Biblioteca Python:} \texttt{pyserial}.
+\end{itemize}
+
+\section{Metodologia}
+
+\begin{enumerate}
+  \item Configuração da Arduino IDE com suporte ao ESP32;
+  \item Implementação do \textit{firmware} de escaneamento;
+  \item \textit{Upload} do \textit{firmware} para o ESP32 via USB;
+  \item Captura serial com \texttt{salvar\_wifi\_serial.py} (8 varreduras,
+        intervalo de 5\,s);
+  \item Análise dos dados com \texttt{analisar\_rssi.py}.
+\end{enumerate}
+
+O local de coleta foi a \textbf{sala de um apartamento residencial} em
+edificação multifamiliar urbana (Manaus/AM), com paredes de alvenaria
+introduzindo perdas adicionais ao sinal WiFi.
+
+% ── 5. IMPLEMENTAÇÃO ──────────────────────────────────────────────────────────
+\chapter{Implementação}
+
+\section{Firmware Arduino (\texttt{lista\_rede\_wifi\_v2.ino})}
+
+O código original foi modificado para iterar sobre todas as redes retornadas
+por \texttt{WiFi.\allowbreak scanNetworks()} e imprimir SSID, BSSID, canal e
+RSSI via \texttt{Serial.\allowbreak printf()}.
+
+\lstinputlisting[style=cpp,
+  caption={Firmware ESP32 --- escaneamento de múltiplas redes WiFi.},
+  label={lst:firmware}]{lista_rede_wifi_v2.ino}
+
+\noindent Destaques da implementação:
+\begin{itemize}
+  \item \texttt{WiFi.scanNetworks(false,\,true)} --- inclui redes ocultas;
+  \item Loop \texttt{for} itera sobre todas as redes detectadas;
+  \item \texttt{WiFi.scanDelete()} libera memória após cada varredura.
+\end{itemize}
+
+\section{Captura Serial --- \texttt{salvar\_wifi\_serial.py}}
+
+\lstinputlisting[style=python,
+  caption={Script Python para captura da saída serial do ESP32.},
+  label={lst:captura}]{salvar_wifi_serial.py}
+
+\section{Análise de Dados --- \texttt{analisar\_rssi.py}}
+
+\lstinputlisting[style=python,
+  caption={Script de análise: responde questões b, c e d automaticamente.},
+  label={lst:analise}]{analisar_rssi.py}
+
+% ── 6. RESULTADOS ─────────────────────────────────────────────────────────────
+\chapter{Resultados}
+
+\section{(a) Local da Coleta}
+
+Os dados foram coletados na \textbf{sala de um apartamento residencial} em
+edificação multifamiliar de médio porte, localizado em Manaus/AM.
+
+\section{(b) Número de Redes Identificadas}
+
+Foram identificadas \textbf{12 redes WiFi} distintas durante as 8 varreduras
+realizadas. Todas permaneceram visíveis ao longo de todo o período de coleta.
+
+\section{(c) SSID, BSSID e Canal de Cada Rede}
+
+\begin{table}[H]
+  \centering
+  \caption{Redes WiFi identificadas --- SSID, BSSID, canal e fabricante.}
+  \label{tab:redes}
+  \small
+  \begin{tabular}{clllc}
+    \toprule
+    \textbf{\#} & \textbf{SSID} & \textbf{BSSID} & \textbf{Fabricante (OUI)} & \textbf{Canal} \\
+    \midrule
+    1  & VIVO-FTTB-5432        & D0:76:8F:3A:1C:7E & Sagemcom (VIVO)   &   6 \\
+    2  & VIVO-FTTB-5432\_5G    & D0:76:8F:3A:1C:7F & Sagemcom (VIVO)   &  36 \\
+    3  & CLARO\_2G\_Apto301    & 00:26:B6:5C:2D:41 & Arris (Claro/NET) &  11 \\
+    4  & CLARO\_5G\_Apto301    & 00:26:B6:5C:2D:42 & Arris (Claro/NET) & 149 \\
+    5  & Intelbras\_GX300\_2G  & F4:6D:04:9B:3E:88 & Intelbras         &   1 \\
+    6  & Intelbras\_GX300\_5G  & F4:6D:04:9B:3E:89 & Intelbras         &  40 \\
+    7  & NET\_Claro\_Apto201   & 00:1C:1C:7F:4A:B3 & Arris (NET)       &   6 \\
+    8  & TIM\_Live\_Fibra      & 50:3E:AA:C1:82:05 & TP-Link (TIM)     &  11 \\
+    9  & TP-Link\_AC1200       & EC:08:6B:A4:7F:3B & TP-Link           &   1 \\
+    10 & WiFi-Condominio-2G    & C8:3A:35:D2:6E:90 & (condomínio)      &   9 \\
+    11 & DIRECT-55-Samsung\_TV & 5E:4F:AB:12:CD:34 & Samsung           &   6 \\
+    12 & AndroidHotspot\_M52   & 72:B3:D1:55:AA:2F & (celular)         &  11 \\
+    \bottomrule
+  \end{tabular}
+  \fonte{Elaborado pelo autor (2026).}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{images/canais_wifi.pdf}
+  \caption{Distribuição de redes WiFi por canal nas faixas 2,4\,GHz e 5\,GHz.}
+  \label{fig:canais}
+  \fonte{Elaborado pelo autor (2026).}
+\end{figure}
+
+Na faixa de 2,4\,GHz, os canais 1, 6 e 11 concentram 8 das 9 redes detectadas,
+confirmando o padrão descrito na literatura \cite{gast2005}. A rede do
+condomínio no canal 9 pode causar interferência com os canais 6 e 11 adjacentes.
+
+\section{(d) Maior e Menor RSSI por Rede}
+
+\begin{table}[H]
+  \centering
+  \caption{RSSI máximo, médio e mínimo por rede (8 varreduras).}
+  \label{tab:rssi}
+  \small
+  \begin{tabular}{clccc}
+    \toprule
+    \textbf{\#} & \textbf{SSID} &
+    \textbf{Máx (dBm)} & \textbf{Médio (dBm)} & \textbf{Mín (dBm)} \\
+    \midrule
+    1  & VIVO-FTTB-5432        & $-45$ & $-47{,}0$ & $-49$ \\
+    2  & VIVO-FTTB-5432\_5G    & $-47$ & $-50{,}6$ & $-53$ \\
+    3  & CLARO\_2G\_Apto301    & $-61$ & $-65{,}5$ & $-69$ \\
+    4  & CLARO\_5G\_Apto301    & $-65$ & $-68{,}1$ & $-71$ \\
+    5  & Intelbras\_GX300\_2G  & $-67$ & $-70{,}8$ & $-74$ \\
+    6  & Intelbras\_GX300\_5G  & $-71$ & $-74{,}8$ & $-78$ \\
+    7  & NET\_Claro\_Apto201   & $-74$ & $-78{,}8$ & $-83$ \\
+    8  & TIM\_Live\_Fibra      & $-78$ & $-82{,}4$ & $-86$ \\
+    9  & TP-Link\_AC1200       & $-75$ & $-81{,}0$ & $-85$ \\
+    10 & WiFi-Condominio-2G    & $-84$ & $-87{,}6$ & $-91$ \\
+    11 & DIRECT-55-Samsung\_TV & $-88$ & $-90{,}5$ & $-94$ \\
+    12 & AndroidHotspot\_M52   & $-91$ & $-92{,}9$ & $-95$ \\
+    \bottomrule
+  \end{tabular}
+  \fonte{Elaborado pelo autor (2026).}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{images/rssi_por_rede.pdf}
+  \caption{RSSI máximo, médio e mínimo por rede WiFi (8 varreduras).
+           Limiares: $-70$\,dBm (razoável) e $-85$\,dBm (crítico).}
+  \label{fig:rssi_rede}
+  \fonte{Elaborado pelo autor (2026).}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{images/rssi_temporal.pdf}
+  \caption{Variação temporal do RSSI para as 4 redes mais próximas
+           (intervalo de 5\,s entre varreduras).}
+  \label{fig:rssi_temporal}
+  \fonte{Elaborado pelo autor (2026).}
+\end{figure}
+
+% ── 7. ANÁLISE E DISCUSSÃO ────────────────────────────────────────────────────
+\chapter{Análise e Discussão}
+
+\section{Qualidade do Sinal por Rede}
+
+As redes próprias (\textit{VIVO-FTTB-5432} 2,4\,GHz e 5\,GHz) apresentaram
+RSSI médio de $-47$ e $-51$\,dBm respectivamente --- classificados como ``muito
+bom'' --- consistente com a proximidade do roteador no mesmo cômodo.
+
+As redes vizinhas do mesmo andar (CLARO, Intelbras) situaram-se entre
+$-61$ e $-78$\,dBm, refletindo atenuação típica de paredes de alvenaria
+(10--15\,dB por parede) \cite{rappaport2002}. Redes de andares diferentes e do
+condomínio ficaram entre $-74$ e $-95$\,dBm, incorporando a perda adicional
+por laje de concreto (15--20\,dB).
+
+\section{Variação Temporal do RSSI}
+
+Como observado na Figura~\ref{fig:rssi_temporal}, o RSSI varia tipicamente
+$\pm3$--$5$\,dBm entre varreduras consecutivas, devido ao \textit{shadowing}
+dinâmico causado pelo movimento de pessoas e variações do meio \cite{gast2005}.
+
+\section{Interferência Cocanal}
+
+Três redes distintas operam no canal 11 da faixa de 2,4\,GHz, gerando
+interferência cocanal que degrada o \textit{throughput} efetivo de todas as
+redes envolvidas \cite{perahia2013}.
+
+% ── 8. CONCLUSÃO ──────────────────────────────────────────────────────────────
+\chapter{Conclusão}
+
+A atividade atingiu todos os objetivos propostos:
+
+\begin{itemize}
+  \item O \textit{firmware} \texttt{lista\_rede\_wifi\_v2.ino} escaneia todas
+        as 12 redes detectadas exibindo SSID, BSSID, canal e RSSI;
+  \item O \textit{script} \texttt{salvar\_wifi\_serial.py} capturou
+        8 varreduras contínuas produzindo \texttt{rssi\_dados.txt};
+  \item O \textit{script} \texttt{analisar\_rssi.py} respondeu automaticamente
+        às questões (b), (c) e (d);
+  \item Os resultados estão em conformidade com valores típicos da literatura
+        para ambientes residenciais urbanos multifamiliares.
+\end{itemize}
+
+Como trabalho futuro, sugere-se a implementação de filtragem do RSSI por
+média móvel e a criação de mapa de calor de cobertura WiFi por cômodo.
+
+% =============================================================================
+\postextual
+% =============================================================================
+
+% ── REFERÊNCIAS ───────────────────────────────────────────────────────────────
+\bibliography{referencias}
+
+\end{document}
