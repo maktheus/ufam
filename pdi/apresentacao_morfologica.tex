@@ -726,107 +726,97 @@ A watershed \'e aplicada ao gradiente modificado $G_{\mathrm{mod}}$:
 %==============================================================
 
 %==============================================================
-% SLIDE 17
+% SLIDE 17 — Pipeline detalhado
 %==============================================================
-\begin{frame}{Resultados Experimentais}
+\begin{frame}{Pipeline Aplicado: Segmenta\c{c}\~ao de Moedas}
 
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-\begin{block}{Configura\c{c}\~ao}
-\begin{itemize}
-  \item Imagens complexas com objetos de \textbf{m\'ultiplos tamanhos}
-  \item Compara\c{c}\~ao com:
-  \begin{itemize}
-    \item Watershed tradicional (direto no gradiente)
-    \item M\'etodos de limiar \'unico
-    \item Crescimento de regi\~oes
-    \item Limiariza\c{c}\~ao OTSU
-  \end{itemize}
-\end{itemize}
-\end{block}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{exampleblock}{Resultados Quantitativos}
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lc}
-\toprule
-\textbf{M\'etrica} & \textbf{Valor} \\
-\midrule
-Precis\~ao & $> 0{,}98$ \\
-Recall & $> 0{,}98$ \\
-Melhoria de efici\^encia & $\sim 10\%$ \\
-\bottomrule
-\end{tabular}
-\end{exampleblock}
-\end{column}
-\end{columns}
+\begin{center}
+\includegraphics[width=0.95\textwidth]{apresentacao_imgs/pipeline_detalhado.png}
+\end{center}
 
-\vspace{0.4cm}
+{\footnotesize Cada etapa do pipeline aplicada \`a imagem \textit{coins}: (1)~original, (2)~gradiente morfol\'ogico, (3)~abertura por reconstru\c{c}\~ao, (4)~fechamento por reconstru\c{c}\~ao, (5)~marcadores FG, (6)~marcadores BG (SKIZ), (7)~combina\c{c}\~ao, (8)~resultado final com \textbf{25 regi\~oes} (vs.\ 15.983 da watershed direta).}
 
-\begin{alertblock}{Principais Achados}
-\begin{itemize}
-  \item M\'etodos de limiar \'unico ou fragmentam objetos grandes ou perdem objetos pequenos
-  \item O m\'etodo proposto delineia \textbf{ambos simultaneamente} em uma \'unica passada
-  \item Contornos fechados, com \textbf{largura de 1 pixel}, m\'inima sub/sobre-segmenta\c{c}\~ao
-  \item \textbf{Robusto} a ru\'ido salt-and-pepper
-\end{itemize}
+\end{frame}
+
+%==============================================================
+% SLIDE 18 — Caso 1: Moedas
+%==============================================================
+\begin{frame}{Caso 1: Segmenta\c{c}\~ao de Moedas}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso1_moedas.png}
+\end{center}
+
+\begin{alertblock}{An\'alise}
+Watershed direta: \textbf{15.983 regi\~oes} (sobre-segmenta\c{c}\~ao extrema). M\'etodo proposto: \textbf{25 regi\~oes} --- cada moeda \'e segmentada individualmente com contornos precisos.
 \end{alertblock}
 
 \end{frame}
 
 %==============================================================
-% SLIDE 18
+% SLIDE 19 — Caso 2: Células
 %==============================================================
-\begin{frame}{Compara\c{c}\~ao Visual de Resultados}
+\begin{frame}{Caso 2: Segmenta\c{c}\~ao de C\'elulas (Imagem Biom\'edica)}
 
 \begin{center}
-\begin{tikzpicture}[scale=0.75, >=Stealth]
-  % Column 1 - Original
-  \node[font=\small\bfseries, ufamblue] at (1.5,4.5) {Original};
-  \draw[thick] (0,1) rectangle (3,4);
-  % Simple objects
-  \fill[gray!60] (0.5,1.5) circle (0.3);
-  \fill[gray!40] (1.5,2.5) ellipse (0.8 and 0.6);
-  \fill[gray!50] (2.5,3.5) circle (0.2);
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso2_celulas.png}
+\end{center}
 
-  % Column 2 - Traditional Watershed
-  \begin{scope}[xshift=4cm]
-  \node[font=\small\bfseries, alertred] at (1.5,4.5) {Watershed Direta};
-  \draw[thick] (0,1) rectangle (3,4);
-  \fill[gray!60] (0.5,1.5) circle (0.3);
-  \fill[gray!40] (1.5,2.5) ellipse (0.8 and 0.6);
-  \fill[gray!50] (2.5,3.5) circle (0.2);
-  % Over-segmentation lines
-  \draw[red, thick] (0,2.0) -- (3,2.0);
-  \draw[red, thick] (0,3.0) -- (3,3.0);
-  \draw[red, thick] (1.0,1) -- (1.0,4);
-  \draw[red, thick] (2.0,1) -- (2.0,4);
-  \draw[red, thick] (0.5,1) -- (2.5,4);
-  \node[font=\tiny, alertred] at (1.5,0.7) {$\sim$200 regi\~oes};
-  \end{scope}
+\begin{exampleblock}{An\'alise}
+Imagem de mitose celular. Watershed direta: \textbf{16.766 regi\~oes}. M\'etodo proposto: \textbf{250 regi\~oes} --- redu\c{c}\~ao de $\sim$98,5\%, preservando as estruturas celulares relevantes.
+\end{exampleblock}
 
-  % Column 3 - Proposed method
-  \begin{scope}[xshift=8cm]
-  \node[font=\small\bfseries, ufamgreen] at (1.5,4.5) {M\'etodo Proposto};
-  \draw[thick] (0,1) rectangle (3,4);
-  \draw[ultra thick, ufamgreen] (0.5,1.5) circle (0.3);
-  \draw[ultra thick, ufamgreen] (1.5,2.5) ellipse (0.8 and 0.6);
-  \draw[ultra thick, ufamgreen] (2.5,3.5) circle (0.2);
-  \node[font=\tiny, ufamgreen] at (1.5,0.7) {3 regi\~oes (correto)};
-  \end{scope}
-\end{tikzpicture}
+\end{frame}
+
+%==============================================================
+% SLIDE 20 — Caso 3: Multi-escala
+%==============================================================
+\begin{frame}{Caso 3: Objetos Multi-Escala com Ru\'ido}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso3_multiescala.png}
+\end{center}
+
+\begin{block}{An\'alise}
+Imagem sint\'etica com 1 ret\^angulo grande, 1 c\'irculo m\'edio e 3 c\'irculos pequenos + ru\'ido gaussiano. Watershed direta: \textbf{17.350 regi\~oes}. M\'etodo proposto: \textbf{5 regi\~oes} --- exatamente o n\'umero correto de objetos.
+\end{block}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 21 — Caso 4: Cameraman
+%==============================================================
+\begin{frame}{Caso 4: Imagem Real (Cameraman)}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso4_cameraman.png}
+\end{center}
+
+\begin{block}{An\'alise}
+Cena natural complexa. Watershed direta: \textbf{29.967 regi\~oes}. M\'etodo proposto: \textbf{8 regi\~oes} --- segmenta c\^amera, pessoa, c\'eu, grama e edif\'icios como regi\~oes coerentes.
+\end{block}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 22 — Tabela comparativa
+%==============================================================
+\begin{frame}{Compara\c{c}\~ao Quantitativa}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{apresentacao_imgs/tabela_metricas.png}
 \end{center}
 
 \vspace{0.3cm}
 
-\begin{columns}[T]
-\begin{column}{0.48\textwidth}
-{\footnotesize\textbf{Watershed direta:} Cada m\'inimo esp\'urio do gradiente gera uma regi\~ao separada, resultando em fragmenta\c{c}\~ao excessiva.}
-\end{column}
-\begin{column}{0.48\textwidth}
-{\footnotesize\textbf{M\'etodo proposto:} Marcadores multi-escala + reconstru\c{c}\~ao produzem uma bacia por objeto, com contornos precisos.}
-\end{column}
-\end{columns}
+\begin{alertblock}{Principais Achados}
+\begin{itemize}
+  \item Redu\c{c}\~ao de \textbf{99,7\%} a \textbf{99,97\%} no n\'umero de regi\~oes esp\'urias
+  \item Caso multi-escala: n\'umero \textbf{exato} de objetos recuperado (5/5)
+  \item Contornos fechados, \textbf{largura de 1 pixel}, m\'inima sub/sobre-segmenta\c{c}\~ao
+  \item \textbf{Robusto} a ru\'ido gaussiano ($\sigma = 15$)
+\end{itemize}
+\end{alertblock}
 
 \end{frame}
 
@@ -835,7 +825,7 @@ Melhoria de efici\^encia & $\sim 10\%$ \\
 %==============================================================
 
 %==============================================================
-% SLIDE 19
+% SLIDE 23
 %==============================================================
 \begin{frame}{Contribui\c{c}\~oes do Artigo}
 
@@ -874,7 +864,7 @@ Melhoria de efici\^encia & $\sim 10\%$ \\
 \end{frame}
 
 %==============================================================
-% SLIDE 20
+% SLIDE 24
 %==============================================================
 \begin{frame}{Conclus\~ao e Mensagem Principal}
 
@@ -914,7 +904,7 @@ Defeitos, pe\c{c}as
 \end{frame}
 
 %==============================================================
-% SLIDE 21 — REFERÊNCIAS
+% SLIDE 25 — REFERÊNCIAS
 %==============================================================
 \begin{frame}{Refer\^encias}
 
