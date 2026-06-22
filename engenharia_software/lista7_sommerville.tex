@@ -1,0 +1,1030 @@
+%==========================================================================
+% Sétima Lista de Engenharia de Software RT
+% Capítulos 7 e 8 (Ian Sommerville) — Projeto/Implementação e Testes
+% + Exercícios IAS, Universität Stuttgart (Exercises 10 e 11)
+% Aluno: Matheus Serrão Uchoa — UFAM
+%==========================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.multipart,arrows.meta,positioning,
+  calc,fit,backgrounds,decorations.pathreplacing,chains}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black}
+
+\geometry{top=2.2cm, bottom=2.2cm, left=2.5cm, right=2.5cm}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{questao}[1]{colback=gray!7,colframe=gray!45,
+  fonttitle=\bfseries,title=#1,breakable}
+\newtcolorbox{resposta}{colback=blue!4,colframe=blue!50!black,
+  fonttitle=\bfseries,title=Resposta,breakable}
+\newtcolorbox{nota}{colback=orange!6,colframe=orange!60!black,
+  fonttitle=\bfseries,title=Observação,breakable,before upper=\small}
+
+\lstset{basicstyle=\ttfamily\scriptsize, frame=single, breaklines=true,
+  columns=fullflexible, keepspaces=true, backgroundcolor=\color{gray!5},
+  framerule=0.4pt, rulecolor=\color{gray!45}, aboveskip=5pt, belowskip=5pt,
+  literate={í}{{\'i}}1 {ã}{{\~a}}1 {ç}{{\c c}}1 {é}{{\'e}}1 {ó}{{\'o}}1
+           {á}{{\'a}}1 {ô}{{\^o}}1 {â}{{\^a}}1 {ú}{{\'u}}1 {õ}{{\~o}}1}
+
+%--------------------------------------------------------------------------
+% Estilos TikZ reutilizáveis (UML)
+%--------------------------------------------------------------------------
+\tikzset{
+  umlclass/.style={
+    draw=blue!60, fill=blue!4, thick, rectangle split,
+    rectangle split parts=3, rectangle split part align=left,
+    font=\scriptsize, text width=#1, inner sep=3pt},
+  umlclass/.default=2.8cm,
+  abclass/.style={umlclass=#1, draw=purple!60, fill=purple!5},
+  abclass/.default=2.8cm,
+  umlbox/.style={draw=blue!60, fill=blue!4, thick, rectangle split,
+    rectangle split parts=2, rectangle split part align=left,
+    font=\scriptsize, text width=#1, inner sep=3pt},
+  umlbox/.default=2.8cm,
+  action/.style={rectangle, rounded corners=7pt, draw=teal!75, fill=teal!8,
+    align=center, font=\scriptsize, inner sep=4pt, minimum height=0.75cm},
+  decision/.style={diamond, draw=orange!85!black, fill=orange!12, aspect=2.2,
+    align=center, font=\scriptsize, inner sep=1pt},
+  initial/.style={circle, fill=black, minimum size=5pt, inner sep=0pt},
+  final/.style={circle, draw, thick, minimum size=10pt, inner sep=0pt,
+    path picture={\fill (path picture bounding box.center) circle (2.6pt);}},
+  bar/.style={rectangle, fill=black!80, minimum width=2.4cm,
+    minimum height=2.4pt, inner sep=0pt},
+  state/.style={rectangle, rounded corners=10pt, draw=blue!65, fill=blue!6,
+    align=center, font=\scriptsize, inner sep=4pt, minimum width=1.8cm,
+    minimum height=0.7cm},
+  ucase/.style={ellipse, draw=blue!65, fill=blue!6, align=center,
+    font=\scriptsize, minimum width=2.6cm, minimum height=0.95cm, inner sep=1pt},
+  cfg/.style={circle, draw=blue!65, fill=blue!6, font=\scriptsize,
+    minimum size=7mm, inner sep=1pt},
+  arr/.style={-{Stealth[length=5pt]}, thick},
+  darr/.style={-{Stealth[length=5pt]}, thick, dashed},
+  inherit/.style={-{Triangle[open,length=8pt,width=9pt]}, thick},
+}
+\tikzset{
+  actor/.pic={
+    \draw[thick] (0,0.52) circle (0.13);
+    \draw[thick] (0,0.39) -- (0,-0.02);
+    \draw[thick] (-0.22,0.24) -- (0.22,0.24);
+    \draw[thick] (0,-0.02) -- (-0.18,-0.34);
+    \draw[thick] (0,-0.02) -- (0.18,-0.34);
+  }
+}
+
+%==========================================================================
+\begin{document}
+\shorthandoff{"}% evita conflito do " ativo (babel brasil) dentro de nós TikZ
+
+\begin{center}
+  {\large UNIVERSIDADE FEDERAL DO AMAZONAS — UFAM}\\[2pt]
+  {\normalsize Programa de Pós-Graduação / Engenharia de Software para Sistemas de Tempo Real}\\[10pt]
+  {\Large\bfseries Sétima Lista de Engenharia de Software RT}\\[5pt]
+  {\large Capítulos 7 e 8 — Projeto, Implementação e Testes de Software}\\[3pt]
+  {\normalsize Ian Sommerville — \textit{Software Engineering}, 10ª ed.\ \;$+$\;
+   Exercícios IAS — Universität Stuttgart (Exercises 10 e 11)}\\[8pt]
+  {\normalsize\bfseries Aluno: Matheus Serrão Uchoa}
+\end{center}
+\hrule\vspace{4pt}
+{\small Esta lista reúne quatro partes: Parte~I — questões do Capítulo~7
+(projeto e implementação); Parte~II — questões do Capítulo~8 (testes de
+software); Parte~III — \textit{Exercise} 10 (implementação de \textit{state
+charts}, robô de limpeza, programação estruturada); Parte~IV — \textit{Exercise}
+11 (testes: objeto/driver/caso de teste e medição de cobertura), do material do
+IAS da Universität Stuttgart.}
+\vspace{4pt}\hrule
+
+\tableofcontents
+\vspace{6pt}\hrule
+
+%==========================================================================
+\section{Parte I — Capítulo 7 (Sommerville): Projeto e Implementação}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 1 — Casos de uso da estação meteorológica}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Usando a notação estruturada do Quadro~7.1, especifique os casos de uso da
+estação meteorológica para \emph{Relatar status} e \emph{Reconfigurar}. Faça
+suposições razoáveis sobre a funcionalidade necessária.
+\end{questao}
+\begin{resposta}
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.2cm}p{11.2cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Sistema:} Estação meteorológica \quad\textbf{Caso de uso:} Relatar status}\\
+\midrule
+Atores & Sistema de informações meteorológicas. \\
+Dados & A estação devolve um relatório de status com o estado de hardware/software de cada instrumento, o nível de carga da bateria e a data/hora da última coleta. \\
+Estímulo & Pedido de status enviado pelo sistema de informações meteorológicas. \\
+Resposta & Relatório de status transmitido ao solicitante. \\
+Comentários & O status costuma ser solicitado periodicamente (p.\ ex., diariamente) para monitorar a saúde da estação remota. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.2cm}p{11.2cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Sistema:} Estação meteorológica \quad\textbf{Caso de uso:} Reconfigurar}\\
+\midrule
+Atores & Sistema de informações meteorológicas (controle). \\
+Dados & Comandos de configuração e/ou novo software a ser instalado (parâmetros de coleta, frequência de amostragem, atualização de firmware). \\
+Estímulo & Comando de reconfiguração enviado pelo sistema de informações meteorológicas. \\
+Resposta & Confirmação da reconfiguração; a nova configuração passa a vigorar. \\
+Comentários & A estação deve entrar em modo de manutenção/espera durante a operação; em caso de falha, deve reverter para a configuração anterior (\emph{rollback}). \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2 — Diagrama de casos de uso do MHC-PMS}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Supondo que o MHC-PMS seja desenvolvido por uma abordagem orientada a objetos,
+desenhe um diagrama de casos de uso mostrando pelo menos seis possibilidades
+para esse sistema.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}
+  % Atores
+  \node (rec) at (-0.6,1.0) {}; \pic at (rec) {actor};
+  \node[font=\scriptsize, below=1mm of rec] {Recepcionista};
+  \node (med) at (-0.6,-3.4) {}; \pic at (med) {actor};
+  \node[font=\scriptsize, below=1mm of med] {Médico};
+  \node (enf) at (11.0,1.0) {}; \pic at (enf) {actor};
+  \node[font=\scriptsize, below=1mm of enf] {Enfermeira};
+  \node (ger) at (11.0,-3.4) {}; \pic at (ger) {actor};
+  \node[font=\scriptsize, below=1mm of ger] {Gerente};
+
+  \node[draw, rounded corners, minimum width=7.4cm, minimum height=6.8cm,
+        label={[font=\scriptsize\bfseries]north:MHC-PMS}] at (5.2,-1.3) {};
+  \node[ucase] (u1) at (5.2,0.4)  {Registrar\\ paciente};
+  \node[ucase] (u2) at (3.4,-0.9) {Agendar\\ consulta};
+  \node[ucase] (u3) at (3.4,-2.3) {Consultar\\ prontuário};
+  \node[ucase] (u4) at (7.0,-0.9) {Atualizar\\ prontuário};
+  \node[ucase] (u5) at (7.0,-2.3) {Prescrever\\ medicamento};
+  \node[ucase] (u6) at (5.2,-3.4) {Gerar relatório\\ gerencial};
+
+  \draw (rec)--(u1); \draw (rec)--(u2);
+  \draw (med)--(u3); \draw (med)--(u4); \draw (med)--(u5);
+  \draw (enf)--(u4); \draw (enf)--(u3);
+  \draw (ger)--(u6);
+\end{tikzpicture}
+\end{center}
+{\small São seis casos de uso: registrar paciente, agendar consulta, consultar
+prontuário, atualizar prontuário, prescrever medicamento e gerar relatório
+gerencial, com os papéis (atores) que os disparam.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3 — Classes de objeto (atributos e operações)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Projete as seguintes classes de objeto, identificando atributos e operações: um
+telefone; uma impressora para PC; um sistema de som estéreo pessoal; uma conta
+bancária; um catálogo de biblioteca.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 8mm]
+  \node[umlclass=3.0cm] (tel) {\textbf{Telefone}\nodepart{second}- número\\- agenda\\- emChamada : bool\nodepart{third}+ discar(n)\\+ atender()\\+ desligar()\\+ salvarContato()};
+  \node[umlclass=3.0cm, right=of tel] (imp) {\textbf{Impressora}\nodepart{second}- modelo\\- nívelTinta\\- fila : Doc[*]\\- status\nodepart{third}+ imprimir(doc)\\+ cancelar(doc)\\+ statusTinta()};
+  \node[umlclass=3.0cm, right=of imp] (som) {\textbf{SomEstéreo}\nodepart{second}- volume\\- fonte\\- estação\\- ligado : bool\nodepart{third}+ ligar()\\+ ajustarVolume(v)\\+ selecionarFonte()\\+ sintonizar(f)};
+  \node[umlclass=3.0cm, below=10mm of tel] (cta) {\textbf{ContaBancária}\nodepart{second}- número\\- saldo\\- titular\\- limite\nodepart{third}+ depositar(v)\\+ sacar(v)\\+ transferir(c,v)\\+ extrato()};
+  \node[umlclass=3.4cm, below=10mm of imp] (cat) {\textbf{CatálogoBiblioteca}\nodepart{second}- acervo : Item[*]\\- índicePorAutor\\- índicePorTítulo\nodepart{third}+ buscar(critério)\\+ adicionarItem(i)\\+ removerItem(i)\\+ verificarDisponib.(i)};
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 4 — Objetos da estação e hierarquia de herança}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+A partir dos objetos da estação meteorológica identificados na Figura~7.5,
+identifique outros objetos que possam ser usados no sistema e projete uma
+hierarquia de herança para os objetos identificados.
+\end{questao}
+\begin{resposta}
+Além de \textit{WeatherStation} e \textit{WeatherData} (Figura~7.5), identificam-se
+os \textbf{instrumentos} de medição. Todos compartilham identificador e operações
+de leitura e autoteste, o que motiva a superclasse abstrata \textit{Instrument}.
+
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 8mm]
+  \node[abclass=3.0cm] (ins) {\textit{\textbf{Instrument}}\nodepart{second}- id\\- status\nodepart{third}+ getData()\\+ selfTest()\\+ calibrate()};
+  \node[umlbox=1.9cm, below=14mm of ins, xshift=-44mm] (term) {\textbf{Thermometer}\nodepart{second}- temp};
+  \node[umlbox=1.9cm, below=14mm of ins, xshift=-22mm] (anem) {\textbf{Anemometer}\nodepart{second}- vento};
+  \node[umlbox=1.9cm, below=14mm of ins] (baro) {\textbf{Barometer}\nodepart{second}- pressão};
+  \node[umlbox=1.9cm, below=14mm of ins, xshift=22mm] (rain) {\textbf{RainGauge}\nodepart{second}- chuva};
+  \node[umlbox=1.9cm, below=14mm of ins, xshift=44mm] (vane) {\textbf{WindVane}\nodepart{second}- direção};
+
+  \draw[inherit] (term.north) -- (ins.south);
+  \draw[inherit] (anem.north) -- (ins.south);
+  \draw[inherit] (baro.north) -- (ins.south);
+  \draw[inherit] (rain.north) -- (ins.south);
+  \draw[inherit] (vane.north) -- (ins.south);
+\end{tikzpicture}
+\end{center}
+{\small A \textit{WeatherStation} agrega um conjunto de \textit{Instrument}s e
+delega a coleta a cada um polimorficamente (\texttt{getData()}); novos
+instrumentos podem ser adicionados sem alterar a estação.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 5 — Sequência: coleta de dados e instrumentos}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenvolva o projeto da estação meteorológica mostrando, com diagramas de
+sequência, a interação entre o subsistema de coleta de dados e os instrumentos
+que coletam dados meteorológicos.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize]
+  \def\xa{0} \def\xb{3.0} \def\xc{6.0} \def\xd{8.6} \def\xe{11.0}
+  \def\ybot{-7.0}
+  \node[draw, fill=blue!6] (ws)  at (\xa,0) {:WeatherStation};
+  \node[draw, fill=blue!6] (dc)  at (\xb,0) {:DataCollection};
+  \node[draw, fill=blue!6] (th)  at (\xc,0) {:Thermometer};
+  \node[draw, fill=blue!6] (an)  at (\xd,0) {:Anemometer};
+  \node[draw, fill=blue!6] (ba)  at (\xe,0) {:Barometer};
+  \foreach \x in {\xa,\xb,\xc,\xd,\xe} \draw[dashed,gray] (\x,-0.45) -- (\x,\ybot);
+
+  \draw[arr] (\xa,-1.0) -- node[above]{collect()} (\xb,-1.0);
+  \draw[arr] (\xb,-1.6) -- node[above]{getData()} (\xc,-1.6);
+  \draw[darr] (\xc,-2.1) -- node[above]{temperatura} (\xb,-2.1);
+  \draw[arr] (\xb,-2.8) -- node[above]{getData()} (\xd,-2.8);
+  \draw[darr] (\xd,-3.3) -- node[above]{velocidade do vento} (\xb,-3.3);
+  \draw[arr] (\xb,-4.0) -- node[above]{getData()} (\xe,-4.0);
+  \draw[darr] (\xe,-4.5) -- node[above]{pressão} (\xb,-4.5);
+  \draw[arr] (\xb,-5.2) to[out=-90,in=-90,looseness=4] node[below]{summarise()} (\xb,-5.2);
+  \draw[darr] (\xb,-6.2) -- node[above]{resumo dos dados} (\xa,-6.2);
+\end{tikzpicture}
+\end{center}
+{\small O subsistema \textit{DataCollection} consulta sequencialmente cada
+instrumento (\texttt{getData()}), agrega os valores (\texttt{summarise()}) e
+devolve o resumo à \textit{WeatherStation}.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 6 — Projeto OO: agenda de grupo e posto de gasolina}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Identifique possíveis objetos e desenvolva um projeto orientado a objetos para:
+(a) um sistema de agenda/gerenciamento de tempo de grupo; (b) um posto de
+gasolina automatizado.
+\end{questao}
+\begin{resposta}
+\textbf{(a) Sistema de agenda de grupo:}
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 16mm]
+  \node[umlclass=2.6cm] (user) {\textbf{Usuário}\nodepart{second}- nome\\- email\nodepart{third}};
+  \node[umlclass=2.6cm, right=of user] (diary) {\textbf{Agenda}\nodepart{second}- dono\nodepart{third}+ janelasLivres()};
+  \node[umlclass=2.8cm, right=of diary] (meet) {\textbf{Compromisso}\nodepart{second}- título\\- início\\- fim\\- local\nodepart{third}+ agendar()};
+  \node[umlclass=2.6cm, below=12mm of diary] (slot) {\textbf{IntervaloLivre}\nodepart{second}- início\\- fim\nodepart{third}};
+  \node[umlclass=2.8cm, below=12mm of meet] (sched) {\textbf{Agendador}\nodepart{second}\nodepart{third}+ encontrarJanela()\\+ negociar()};
+
+  \draw[thick] (user) -- node[above,font=\tiny]{1\;\;1} (diary);
+  \draw[thick] (diary) -- node[above,font=\tiny]{1\;\;$*$} (meet);
+  \draw[thick] (diary) -- node[right,font=\tiny]{1\;\;$*$} (slot);
+  \draw[thick] (sched) -- node[sloped,above,font=\tiny]{usa} (meet);
+  \draw[thick] (sched) -- node[sloped,above,font=\tiny]{consulta} (slot);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Posto de gasolina automatizado:}
+\begin{center}
+\begin{tikzpicture}
+  \node[umlclass=2.8cm] (ctrl) at (0,0) {\textbf{Controlador}\nodepart{second}- estado\nodepart{third}+ processarVenda()};
+  \node[umlclass=2.6cm] (pump) at (-4.2,2.3) {\textbf{Bomba}\nodepart{second}- id\\- preçoLitro\nodepart{third}+ liberar(lim)\\+ bloquear()};
+  \node[umlclass=2.6cm] (reader) at (4.2,2.3) {\textbf{LeitorCartão}\nodepart{second}\nodepart{third}+ ler()\\+ devolver()};
+  \node[umlclass=2.6cm] (credit) at (4.2,-2.3) {\textbf{Sist.Crédito}\nodepart{second}\nodepart{third}+ validar(c)\\+ debitar(c,v)};
+  \node[umlclass=2.4cm] (disp) at (-4.2,-2.3) {\textbf{Display}\nodepart{second}\nodepart{third}+ mostrar(t)};
+  \node[umlclass=2.4cm] (hose) at (-4.2,4.6) {\textbf{Mangueira}\nodepart{second}- volume\\- noColdre\nodepart{third}+ medir()};
+
+  \draw[thick] (ctrl) -- (pump.south east);
+  \draw[thick] (ctrl) -- (reader.south west);
+  \draw[thick] (ctrl) -- (credit.north west);
+  \draw[thick] (ctrl) -- (disp.north east);
+  \draw[thick] (pump) -- node[right,font=\tiny]{1\;\;1} (hose);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 7 — Sequência: agendamento de reunião (agenda de grupo)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe um diagrama de sequência mostrando as interações dos objetos em um
+sistema de agenda de grupo quando um grupo de pessoas organiza uma reunião.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize]
+  \def\xa{0} \def\xb{2.8} \def\xc{5.6} \def\xd{8.2} \def\xe{10.8}
+  \def\ybot{-8.2}
+  \node (org) at (\xa,0) {}; \pic at (\xa,0.42) {actor};
+  \node at (\xa,0.02) {Organizador};
+  \node[draw, fill=blue!6] (sc) at (\xb,0) {:Agendador};
+  \node[draw, fill=blue!6] (d1) at (\xc,0) {:Agenda A};
+  \node[draw, fill=blue!6] (d2) at (\xd,0) {:Agenda B};
+  \node[draw, fill=blue!6] (mt) at (\xe,0) {:Compromisso};
+  \foreach \x in {\xa,\xb,\xc,\xd,\xe} \draw[dashed,gray] (\x,-0.5) -- (\x,\ybot);
+
+  \draw[arr] (\xa,-1.0) -- node[above]{marcarReunião(parts, dur)} (\xb,-1.0);
+  \draw[arr] (\xb,-1.6) -- node[above]{janelasLivres()} (\xc,-1.6);
+  \draw[darr] (\xc,-2.1) -- node[above]{livres A} (\xb,-2.1);
+  \draw[arr] (\xb,-2.7) -- node[above]{janelasLivres()} (\xd,-2.7);
+  \draw[darr] (\xd,-3.2) -- node[above]{livres B} (\xb,-3.2);
+  \draw[arr] (\xb,-3.9) to[out=-90,in=-90,looseness=4] node[below]{interseção()} (\xb,-3.9);
+
+  \draw[gray!70] (1.5,-4.5) rectangle (11.4,-7.6);
+  \node[draw, fill=gray!15, font=\scriptsize\bfseries, anchor=north west] at (1.5,-4.5) {alt};
+  \node[font=\tiny, anchor=west] at (2.1,-4.85) {[há janela comum]};
+  \draw[arr] (\xb,-5.2) -- node[above]{criar(janela)} (\xe,-5.2);
+  \draw[darr] (\xe,-5.7) -- node[above]{confirmado} (\xb,-5.7);
+  \draw[darr] (\xb,-6.2) -- node[above]{reunião marcada} (\xa,-6.2);
+  \draw[gray!70,dashed] (1.5,-6.6) -- (11.4,-6.6);
+  \node[font=\tiny, anchor=west] at (2.1,-6.9) {[sem janela comum]};
+  \draw[darr] (\xb,-7.45) -- node[above]{negociar remarcação} (\xa,-7.45);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8 — Diagrama de estado (posto de gasolina)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe um diagrama de estado da UML mostrando as possíveis mudanças de estado
+na agenda de grupo ou no sistema do posto de gasolina.
+\end{questao}
+\begin{resposta}
+Modelando o \textbf{posto de gasolina automatizado}:
+\begin{center}
+\begin{tikzpicture}[node distance=9mm and 14mm]
+  \node[initial] (i) {};
+  \node[state, right=8mm of i] (idle) {Ocioso};
+  \node[state, right=of idle] (val) {Validando\\ cartão};
+  \node[state, below=of val] (limit) {Limite de\\ combustível\\ definido};
+  \node[state, left=of limit] (fuel) {Abastecendo};
+  \node[state, below=of fuel] (deb) {Debitando\\ cartão};
+  \node[state, right=of deb] (ret) {Devolvendo\\ cartão};
+  \node[state, right=of val] (rej) {Cartão\\ inválido};
+  \node[final, below=10mm of ret] (f) {};
+
+  \draw[arr] (i)--(idle);
+  \draw[arr] (idle)-- node[above,font=\tiny]{passa cartão} (val);
+  \draw[arr] (val)-- node[above,font=\tiny]{inválido} (rej);
+  \draw[arr] (rej.south) to[bend left=30] node[right,font=\tiny]{devolve} (ret.north east);
+  \draw[arr] (val)-- node[right,font=\tiny]{válido} (limit);
+  \draw[arr] (limit)-- node[above,font=\tiny]{retira mangueira} (fuel);
+  \draw[arr] (fuel)-- node[left,font=\tiny]{recoloca mangueira} (deb);
+  \draw[arr] (deb)-- node[above,font=\tiny]{débito ok} (ret);
+  \draw[arr] (ret)-- node[right,font=\tiny]{cartão retirado} (f);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 9 — Importância do gerenciamento de configuração}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Usando exemplos, explique por que o gerenciamento de configuração é importante
+quando uma equipe desenvolve um produto de software.
+\end{questao}
+\begin{resposta}
+O gerenciamento de configuração (GC) controla a evolução de um sistema composto
+por muitos artefatos que mudam de forma independente e simultânea por vários
+desenvolvedores. Sua importância:
+\begin{itemize}[nosep]
+  \item \textbf{Controle de versões / evitar conflitos:} se dois desenvolvedores
+        editam o mesmo arquivo, o GC (Git/SVN) detecta e funde as mudanças,
+        impedindo que um sobrescreva o trabalho do outro.
+  \item \textbf{Rastreabilidade e reversão:} é possível voltar a uma versão
+        estável. \emph{Exemplo:} uma release introduz um defeito grave; com o GC
+        reverte-se ao último \emph{commit} bom enquanto se corrige o problema.
+  \item \textbf{Gestão de \emph{builds} e releases:} reproduzir exatamente a
+        versão entregue a um cliente. \emph{Exemplo:} o cliente X usa a v2.3;
+        para corrigir um \emph{bug} dele, recupera-se o \emph{baseline} 2.3.
+  \item \textbf{Gerência de mudanças:} associa solicitações de mudança/defeitos
+        às alterações de código, dando histórico e auditoria.
+  \item \textbf{Trabalho paralelo com \emph{branches}:} desenvolver uma nova
+        funcionalidade sem desestabilizar a linha principal.
+\end{itemize}
+Sem GC, equipes perdem alterações, não conseguem reproduzir versões entregues e
+têm dificuldade de coordenar o trabalho — problemas que crescem com o tamanho da
+equipe.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10 — Tornar o software \emph{open source}}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Uma pequena empresa desenvolve um produto que se configura especialmente para
+cada cliente. Surge a oportunidade de um contrato que mais que dobraria sua base
+de clientes, e o novo cliente quer envolvimento na configuração. Explique por
+que, nessas circunstâncias, pode ser boa ideia tornar o software \emph{open
+source}.
+\end{questao}
+\begin{resposta}
+\begin{itemize}[nosep]
+  \item \textbf{Capacidade limitada de customização:} a empresa é pequena e pode
+        não dar conta de configurar para uma base de clientes muito maior.
+        Abrindo o código, clientes e terceiros assumem parte do trabalho de
+        configuração — exatamente o que o novo cliente deseja.
+  \item \textbf{Modelo de negócio em serviços:} o valor migra da venda de
+        licenças para suporte, consultoria, customização e treinamento — receitas
+        recorrentes que escalam melhor para uma base maior.
+  \item \textbf{Contribuições da comunidade:} correções e melhorias feitas pelos
+        usuários retornam ao produto, reduzindo o custo de manutenção.
+  \item \textbf{Confiança e redução de \emph{lock-in}:} o cliente grande não fica
+        refém de um fornecedor pequeno (risco de descontinuidade); o acesso ao
+        código o tranquiliza quanto à continuidade e à auditabilidade.
+  \item \textbf{Adoção e padronização:} mais usuários podem transformar o produto
+        em padrão de fato no nicho, ampliando o mercado de serviços.
+\end{itemize}
+\textbf{Ressalvas:} perde-se a receita de licenças e expõe-se o código a
+concorrentes; é preciso escolher bem a licença (p.\ ex., \emph{copyleft} para
+forçar o retorno de melhorias) e separar eventuais módulos proprietários que
+constituam a vantagem competitiva central.
+\end{resposta}
+
+%==========================================================================
+\section{Parte II — Capítulo 8 (Sommerville): Testes de Software}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 1 — Entregar software não totalmente livre de defeitos}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que um programa não precisa, necessariamente, ser completamente
+livre de defeitos antes de ser entregue a seus clientes.
+\end{questao}
+\begin{resposta}
+É praticamente impossível e economicamente inviável garantir ausência total de
+defeitos: o espaço de entradas/estados é gigantesco e testes exaustivos não são
+factíveis. Além disso:
+\begin{itemize}[nosep]
+  \item \textbf{Nem todo defeito se manifesta:} muitos só ocorrem em condições
+        raras que talvez nunca aconteçam na operação real; o custo de removê-los
+        supera o benefício.
+  \item \textbf{Valor de negócio:} entregar mais cedo, mesmo com defeitos menores
+        conhecidos, pode valer mais que atrasar à espera da perfeição (janela de
+        mercado, contratos).
+  \item \textbf{Criticidade variável:} defeitos cosméticos ou de baixa severidade
+        podem ser corrigidos em atualizações posteriores.
+  \item \textbf{Custo marginal crescente:} a “lei” dos retornos decrescentes faz
+        a remoção dos últimos defeitos custar muito mais do que dos primeiros.
+\end{itemize}
+A decisão é baseada em risco: aceita-se entregar quando o nível de confiança é
+adequado ao domínio (sistemas críticos exigem muito mais rigor que aplicativos
+comuns).
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2 — Testes mostram presença, não ausência de erros}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que os testes podem detectar apenas a presença de erros, e não a
+sua ausência.
+\end{questao}
+\begin{resposta}
+Um teste executa o programa para um \emph{subconjunto finito} das entradas
+possíveis. Se um teste falha, prova-se a \textbf{existência} de pelo menos um
+defeito. Mas, como o conjunto de entradas/estados é praticamente infinito, passar
+em todos os testes selecionados não cobre todas as situações — sempre podem
+existir entradas não testadas que revelariam falhas. Logo, testes
+\textbf{nunca provam} que não há erros (frase atribuída a Dijkstra: “\emph{testing
+shows the presence, not the absence of bugs}”). A confiança obtida é estatística,
+não uma prova de correção (que exigiria verificação formal).
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3 — Desenvolvedores testarem o próprio código}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Dê argumentos a favor e contra a realização de testes pelos próprios
+desenvolvedores (em vez de uma equipe independente).
+\end{questao}
+\begin{resposta}
+\textbf{A favor:}
+\begin{itemize}[nosep]
+  \item Conhecem o código profundamente e encontram rapidamente onde testar.
+  \item \emph{Feedback} imediato: corrigem na hora, reduzindo custo do defeito.
+  \item Viabilizam testes de unidade automatizados (TDD) e CI.
+\end{itemize}
+\textbf{Contra:}
+\begin{itemize}[nosep]
+  \item \textbf{Viés de confirmação:} tendem a testar o que “deveria funcionar”,
+        repetindo as mesmas suposições que geraram o defeito.
+  \item Conflito de interesse: pressa/orgulho podem reduzir o rigor.
+  \item Uma equipe independente traz olhar imparcial, testa requisitos (não
+        implementação) e cobre cenários inesperados.
+\end{itemize}
+\textbf{Conclusão:} abordagem combinada — desenvolvedores fazem testes de unidade
+e integração; uma equipe independente faz testes de sistema, release e aceitação.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 4 — Partições e testes para \texttt{catWhiteSpace}}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Teste o método \texttt{catWhiteSpace} de um objeto \texttt{Parágrafo}, que
+substitui sequências de espaços em branco por um único espaço. Identifique
+partições de equivalência e derive um conjunto de testes.
+\end{questao}
+\begin{resposta}
+\textbf{Partições de equivalência (entrada = string do parágrafo):}
+\begin{center}\small
+\begin{tabular}{@{}p{6.6cm}p{7.8cm}@{}}
+\toprule
+\textbf{Partição} & \textbf{Comportamento esperado} \\
+\midrule
+String vazia & Retorna string vazia. \\
+Sem espaços em branco & Inalterada. \\
+Espaços simples isolados (já normalizada) & Inalterada. \\
+Sequência de múltiplos espaços & Cada sequência vira 1 espaço. \\
+Outros brancos (tab \texttt{\textbackslash t}, \texttt{\textbackslash n}) & Tratados como branco e colapsados. \\
+Brancos no início/fim & Colapsados (e/ou removidos, conforme spec). \\
+Só brancos (ex.: "\ \ \ \ ") & Vira 1 espaço (ou vazio). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Conjunto de testes (entrada $\to$ saída):}
+\begin{center}\small
+\begin{tabular}{@{}llp{6.2cm}@{}}
+\toprule
+\textbf{\#} & \textbf{Entrada} & \textbf{Saída esperada} \\
+\midrule
+T1 & \texttt{""} & \texttt{""} (vazia) \\
+T2 & \texttt{"abc"} & \texttt{"abc"} \\
+T3 & \texttt{"a b c"} & \texttt{"a b c"} \\
+T4 & \texttt{"a\ \ \ \ b"} (4 espaços) & \texttt{"a b"} \\
+T5 & \texttt{"a\textbackslash t\textbackslash t b"} & \texttt{"a b"} \\
+T6 & \texttt{"\ \ ab\ \ "} & \texttt{" ab "} (ou \texttt{"ab"}) \\
+T7 & \texttt{"\ \ \ \ "} (só brancos) & \texttt{" "} (ou \texttt{""}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+Inclui-se também o valor-limite de \textbf{dois} espaços (menor sequência a ser
+colapsada), além de testes com tabulações/quebras de linha.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 5 — Teste de regressão e JUnit}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+O que é teste de regressão? Explique como o uso de testes automatizados e de um
+framework como o JUnit simplifica os testes de regressão.
+\end{questao}
+\begin{resposta}
+\textbf{Teste de regressão} é reexecutar testes já existentes após uma mudança
+(correção, nova funcionalidade, refatoração) para verificar se \emph{nada que
+funcionava antes foi quebrado}. Manualmente seria caro e repetitivo, então
+costuma ser negligenciado.
+
+Com automação e \textbf{JUnit}:
+\begin{itemize}[nosep]
+  \item Os testes ficam codificados e podem ser executados a qualquer momento
+        com um clique/comando, a custo quase zero.
+  \item Cada teste verifica automaticamente o resultado (\texttt{assert});
+        relatórios indicam imediatamente o que passou/falhou.
+  \item Integram-se à \textbf{integração contínua} (CI): toda alteração no
+        repositório dispara a suíte completa, detectando regressões cedo.
+  \item Incentivam refatoração segura — há uma rede de proteção que sinaliza
+        qualquer quebra de comportamento.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 6 — Testar sistema de prateleira adaptado vs.\ OO}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+O MHC-PMS é construído adaptando um sistema de informações de prateleira (COTS).
+Quais as diferenças entre testar esse software e testar um sistema desenvolvido
+em uma linguagem OO como Java?
+\end{questao}
+\begin{resposta}
+\begin{itemize}[nosep]
+  \item \textbf{Acesso ao código-fonte:} no COTS, em geral não há fonte; predomina
+        teste \emph{caixa-preta} (funcional), enquanto no sistema Java é possível
+        teste \emph{caixa-branca} (cobertura, unidade).
+  \item \textbf{Foco:} no COTS adaptado, testa-se a \textbf{configuração}, a
+        integração e as interfaces/extensões; no Java, testam-se classes e
+        métodos individualmente (JUnit) além da integração.
+  \item \textbf{Confiança no componente:} parte-se do princípio de que o produto
+        de prateleira já foi testado pelo fornecedor; o esforço concentra-se em
+        verificar se ele atende aos requisitos específicos do MHC-PMS.
+  \item \textbf{Ferramentas:} OO permite \emph{mocks}, injeção de dependência e
+        testes automatizados de unidade; no COTS, dependemos de scripts de
+        integração e dados de teste.
+  \item \textbf{Defeitos:} no COTS, defeitos no núcleo não podem ser corrigidos
+        (apenas contornados/reportados); no Java, corrige-se o código.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 7 — Cenário de teste da estação no deserto}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Escreva um cenário que poderia ser usado para ajudar no projeto de testes do
+sistema da estação meteorológica no deserto.
+\end{questao}
+\begin{resposta}
+\textbf{Cenário — Coleta e transmissão diária sob condições extremas:}
+
+\textit{“São 12h em um dia de verão no deserto; a temperatura ambiente chega a
+50\,°C e há tempestade de areia. A estação acorda do modo de economia de energia
+no horário programado, executa um autoteste dos instrumentos e detecta que o
+anemômetro está com leitura intermitente devido à areia. Ela coleta os demais
+dados (temperatura, pressão, umidade, chuva), registra o anemômetro como
+‘suspeito’ no relatório de status e arquiva o resumo. Quando o satélite fica
+visível, a estação tenta transmitir; a primeira tentativa falha por interferência
+e a estação repete a transmissão até obter confirmação, então volta ao modo de
+economia de energia.”}
+
+\textbf{Aspectos de teste derivados:} limites de temperatura/sensores;
+autoteste e marcação de instrumento defeituoso; coleta parcial; persistência de
+dados quando a comunicação falha; \emph{retry} de transmissão; transições de
+energia; comportamento sob falha de um instrumento sem perder os demais dados.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8 — Testes de estresse e o MHC-PMS}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+O que você entende por “testes de estresse”? Sugira como estressar o MHC-PMS.
+\end{questao}
+\begin{resposta}
+\textbf{Teste de estresse} leva o sistema deliberadamente além de sua carga
+nominal de projeto para observar como ele se comporta no limite e na falha
+(degradação suave \emph{vs.}\ colapso) e se há perda/corrupção de dados.
+Verifica também a recuperação após sobrecarga.
+
+\textbf{Como estressar o MHC-PMS:}
+\begin{itemize}[nosep]
+  \item Simular \textbf{muitos usuários simultâneos} (recepção, enfermeiros,
+        médicos) acima do pico previsto.
+  \item Volume massivo de \textbf{registros de pacientes} e consultas ao banco.
+  \item Rajadas de \textbf{operações concorrentes} no mesmo prontuário (testar
+        bloqueios/consistência).
+  \item Reduzir recursos (memória/CPU/banda) e observar a degradação.
+  \item Picos no horário de início do expediente (todos logando ao mesmo tempo).
+  \item Verificar se, ao saturar, o sistema \textbf{não corrompe dados} e se
+        recupera quando a carga diminui.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 9 — Envolver usuários cedo nos testes de release}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Quais as vantagens de envolver os usuários nos testes de release em um estágio
+inicial? Há desvantagens na participação do usuário?
+\end{questao}
+\begin{resposta}
+\textbf{Vantagens:}
+\begin{itemize}[nosep]
+  \item Validação realista de requisitos: usuários detectam cedo mal-entendidos
+        e funcionalidades inadequadas, quando corrigir é mais barato.
+  \item Cenários e dados reais de uso, difíceis de antecipar pela equipe.
+  \item Maior aceitação e senso de propriedade do produto final.
+\end{itemize}
+\textbf{Desvantagens:}
+\begin{itemize}[nosep]
+  \item Versões iniciais instáveis podem frustrar usuários e gerar má impressão.
+  \item Custo do tempo dos usuários, afastados de suas tarefas.
+  \item \emph{Feedback} pode ser inconsistente, subjetivo ou conflitante.
+  \item Risco de “rolagem de escopo” (novos pedidos) e de testes não sistemáticos.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10 — Ética de testar até esgotar o orçamento}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Discuta a ética de testar um sistema até esgotar o orçamento de teste e, então,
+entregá-lo a clientes externos.
+\end{questao}
+\begin{resposta}
+Parar de testar quando o \emph{orçamento} acaba — e não quando um \textbf{nível de
+qualidade/risco} aceitável é atingido — é eticamente problemático, pois
+desvincula a decisão de entrega da segurança e dos interesses do cliente.
+\begin{itemize}[nosep]
+  \item \textbf{Risco ao cliente/usuário:} em sistemas críticos (saúde,
+        finanças, segurança), entregar com qualidade desconhecida pode causar
+        dano — viola o dever de não maleficência e os códigos de ética
+        profissional (ACM/IEEE).
+  \item \textbf{Transparência:} se há defeitos conhecidos ou cobertura
+        insuficiente, isso deve ser comunicado ao cliente, que assume o risco de
+        forma informada.
+  \item \textbf{Responsabilidade:} o critério de parada deveria ser baseado em
+        risco (severidade, criticidade, cobertura), não puramente orçamentário.
+\end{itemize}
+\textbf{Conclusão:} é aceitável encerrar testes quando o risco residual é baixo e
+acordado; é antiético entregar às cegas, apenas porque o dinheiro acabou,
+especialmente para clientes externos que confiam na devida diligência do
+fornecedor.
+\end{resposta}
+
+%==========================================================================
+\section{Parte III — Exercise 10 (Stuttgart): Implementação}
+%==========================================================================
+\begin{nota}
+\textbf{Idiom \textit{switch/while} para \textit{state charts}.} Um diagrama de
+estados pode ser mapeado para código estruturado por uma variável
+\texttt{currentState} e um laço \texttt{while(true)} contendo um
+\texttt{switch/case} com um ramo por estado. Em cada \texttt{case}: executam-se
+as \emph{entry actions}; um \texttt{while} interno repete as \emph{do actions}
+enquanto nenhum evento de saída ocorre; ao sair, executam-se as \emph{exit
+actions} e atualiza-se \texttt{currentState} para o estado seguinte (implementando
+a transição). Estados hierárquicos viram blocos \texttt{switch/while} aninhados.
+\end{nota}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10.1 — Diagrama de estados do robô de limpeza}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Represente, em notação UML, o comportamento do robô de limpeza: move
+(frente/trás), rotate (gira parado), stop; ao colidir inicia desvio até não
+haver obstáculo (ou stop); a unidade de limpeza fica ativa no movimento reto e
+desligada em rotação e desvio.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}
+  \node[initial] (i) at (0,0) {};
+  \node[state] (par) at (2.0,0)   {Parado};
+  \node[state] (mov) at (5.6,0)   {Movimento reto\\ (limpeza ON)};
+  \node[state] (rot) at (9.4,1.5) {Rotação\\ (limpeza OFF)};
+  \node[state] (dod) at (9.4,-1.5){Desvio\\ (limpeza OFF)};
+
+  \draw[arr] (i)--(par);
+  \draw[arr] (par) to[bend left=12] node[above,font=\tiny]{move} (mov);
+  \draw[arr] (mov) to[bend left=12] node[below,font=\tiny]{stop} (par);
+  \draw[arr] (mov) to[bend left=8] node[sloped,above,font=\tiny]{rotate} (rot);
+  \draw[arr] (rot) to[bend left=8] node[sloped,below,font=\tiny]{move} (mov);
+  \draw[arr] (mov) to[bend right=8] node[sloped,below,font=\tiny]{colisão} (dod);
+  \draw[arr] (dod) to[bend right=8] node[sloped,above,font=\tiny]{sem obstáculo} (mov);
+  \draw[arr] (par) to[bend right=34] node[sloped,below,font=\tiny]{rotate} (rot);
+  \draw[arr] (rot) to[out=120,in=70,looseness=1.4] node[above,font=\tiny]{stop} (par);
+  \draw[arr] (dod) to[out=-120,in=-70,looseness=1.2] node[below,font=\tiny]{stop} (par);
+\end{tikzpicture}
+\end{center}
+{\small A \emph{entry action} de \textbf{Movimento reto} liga a unidade de limpeza;
+as de \textbf{Rotação} e \textbf{Desvio} a desligam.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10.2 — Pseudocódigo (laços while)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Transforme o diagrama de estados em uma implementação. Use pseudocódigo e
+realize os estados com laços \texttt{while}.
+\end{questao}
+\begin{resposta}
+\begin{lstlisting}
+currentState := PARADO
+WHILE TRUE
+  SWITCH currentState
+    CASE PARADO:
+      desligaMotores()                       // entry
+      WHILE NOT (cmd=move OR cmd=rotate) DO esperaComando() ENDWHILE
+      IF cmd = move   THEN currentState := MOV_RETO
+      ELSE                  currentState := ROTACAO
+      BREAK
+    CASE MOV_RETO:
+      ligaLimpeza(); ativaMotoresReto()      // entry
+      WHILE NOT (cmd=stop OR cmd=rotate OR colisao) DO mover() ENDWHILE
+      desligaLimpeza()                       // exit
+      IF      colisao      THEN currentState := DESVIO
+      ELSE IF cmd = rotate THEN currentState := ROTACAO
+      ELSE                       currentState := PARADO
+      BREAK
+    CASE ROTACAO:
+      desligaLimpeza(); ativaMotoresGiro()   // entry
+      WHILE NOT (cmd=stop OR cmd=move) DO girar() ENDWHILE
+      IF cmd = move THEN currentState := MOV_RETO
+      ELSE               currentState := PARADO
+      BREAK
+    CASE DESVIO:
+      desligaLimpeza()                       // entry
+      WHILE (obstaculo AND cmd<>stop) DO contornar() ENDWHILE
+      IF cmd = stop THEN currentState := PARADO
+      ELSE               currentState := MOV_RETO   // sem obstaculo: retoma reto
+      BREAK
+  ENDSWITCH
+ENDWHILE
+\end{lstlisting}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10.3 — Programação estruturada (eliminar GOTO)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Verifique se o fluxograma da Figura~1 é livre de GOTO. Se não, converta-o de
+forma apropriada e prove que a modificação elimina a necessidade de GOTOs.
+\end{questao}
+\begin{resposta}
+\textbf{Critério.} Um fluxograma é \emph{livre de GOTO} (bem estruturado) se pode
+ser construído apenas com \textbf{sequência}, \textbf{seleção} (if/else) e
+\textbf{iteração} (while) — blocos de \emph{uma} entrada e \emph{uma} saída,
+adequadamente aninhados.
+
+\textbf{Diagnóstico.} O fluxograma dado \emph{não} é livre de GOTO: assumindo as
+transições da Figura~1 (A$\to$B/C; B$\to$D/C; C$\to$D; D$\to$C \emph{ou} D$\to$E/fim),
+o nó \textbf{D} é alcançado por dois caminhos diferentes (de B e de C) e participa
+de um laço com C. Isso forma um \textbf{laço de múltiplas entradas}, que não pode
+ser expresso por construções aninhadas simples — exigiria um \texttt{GOTO}.
+
+\textbf{Conversão (teorema de Böhm--Jacopini).} Todo fluxograma pode ser tornado
+livre de GOTO. Aplica-se o método da \textbf{variável de estado} (\emph{switch/while}),
+que serializa os nós sem saltos:
+\begin{lstlisting}
+estado := "A"
+WHILE estado <> "FIM" DO
+  SWITCH estado
+    CASE "A": faz_A();  IF a THEN estado:="B" ELSE estado:="C"
+    CASE "B": faz_B();  IF b THEN estado:="D" ELSE estado:="C"
+    CASE "C": faz_C();  estado:="D"
+    CASE "D": faz_D();  IF d THEN estado:="C"
+                        ELSE IF e THEN estado:="E" ELSE estado:="FIM"
+    CASE "E": faz_E();  estado:="FIM"
+  ENDSWITCH
+ENDWHILE
+\end{lstlisting}
+
+\textbf{Prova de que elimina os GOTOs.}
+\begin{itemize}[nosep]
+  \item O programa resultante usa \emph{apenas} \texttt{while}, \texttt{switch} e
+        \texttt{if/else} — não há nenhum \texttt{GOTO}. O laço externo tem uma
+        única entrada e uma única saída (\texttt{estado="FIM"}).
+  \item \textbf{Equivalência:} cada transição do fluxograma original
+        (aresta $X\to Y$) é reproduzida por uma única atribuição
+        \texttt{estado := "Y"}. Assim, qualquer execução do fluxograma
+        corresponde, passo a passo, a uma execução deste laço, e vice-versa —
+        a função computada é a mesma.
+  \item Os antigos saltos (incluindo a entrada “de fora” em D e o retorno
+        D$\to$C) viram simples mudanças da variável \texttt{estado}, resolvendo o
+        problema do laço de múltiplas entradas.
+\end{itemize}
+\textbf{Alternativa mais enxuta:} \emph{duplicação de nó} — criar uma cópia
+\texttt{D'} para o caminho vindo de B elimina a aresta que cruzava o laço
+C--D, deixando o restante exprimível como \texttt{while} aninhado, também sem
+GOTO.
+\end{resposta}
+
+%==========================================================================
+\section{Parte IV — Exercise 11 (Stuttgart): Teste}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 11.1 — Objeto de teste, driver e caso de teste}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Indique quais partes do programa pertencem ao objeto de teste, ao \emph{driver}
+de teste e aos casos de teste, explicando o propósito de cada um.
+\begin{lstlisting}
+int getASCIICode (char character) // retorna o codigo ASCII do caractere
+{ ... }
+void main () {                    // rotina principal
+   ...
+   scanf("%c", &characterEnteredByUser);   // le entrada do console
+   printf("The ASCII code of %c", characterEnteredByUser);
+   printf("is 0x%x", getASCIICode(characterEnteredByUser));
+   ...
+}
+\end{lstlisting}
+\end{questao}
+\begin{resposta}
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.0cm}p{11.4cm}@{}}
+\toprule
+Componente & Descrição \\
+\midrule
+Objeto de teste & A função \texttt{getASCIICode(char)} — a unidade cujo comportamento se quer verificar (\emph{unit under test}). \\
+Driver de teste & A rotina \texttt{main()} — cria o ambiente para executar o objeto de teste: obtém a entrada (\texttt{scanf}), chama a função e exibe o resultado (\texttt{printf}). \\
+Caso de teste & Cada par concreto \emph{entrada $\to$ saída esperada}, p.\ ex.\ entrada \texttt{'A'} com saída esperada \texttt{0x41}. O valor lido por \texttt{scanf} fornece a entrada do caso; a saída observada é comparada à esperada. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{Propósitos:} o \emph{objeto de teste} é o alvo; o \emph{driver} simula o
+restante do sistema para exercitá-lo de forma isolada; os \emph{casos de teste}
+definem entradas e os resultados esperados que decidem se o teste passa ou falha.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 11.2 — Medição de cobertura (binário $\to$ decimal)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Para o programa que converte um número binário (bit menos significativo
+primeiro) em decimal: (a) crie o grafo de fluxo de controle; (b) casos de teste
+para cobertura de instruções (C0); (c) para cobertura de ramos (C1); (d) que
+característica ainda não foi coberta? (e) por que a cobertura de caminhos (C2) é
+impossível?
+\end{questao}
+\begin{resposta}
+\textbf{Programa:}
+\begin{lstlisting}
+int convertDecimalNumber() {
+  int DecimalNumber = 0;  int PowerValue = 0;  char Character;   // n1
+  cin >> Character;                                              // n2
+  while ( ((Character=='0')||(Character=='1'))                   // n3
+          && (DecimalNumber < INT_MAX) ) {
+    if (Character == '1')                                        // n4
+       DecimalNumber = DecimalNumber + pow(2,PowerValue);        // n5
+    PowerValue++;                                                // n6
+    cin >> Character;                                            // n7
+  }
+  return DecimalNumber;                                          // n8
+}
+\end{lstlisting}
+
+\textbf{(a) Grafo de fluxo de controle:}
+\begin{center}
+\begin{tikzpicture}[node distance=7mm and 12mm]
+  \node[cfg] (s) {S};
+  \node[cfg, below=of s] (n1) {n1};
+  \node[cfg, below=of n1] (n2) {n2};
+  \node[decision, below=of n2, fill=orange!12] (n3) {n3};
+  \node[decision, below=of n3, fill=orange!12] (n4) {n4};
+  \node[cfg, left=16mm of n4] (n5) {n5};
+  \node[cfg, below=of n4] (n6) {n6};
+  \node[cfg, below=of n6] (n7) {n7};
+  \node[cfg, right=22mm of n3] (n8) {n8};
+  \node[cfg, below=of n8] (f) {F};
+
+  \draw[arr] (s)--(n1); \draw[arr] (n1)--(n2); \draw[arr] (n2)--(n3);
+  \draw[arr] (n3)-- node[left,font=\tiny]{V} (n4);
+  \draw[arr] (n3)-- node[above,font=\tiny]{F} (n8);
+  \draw[arr] (n4)-- node[above,font=\tiny]{V (='1')} (n5);
+  \draw[arr] (n4)-- node[left,font=\tiny]{F} (n6);
+  \draw[arr] (n5) |- (n6);
+  \draw[arr] (n6)--(n7);
+  \draw[arr] (n7.west) to[out=180,in=180,looseness=2.4] node[pos=0.1,left,font=\tiny]{laço} (n3.west);
+  \draw[arr] (n8)--(f);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Cobertura de instruções (C0):} basta um caso que execute todos os
+nós. Entrada \texttt{"1"} seguida de um caractere não-binário (terminador), p.\
+ex.\ \texttt{'1'} e depois \texttt{'x'}:
+percorre n1, n2, n3(V), n4(V), n5, n6, n7, n3(F), n8. \;
+\textbf{Conjunto:} \{ \texttt{"1x"} \}.
+
+\textbf{(c) Cobertura de ramos (C1):} cada decisão deve assumir V e F.
+Entrada \texttt{"1 0 x"} (bits \texttt{1}, \texttt{0}, terminador):
+\begin{itemize}[nosep]
+  \item n3: V (com \texttt{'1'} e \texttt{'0'}) e F (com \texttt{'x'});
+  \item n4: V (com \texttt{'1'}, executa n5) e F (com \texttt{'0'}, pula n5).
+\end{itemize}
+\textbf{Conjunto:} \{ \texttt{"10x"} \} (cobre todos os ramos; opcionalmente
+\texttt{"x"} para a saída imediata do laço).
+
+\textbf{(d) Característica ainda não coberta:} a segunda condição do \texttt{while},
+\texttt{DecimalNumber < INT\_MAX}, nunca se torna \emph{falsa} nos casos acima —
+ou seja, o \textbf{término por estouro (overflow)} e a avaliação da
+sub-condição de \texttt{INT\_MAX} permanecem não exercitados (exigiriam uma
+entrada enorme que aproximasse \texttt{DecimalNumber} de \texttt{INT\_MAX}).
+
+\textbf{(e) Por que C2 (cobertura de caminhos) é impossível:} o laço
+\texttt{while} pode repetir um número \emph{arbitrário} de vezes, conforme o
+comprimento da entrada. Logo, o número de caminhos distintos é \textbf{ilimitado}
+(infinito) e não pode ser totalmente coberto. \emph{Exemplo:} as entradas
+\texttt{"x"}, \texttt{"0x"}, \texttt{"00x"}, \texttt{"000x"}, \dots\ produzem
+0, 1, 2, 3, \dots\ iterações — cada uma é um caminho diferente, sem fim.
+\end{resposta}
+
+%==========================================================================
+\vspace{8pt}\hrule\vspace{6pt}
+\begin{center}
+  {\small \textit{Referências:} Ian Sommerville, \textbf{Software Engineering},
+  10ª ed., Pearson, 2016 (Cap.\ 7 — \textit{Design and Implementation};
+  Cap.\ 8 — \textit{Software Testing}). \;
+  IAS — Institute of Industrial Automation and Software Engineering,
+  Universität Stuttgart, \textbf{Exercises Software Engineering for Real-Time
+  Systems}: Exercise 10 (Implementation) e Exercise 11 (Test), WS 04/05.}
+\end{center}
+
+\end{document}
