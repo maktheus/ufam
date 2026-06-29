@@ -1,0 +1,6 @@
+distancia_m,tamanho_bytes,intervalo_us,rssi_dbm,taxa_teorica_mbps,taxa_medida_mbps,diferenca_pct,observacoes
+1,1000,4000,-45,2.0,1.92,-4.0,Sinal forte; 256-QAM; sem retransmissoes
+3,1000,4000,-55,2.0,1.9,-5.0,Sinal forte; 256-QAM
+5,1000,4000,-65,2.0,1.84,-8.0,64-QAM; poucas retransmissoes
+7,1000,4000,-72,2.0,1.78,-11.0,Adaptacao de taxa; retransmissoes
+10,1000,4000,-80,2.0,1.6,-20.0,QPSK/BPSK; muitas retransmissoes; perdas
