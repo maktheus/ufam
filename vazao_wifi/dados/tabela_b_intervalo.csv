@@ -1,0 +1,7 @@
+intervalo_us,tamanho_bytes,distancia_m,taxa_teorica_mbps,taxa_medida_mbps,diferenca_pct,observacoes
+16000,1000,1,0.5,0.485,-3.0,Baixa carga; sem perdas
+8000,1000,1,1.0,0.97,-3.0,Baixa carga; vazao acompanha a fonte
+4000,1000,1,2.0,1.92,-4.0,Regime estavel
+2000,1000,1,4.0,3.68,-8.0,Inicio de saturacao; jitter aumenta
+1000,1000,1,8.0,6.8,-15.0,Saturacao; perdas perceptiveis
+500,1000,1,16.0,9.12,-43.0,Forte saturacao; ESP32 nao gera todos os pacotes
