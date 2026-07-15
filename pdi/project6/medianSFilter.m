@@ -26,7 +26,7 @@ function g = medianSFilter(f, w)
 % Dependencies:
 %   imagePad4e  (Project #4)
 %
-% Author: Pedro Victor dos Santos Oliveira
+% Author: Matheus Serrao Uchoa
 % Disciplina: Processamento Digital de Imagens - UFAM (2026)
 
     % ----- argument validation -----------------------------------------------
