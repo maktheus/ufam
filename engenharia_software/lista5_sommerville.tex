@@ -1,0 +1,1307 @@
+%==========================================================================
+% Quinta Lista de Engenharia de Software RT
+% Capítulo 5 (Ian Sommerville) — Modelagem de Sistemas / UML
+% + Exercícios IAS, Universität Stuttgart (Exercises 2, 3 e 8)
+% Aluno: Matheus Serrão Uchoa — UFAM
+%==========================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric,shapes.multipart,arrows.meta,positioning,
+  calc,fit,backgrounds,decorations.pathreplacing,chains}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black}
+
+\geometry{top=2.2cm, bottom=2.2cm, left=2.5cm, right=2.5cm}
+\setlength{\parskip}{5pt}
+\setlength{\parindent}{0pt}
+
+\tcbuselibrary{skins,breakable}
+\newtcolorbox{questao}[1]{colback=gray!7,colframe=gray!45,
+  fonttitle=\bfseries,title=#1,breakable}
+\newtcolorbox{resposta}{colback=blue!4,colframe=blue!50!black,
+  fonttitle=\bfseries,title=Resposta,breakable}
+\newtcolorbox{nota}{colback=orange!6,colframe=orange!60!black,
+  fonttitle=\bfseries,title=Observação,breakable,before upper=\small}
+
+%--------------------------------------------------------------------------
+% Estilos TikZ reutilizáveis para diagramas UML
+%--------------------------------------------------------------------------
+\tikzset{
+  % Classe UML (nome / atributos / operações)
+  umlclass/.style={
+    draw=blue!60, fill=blue!4, thick, rectangle split,
+    rectangle split parts=3, rectangle split part align=left,
+    font=\scriptsize, text width=#1, inner sep=3pt},
+  umlclass/.default=2.8cm,
+  abclass/.style={umlclass=#1, draw=purple!60, fill=purple!5},
+  abclass/.default=2.8cm,
+  % Caixa de classe com 2 compartimentos (nome / atributos)
+  umlbox/.style={draw=blue!60, fill=blue!4, thick, rectangle split,
+    rectangle split parts=2, rectangle split part align=left,
+    font=\scriptsize, text width=#1, inner sep=3pt},
+  umlbox/.default=2.8cm,
+  % Atividade / fluxograma
+  action/.style={rectangle, rounded corners=7pt, draw=teal!75, fill=teal!8,
+    align=center, font=\scriptsize, inner sep=4pt, minimum height=0.75cm},
+  decision/.style={diamond, draw=orange!85!black, fill=orange!12, aspect=2.2,
+    align=center, font=\scriptsize, inner sep=1pt},
+  initial/.style={circle, fill=black, minimum size=5pt, inner sep=0pt},
+  final/.style={circle, draw, thick, minimum size=10pt, inner sep=0pt,
+    path picture={\fill (path picture bounding box.center) circle (2.6pt);}},
+  bar/.style={rectangle, fill=black!80, minimum width=2.4cm,
+    minimum height=2.4pt, inner sep=0pt},
+  % Estados
+  state/.style={rectangle, rounded corners=10pt, draw=blue!65, fill=blue!6,
+    align=center, font=\scriptsize, inner sep=4pt, minimum width=1.8cm,
+    minimum height=0.7cm},
+  % Caso de uso
+  ucase/.style={ellipse, draw=blue!65, fill=blue!6, align=center,
+    font=\scriptsize, minimum width=2.6cm, minimum height=0.95cm, inner sep=1pt},
+  % Setas
+  arr/.style={-{Stealth[length=5pt]}, thick},
+  darr/.style={-{Stealth[length=5pt]}, thick, dashed},
+  open/.style={-{Stealth[length=6pt,open]}},
+  inherit/.style={-{Triangle[open,length=8pt,width=9pt]}, thick},
+  % Ator (boneco palito) — usar como pic
+  every pic/.style={},
+}
+\tikzset{
+  actor/.pic={
+    \draw[thick] (0,0.52) circle (0.13);
+    \draw[thick] (0,0.39) -- (0,-0.02);
+    \draw[thick] (-0.22,0.24) -- (0.22,0.24);
+    \draw[thick] (0,-0.02) -- (-0.18,-0.34);
+    \draw[thick] (0,-0.02) -- (0.18,-0.34);
+  }
+}
+
+%==========================================================================
+\begin{document}
+\shorthandoff{"}% evita conflito do " ativo (babel brasil) dentro de nós TikZ
+
+\begin{center}
+  {\large UNIVERSIDADE FEDERAL DO AMAZONAS — UFAM}\\[2pt]
+  {\normalsize Programa de Pós-Graduação / Engenharia de Software para Sistemas de Tempo Real}\\[10pt]
+  {\Large\bfseries Quinta Lista de Engenharia de Software RT}\\[5pt]
+  {\large Capítulo 5 — Modelagem de Sistemas (UML)}\\[3pt]
+  {\normalsize Ian Sommerville — \textit{Software Engineering}, 10ª ed.\ \;$+$\;
+   Exercícios IAS — Universität Stuttgart (Exercises 2, 3 e 8)}\\[8pt]
+  {\normalsize\bfseries Aluno: Matheus Serrão Uchoa}
+\end{center}
+\hrule\vspace{4pt}
+{\small Esta lista é dividida em quatro partes: a Parte~I cobre as questões do
+Capítulo~5 de Sommerville (modelagem de sistemas); as Partes~II, III e IV
+correspondem, respectivamente, aos \textit{Exercises} 2, 3 e 8 do material do
+\textit{Institute of Industrial Automation and Software Engineering} (IAS) da
+Universität Stuttgart, sobre modelagem orientada a objetos em UML.}
+\vspace{4pt}\hrule
+
+\tableofcontents
+\vspace{6pt}\hrule
+
+%==========================================================================
+\section{Parte I — Capítulo 5 (Sommerville): Modelagem de Sistemas}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 1 — Importância de modelar o contexto}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Explique por que é importante modelar o contexto de um sistema que está sendo
+desenvolvido. Dê dois exemplos de possíveis erros que podem ocorrer, caso os
+engenheiros de software não entendam o contexto do sistema.
+\end{questao}
+\begin{resposta}
+Modelar o contexto significa estabelecer explicitamente a \textbf{fronteira do
+sistema} — o que pertence ao software a ser construído e o que pertence ao seu
+ambiente (outros sistemas, pessoas e organizações com os quais ele interage).
+Isso é importante porque:
+
+\begin{itemize}[nosep]
+  \item \textbf{Define o escopo:} deixa claro quais funcionalidades são
+        responsabilidade do novo sistema e quais já são fornecidas pelo
+        ambiente, evitando duplicação ou lacunas.
+  \item \textbf{Identifica interfaces:} revela todos os sistemas externos com os
+        quais haverá troca de dados, determinando interfaces que precisam ser
+        especificadas e testadas.
+  \item \textbf{Expõe dependências sociais e organizacionais:} a fronteira não é
+        apenas técnica; decisões sobre o que automatizar afetam processos de
+        trabalho e pessoas.
+\end{itemize}
+
+\textbf{Exemplos de erros decorrentes de não entender o contexto:}
+\begin{enumerate}[nosep]
+  \item \textbf{Funcionalidade omitida em uma interface externa:} ao desenvolver
+        o sistema de prontuário de uma clínica (MHC-PMS) sem perceber que ele
+        depende do \emph{sistema de registro de pacientes} do hospital, a equipe
+        deixa de implementar a sincronização de cadastros. Resultado: dados
+        inconsistentes (um paciente alterado em um sistema não reflete no outro).
+  \item \textbf{Fronteira posicionada erroneamente:} supor que a validação de
+        cobrança seria feita pelo sistema de faturamento já existente, quando na
+        verdade esse sistema não a faz, leva a transações aceitas indevidamente
+        — uma função crítica fica "no vácuo" entre os dois sistemas.
+\end{enumerate}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2 — Modelo de sistema existente; completude e correção}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Como você poderia usar um modelo de um sistema que já existe? Explique por que
+nem sempre é necessário que um modelo de sistema seja completo e correto. O
+mesmo seria verdadeiro caso você estivesse desenvolvendo um modelo de um novo
+sistema?
+\end{questao}
+\begin{resposta}
+\textbf{Usos de um modelo de um sistema existente:}
+\begin{itemize}[nosep]
+  \item \textbf{Compreensão e comunicação:} entender como o sistema atual
+        funciona antes de mantê-lo, estendê-lo ou substituí-lo.
+  \item \textbf{Documentação e reengenharia:} servir de base para discutir
+        melhorias, identificar componentes reutilizáveis e planejar a migração.
+  \item \textbf{Treinamento e suporte} de novos integrantes da equipe.
+\end{itemize}
+
+\textbf{Por que não precisa ser completo e correto:} um modelo é uma
+\emph{abstração} cujo propósito é facilitar a comunicação sobre aspectos
+\emph{relevantes para uma decisão específica}. Incluir todos os detalhes o
+tornaria tão complexo quanto o próprio sistema e ilegível. Para um sistema
+existente, modelamos seletivamente apenas as partes de interesse (por exemplo, o
+subsistema que será alterado), omitindo deliberadamente o resto sem prejuízo.
+
+\textbf{Para um novo sistema, o mesmo seria verdadeiro?} Parcialmente. O modelo
+continua sendo uma abstração e \emph{não precisa ser completo} em todos os
+estágios — em desenvolvimento incremental ele evolui. Porém, como agora o modelo
+também funciona como \emph{especificação que orienta a construção}, a tolerância
+à \textbf{incorreção é muito menor}: um erro no modelo do novo sistema tende a se
+propagar para a implementação como defeito. Em resumo: completude não é exigida
+em nenhum dos casos, mas a correção é mais crítica no modelo de um sistema novo
+do que no modelo de um sistema já existente (que apenas descreve algo já pronto).
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3 — Diagrama de atividades: planejamento de festas}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Modele, com um diagrama de atividades, o contexto do processo de um sistema que
+mostre as atividades envolvidas no planejamento de uma festa (reserva de local,
+organização dos convites etc.) e os elementos do sistema usados em cada etapa.
+\end{questao}
+\begin{resposta}
+O diagrama abaixo mostra o fluxo de atividades. Após a definição inicial, três
+fluxos correm em \textbf{paralelo} (barra de \emph{fork}): reserva de local,
+contratação de serviços e gestão de convidados. Ao lado de cada atividade
+indica-se, em itálico, o \textbf{elemento/subsistema} de apoio utilizado.
+
+\begin{center}
+\begin{tikzpicture}[node distance=7mm and 10mm]
+  \node[initial] (ini) {};
+  \node[action, below=of ini] (def) {Definir tipo de evento,\\ data e orçamento};
+  \node[bar, below=5mm of def] (fork) {};
+
+  % Coluna esquerda — local
+  \node[action, below left=9mm and 22mm of fork] (loc1) {Pesquisar locais};
+  \node[action, below=of loc1] (loc2) {Reservar local};
+  % Coluna central — serviços
+  \node[action, below=9mm of fork] (srv1) {Contratar buffet\\ e decoração};
+  \node[action, below=of srv1] (srv2) {Contratar\\ entretenimento};
+  % Coluna direita — convidados
+  \node[action, below right=9mm and 22mm of fork] (cv1) {Montar lista de\\ convidados};
+  \node[action, below=of cv1] (cv2) {Enviar convites};
+  \node[action, below=of cv2] (cv3) {Registrar\\ confirmações (RSVP)};
+
+  \node[bar, below=10mm of srv2] (join) {};
+  \node[action, below=6mm of join] (fin1) {Ajustar orçamento\\ e cronograma};
+  \node[action, below=of fin1] (fin2) {Realizar evento};
+  \node[final, below=6mm of fin2] (end) {};
+
+  \draw[arr] (ini) -- (def);
+  \draw[arr] (def) -- (fork);
+  \draw[arr] (fork.south) -| (loc1);
+  \draw[arr] (fork.south) -- (srv1);
+  \draw[arr] (fork.south) -| (cv1);
+  \draw[arr] (loc1) -- (loc2);
+  \draw[arr] (srv1) -- (srv2);
+  \draw[arr] (cv1) -- (cv2);
+  \draw[arr] (cv2) -- (cv3);
+  \draw[arr] (loc2) |- (join.north);
+  \draw[arr] (srv2) -- (join);
+  \draw[arr] (cv3) |- (join.north);
+  \draw[arr] (join) -- (fin1);
+  \draw[arr] (fin1) -- (fin2);
+  \draw[arr] (fin2) -- (end);
+
+\end{tikzpicture}
+\end{center}
+
+\textbf{Elementos do sistema utilizados em cada etapa:}
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Atividade} & \textbf{Elemento / subsistema de apoio} \\
+\midrule
+Pesquisar locais & Catálogo de locais \\
+Reservar local & Módulo de reservas / pagamento \\
+Contratar buffet, decoração e entretenimento & Cadastro de fornecedores \\
+Enviar convites & Módulo de e-mail / mensagens \\
+Registrar confirmações (RSVP) & Banco de dados de convidados \\
+Ajustar orçamento e cronograma & Planejador / agenda \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 4 — Casos de uso do MHC-PMS (médico)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Para o MHC-PMS, proponha um conjunto de casos de uso que ilustre as interações
+entre um médico (que atende pacientes e prescreve medicamentos e tratamentos) e
+o MHC-PMS.
+\end{questao}
+\begin{resposta}
+O médico (ator) interage com o sistema sempre após autenticação. As prescrições
+\textbf{incluem} (\texttt{\guillemotleft include\guillemotright}) a verificação
+de contraindicações/interações, e o registro de consulta pode ser
+\textbf{estendido} para emissão de atestado.
+
+\begin{center}
+\begin{tikzpicture}[node distance=5mm]
+  % Ator
+  \node (m) at (-0.4,-2.3) {};
+  \pic at (m) {actor};
+  \node[font=\scriptsize, below=2mm of m] {Médico};
+
+  % Fronteira do sistema
+  \node[draw, rounded corners, minimum width=8.4cm, minimum height=8.2cm,
+        label={[font=\scriptsize\bfseries]north:MHC-PMS}] (sys) at (4.6,-2.7) {};
+
+  \node[ucase] (login) at (4.6,0.6) {Autenticar no\\ sistema};
+  \node[ucase] (view)  at (2.6,-0.8) {Consultar\\ prontuário};
+  \node[ucase] (cons)  at (2.6,-2.3) {Registrar\\ consulta};
+  \node[ucase] (hist)  at (2.6,-3.8) {Ver histórico\\ do paciente};
+  \node[ucase] (med)   at (6.6,-0.8) {Prescrever\\ medicamento};
+  \node[ucase] (trat)  at (6.6,-2.3) {Prescrever\\ tratamento};
+  \node[ucase] (chk)   at (6.6,-3.9) {Verificar interações\\ / contraindicações};
+  \node[ucase] (atest) at (2.6,-5.4) {Emitir atestado\\ / relatório};
+
+  \draw (m) -- (login);
+  \draw (m) -- (view);
+  \draw (m) -- (cons);
+  \draw (m) -- (hist);
+  \draw (m) -- (med);
+  \draw (m) -- (trat);
+
+  \draw[darr] (trat) -- node[font=\tiny,right=1pt]{\guillemotleft include\guillemotright} (chk);
+  \draw[darr] (med.east) to[bend left=55] node[font=\tiny,right=1pt]{\guillemotleft include\guillemotright} (chk.east);
+  \draw[darr] (atest.west) to[bend right=55] node[font=\tiny,left=1pt]{\guillemotleft extend\guillemotright} (cons.west);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Descrição resumida dos casos de uso:}
+\begin{itemize}[nosep]
+  \item \textbf{Autenticar:} médico fornece credenciais; o sistema libera o
+        acesso conforme seu papel.
+  \item \textbf{Consultar prontuário:} localizar paciente e abrir seus dados.
+  \item \textbf{Registrar consulta:} anotar sintomas, diagnóstico e evolução.
+  \item \textbf{Prescrever medicamento / tratamento:} indicar fármacos ou
+        terapias; o sistema verifica automaticamente interações e alergias.
+  \item \textbf{Ver histórico:} visualizar consultas, prescrições e exames
+        anteriores.
+  \item \textbf{Emitir atestado/relatório:} gerar documentos a partir da consulta.
+\end{itemize}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 5 — Diagrama de sequência: matrícula em curso}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenvolva um diagrama de sequência mostrando as interações quando um estudante
+se registra para um curso. Os cursos podem ter inscrição limitada, então o
+processo deve incluir verificação de vagas. Suponha que o estudante consulte um
+catálogo eletrônico de cursos.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize]
+  % Posições x das linhas de vida
+  \def\xa{0}  \def\xb{3.0} \def\xc{6.0} \def\xd{9.0}
+  \def\ytop{0} \def\ybot{-8.6}
+  % Ator
+  \node (estA) at (\xa,\ytop) {};
+  \pic at ($(\xa,\ytop)+(0,0.38)$) {actor};
+  \node[font=\scriptsize] at (\xa,0.0) {Estudante};
+  % Objetos
+  \node[draw, fill=blue!6] (cat) at (\xb,\ytop) {:Catálogo};
+  \node[draw, fill=blue!6] (reg) at (\xc,\ytop) {:Sistema\,Matrícula};
+  \node[draw, fill=blue!6] (cur) at (\xd,\ytop) {:Curso};
+  % Linhas de vida
+  \foreach \x in {\xa,\xb,\xc,\xd} \draw[dashed,gray] (\x,-0.45) -- (\x,\ybot);
+
+  % Mensagens
+  \draw[arr] (\xa,-1.0) -- node[above]{consultarCursos()} (\xb,-1.0);
+  \draw[darr] (\xb,-1.5) -- node[above]{lista de cursos} (\xa,-1.5);
+  \draw[arr] (\xa,-2.2) -- node[above]{solicitarMatrícula(curso)} (\xc,-2.2);
+  \draw[arr] (\xc,-2.7) -- node[above]{verificarVagas()} (\xd,-2.7);
+  \draw[darr] (\xd,-3.2) -- node[above]{vagasDisponíveis} (\xc,-3.2);
+
+  % alt frame
+  \draw[gray!70] (1.4,-3.7) rectangle (9.7,-7.6);
+  \node[draw, fill=gray!15, font=\scriptsize\bfseries, anchor=north west] at (1.4,-3.7) {alt};
+  \node[font=\tiny, anchor=west] at (2.0,-4.05) {[há vaga]};
+  \draw[arr] (\xc,-4.4) -- node[above]{reservarVaga()} (\xd,-4.4);
+  \draw[darr] (\xd,-4.9) -- node[above]{confirmada} (\xc,-4.9);
+  \draw[darr] (\xc,-5.4) -- node[above]{matrícula OK} (\xa,-5.4);
+  \draw[gray!70,dashed] (1.4,-5.8) -- (9.7,-5.8);
+  \node[font=\tiny, anchor=west] at (2.0,-6.05) {[sem vaga]};
+  \draw[darr] (\xc,-6.6) -- node[above]{recusada: lista de espera} (\xa,-6.6);
+
+  \node[font=\tiny, anchor=west] at (\xa,-8.2)
+    {\itshape Cursos com inscrição limitada: a reserva só ocorre se houver vaga; caso contrário, oferta de lista de espera.};
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 6 — Classes: caixa postal e mensagem de e-mail}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Modele as classes de objetos que poderiam ser usadas na implementação de um
+sistema de e-mail para representar uma caixa postal e uma mensagem de correio
+eletrônico.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[node distance=12mm and 18mm]
+  \node[umlclass=3.4cm] (mb) {
+    \textbf{Caixa Postal (Mailbox)}
+    \nodepart{second}- nome : String\\ - cota : int\\ - mensagens : Mensagem[*]
+    \nodepart{third}+ adicionar(m)\\ + remover(m)\\ + buscar(criterio)\\ + listarNãoLidas()};
+  \node[umlclass=3.6cm, right=of mb] (msg) {
+    \textbf{Mensagem}
+    \nodepart{second}- remetente : Endereço\\ - destinatários : Endereço[*]\\ - assunto : String\\ - corpo : Texto\\ - data : DataHora\\ - lida : bool
+    \nodepart{third}+ responder()\\ + encaminhar()\\ + marcarLida()};
+  \node[umlclass=3.0cm, below=of msg] (att) {
+    \textbf{Anexo}
+    \nodepart{second}- nome : String\\ - tipo : MIME\\ - tamanho : int\\ - conteúdo : Blob
+    \nodepart{third}+ salvar()\\ + abrir()};
+  \node[umlclass=2.6cm, left=18mm of att] (addr) {
+    \textbf{Endereço}
+    \nodepart{second}- local : String\\ - domínio : String
+    \nodepart{third}+ toString()};
+
+  % Associações
+  \draw[thick] (mb) -- node[above,font=\tiny]{contém} node[below,font=\tiny]{1\hspace{2.4cm}*} (msg);
+  \draw[thick] (msg) -- node[right,font=\tiny]{1\;\;\;\;\;*}
+        node[left,font=\tiny]{anexa} (att);
+  \draw[thick] (msg) -- node[above,font=\tiny]{*\;\;\;\;1} (addr);
+\end{tikzpicture}
+\end{center}
+\textbf{Notas de projeto:} a \textit{Caixa Postal} agrega muitas
+\textit{Mensagens} (composição: ao apagar a caixa, as mensagens vão junto);
+cada \textit{Mensagem} pode ter vários \textit{Anexos} e referencia
+\textit{Endereços} (remetente/destinatários), modelados como classe própria para
+reúso e validação.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 7 — Diagrama de atividades: saque em caixa eletrônico}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe um diagrama de atividades que modele o processamento de dados envolvido
+quando um cliente retira dinheiro de um caixa eletrônico (ATM).
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[node distance=6mm and 16mm]
+  \node[initial] (ini) {};
+  \node[action, below=of ini] (a1) {Inserir cartão};
+  \node[action, below=of a1] (a2) {Ler e validar cartão};
+  \node[decision, below=of a2] (d1) {cartão\\ válido?};
+  \node[action, right=22mm of d1] (rej1) {Ejetar cartão};
+  \node[action, below=8mm of d1] (a3) {Solicitar e ler PIN};
+  \node[decision, below=of a3] (d2) {PIN\\ correto?};
+  \node[action, right=22mm of d2] (d2b) {Incrementar\\ tentativas};
+  \node[decision, right=14mm of d2b] (d2c) {3ª\\ falha?};
+  \node[action, below=of d2] (a4) {Selecionar "Saque"\\ e informar valor};
+  \node[decision, below=of a4] (d3) {saldo/limite\\ suficiente?};
+  \node[action, right=22mm of d3] (rej2) {Exibir "saldo\\ insuficiente"};
+  \node[action, below=8mm of d3] (a5) {Debitar conta e\\ dispensar cédulas};
+  \node[action, below=of a5] (a6) {Imprimir recibo};
+  \node[action, below=of a6] (a7) {Ejetar cartão};
+  \node[final, below=of a7] (end) {};
+  \node[action, right=18mm of rej1] (blk) {Reter cartão};
+
+  \draw[arr] (ini)--(a1); \draw[arr] (a1)--(a2); \draw[arr] (a2)--(d1);
+  \draw[arr] (d1)-- node[above,font=\tiny]{não} (rej1);
+  \draw[arr] (d1)-- node[left,font=\tiny]{sim} (a3);
+  \draw[arr] (a3)--(d2);
+  \draw[arr] (d2)-- node[left,font=\tiny]{sim} (a4);
+  \draw[arr] (d2)-- node[above,font=\tiny]{não} (d2b);
+  \draw[arr] (d2b)--(d2c);
+  \draw[arr] (d2c)|- node[near start,right,font=\tiny]{não} (a3);
+  \draw[arr] (d2c)-- node[above,font=\tiny]{sim} (blk);
+  \draw[arr] (a4)--(d3);
+  \draw[arr] (d3)-- node[above,font=\tiny]{não} (rej2);
+  \draw[arr] (d3)-- node[left,font=\tiny]{sim} (a5);
+  \draw[arr] (a5)--(a6); \draw[arr] (a6)--(a7); \draw[arr] (a7)--(end);
+  \draw[arr] (rej1) |- (end);
+  \draw[arr] (rej2) |- (a7);
+  \draw[arr] (blk) |- (end);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8 — Diagrama de sequência do ATM; por que ambos}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe um diagrama de sequência para o mesmo sistema (ATM). Explique por que
+você pode querer desenvolver tanto diagramas de atividades quanto de sequência
+ao modelar o comportamento de um sistema.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\begin{tikzpicture}[font=\scriptsize]
+  \def\xa{0} \def\xb{3.0} \def\xc{6.2} \def\xd{9.2}
+  \def\ybot{-8.0}
+  \node (cl) at (\xa,0) {};
+  \pic at (\xa,0.1) {actor};
+  \node[below=0.4cm of cl, font=\scriptsize] {Cliente};
+  \node[draw, fill=blue!6] (atm) at (\xb,0) {:ATM};
+  \node[draw, fill=blue!6] (bank) at (\xc,0) {:Banco};
+  \node[draw, fill=blue!6] (acc) at (\xd,0) {:Conta};
+  \foreach \x in {\xa,\xb,\xc,\xd} \draw[dashed,gray] (\x,-0.45) -- (\x,\ybot);
+
+  \draw[arr] (\xa,-1.0) -- node[above]{inserirCartão()} (\xb,-1.0);
+  \draw[arr] (\xb,-1.5) -- node[above]{validarCartão()} (\xc,-1.5);
+  \draw[darr] (\xc,-2.0) -- node[above]{ok} (\xb,-2.0);
+  \draw[arr] (\xa,-2.6) -- node[above]{digitarPIN(pin)} (\xb,-2.6);
+  \draw[arr] (\xb,-3.1) -- node[above]{verificarPIN(pin)} (\xc,-3.1);
+  \draw[darr] (\xc,-3.6) -- node[above]{autenticado} (\xb,-3.6);
+  \draw[arr] (\xa,-4.2) -- node[above]{sacar(valor)} (\xb,-4.2);
+  \draw[arr] (\xb,-4.7) -- node[above]{verificarSaldo(valor)} (\xd,-4.7);
+  \draw[darr] (\xd,-5.2) -- node[above]{saldo OK} (\xb,-5.2);
+  \draw[arr] (\xb,-5.8) -- node[above]{debitar(valor)} (\xd,-5.8);
+  \draw[darr] (\xd,-6.3) -- node[above]{confirmado} (\xb,-6.3);
+  \draw[arr] (\xb,-6.9) -- node[above]{dispensarCédulas() / recibo} (\xa,-6.9);
+  \draw[arr] (\xb,-7.5) -- node[above]{ejetarCartão()} (\xa,-7.5);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Por que desenvolver os dois tipos de diagrama?}
+\begin{itemize}[nosep]
+  \item O \textbf{diagrama de atividades} é orientado ao \emph{fluxo de
+        controle/processo}: enfatiza a ordem das ações, decisões, laços e
+        paralelismo, \emph{sem} se comprometer com quais objetos executam o quê.
+        É ideal para entender a lógica do negócio e validar regras com usuários.
+  \item O \textbf{diagrama de sequência} é orientado à \emph{interação entre
+        objetos} ao longo do tempo: mostra \emph{quem} envia \emph{qual}
+        mensagem para \emph{quem}, revelando responsabilidades e interfaces.
+        É ideal para o projeto detalhado e para distribuir comportamento entre
+        as classes.
+\end{itemize}
+São visões \textbf{complementares}: a de atividades responde "\emph{o que} acontece
+e em que ordem"; a de sequência responde "\emph{como} os objetos colaboram para
+realizar esse fluxo". Usar ambas reduz ambiguidades e ajuda a verificar se o
+projeto de objetos realmente implementa o processo desejado.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 9 — Diagramas de estado (3 sistemas)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe diagramas de estado do software de controle para: (a) uma máquina de
+lavar automática com programas diferentes; (b) um \textit{DVD player}; (c) um
+sistema de atendimento telefônico (secretária eletrônica) que grava mensagens e
+exibe o número de mensagens em um LED, permitindo escutar mensagens à distância
+por tons (DTMF).
+\end{questao}
+\begin{resposta}
+\textbf{(a) Máquina de lavar automática}
+
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 18mm]
+  \node[initial] (i) {};
+  \node[state, right=8mm of i] (ocio) {Ocioso};
+  \node[state, right=of ocio] (sel) {Programa\\ selecionado};
+  \node[state, below=of sel] (lock) {Travando\\ porta};
+  \node[state, left=of lock] (fill) {Enchendo\\ água};
+  \node[state, below=of fill] (wash) {Lavando\\ (agita+aquece)};
+  \node[state, right=of wash] (rinse) {Enxaguando};
+  \node[state, right=of rinse] (spin) {Centrifugando};
+  \node[state, below=of rinse] (drain) {Destravando\\ / fim};
+  \node[final, left=of drain] (f) {};
+
+  \draw[arr] (i)--(ocio);
+  \draw[arr] (ocio)-- node[above,font=\tiny]{seleciona} node[below,font=\tiny]{programa} (sel);
+  \draw[arr] (sel)-- node[right,font=\tiny]{liga} (lock);
+  \draw[arr] (lock)-- node[above,font=\tiny]{travada} (fill);
+  \draw[arr] (fill)-- node[left,font=\tiny]{nível OK} (wash);
+  \draw[arr] (wash)-- node[above,font=\tiny]{tempo do prog.} (rinse);
+  \draw[arr] (rinse)-- (spin);
+  \draw[arr] (spin)-- (drain);
+  \draw[arr] (drain)-- (f);
+  \draw[arr] (drain.south) -- ++(0,-0.5)
+        -| node[pos=0.25,below,font=\tiny]{nova carga} (ocio.south);
+\end{tikzpicture}
+\end{center}
+{\small\itshape O programa selecionado (algodão, sintéticos, delicados…) parametriza
+temperatura, duração e rotação; o comportamento de estados é o mesmo, mudam os
+valores (entry actions de cada estado configuram os parâmetros do programa).}
+
+\vspace{4pt}
+\textbf{(b) DVD player}
+
+\begin{center}
+\begin{tikzpicture}[node distance=9mm and 16mm]
+  \node[initial] (i) {};
+  \node[state, right=10mm of i] (vazio) {Sem disco\\ (standby)};
+  \node[state, right=of vazio] (parado) {Parado};
+  \node[state, below=of parado] (play) {Reproduzindo};
+  \node[state, left=of play] (pause) {Pausado};
+  \node[state, right=of play] (ff) {Avanço/\\ Retrocesso};
+  \node[state, above=of ff] (menu) {Menu};
+
+  \draw[arr] (i)--(vazio);
+  \draw[arr] (vazio) to[bend left=14] node[above,font=\tiny]{inserir disco} (parado);
+  \draw[arr] (parado) to[bend left=14] node[below,font=\tiny]{ejetar} (vazio);
+  \draw[arr] (parado)-- node[right,font=\tiny]{play} (play);
+  \draw[arr] (play)-- node[left,font=\tiny]{stop} (parado);
+  \draw[arr] (play)-- node[above,font=\tiny]{pause} (pause);
+  \draw[arr] (pause)-- node[below,font=\tiny]{play} (play);
+  \draw[arr] (play)-- node[above,font=\tiny]{$\gg/\ll$} (ff);
+  \draw[arr] (ff)-- node[below,font=\tiny]{play} (play);
+  \draw[arr] (parado)-- node[sloped,above,font=\tiny]{menu} (menu);
+  \draw[arr] (menu)-- node[sloped,below,font=\tiny]{selecionar} (play);
+\end{tikzpicture}
+\end{center}
+
+\vspace{4pt}
+\textbf{(c) Secretária eletrônica (atendimento telefônico)}
+
+\begin{center}
+\begin{tikzpicture}
+  \node[initial] (i) at (2.6,1.3) {};
+  \node[state] (idle)    at (2.6,0)    {Ocioso\\ (LED: nº msgs)};
+  \node[state] (ring)    at (7.0,0)    {Tocando};
+  \node[state] (greet)   at (7.0,-2.0) {Tocando\\ saudação};
+  \node[state] (rec)     at (5.0,-3.7) {Gravando\\ mensagem};
+  \node[state] (count)   at (2.6,-2.0) {Atualiza\\ contador e LED};
+  \node[state] (auth)    at (-1.6,-2.0){Modo remoto\\ (verifica tons)};
+  \node[state] (playmsg) at (-1.6,-3.7){Reproduz\\ mensagens};
+
+  \draw[arr] (i)--(idle);
+  \draw[arr] (idle)-- node[above,font=\tiny]{chamada recebida} (ring);
+  \draw[arr] (ring)-- node[right,font=\tiny]{após N toques} (greet);
+  \draw[arr] (greet)-- node[sloped,above,font=\tiny]{fim saudação} (rec);
+  \draw[arr] (rec)-- node[sloped,below,font=\tiny]{desliga} (count);
+  \draw[arr] (count)-- (idle);
+  \draw[arr] (ring) to[bend left=24] node[sloped,below,font=\tiny]{atendida / desligou} (idle);
+  % acesso remoto (DTMF)
+  \draw[arr] (idle.west) to[out=180,in=78,looseness=1.1]
+        node[pos=0.22,above,font=\tiny]{código DTMF} (auth.north);
+  \draw[arr] (auth.east) to[out=8,in=-118,looseness=1.0]
+        node[pos=0.3,below,font=\tiny]{inválido} (idle.south east);
+  \draw[arr] (auth)-- node[left,font=\tiny]{código OK} (playmsg);
+  \draw[arr] (playmsg) to[out=-12,in=-150] node[below,font=\tiny]{fim} (count.south);
+\end{tikzpicture}
+\end{center}
+{\small\itshape O cliente disca de qualquer lugar, digita a sequência de tons (DTMF)
+e, autenticado, ouve as mensagens; o LED sempre reflete o número de mensagens
+aceitas.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 10 — Fatores para adotar Engenharia Dirigida a Modelos}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Como gerente, que fatores você deve considerar ao decidir se introduz ou não a
+engenharia dirigida a modelos (MDE) no desenvolvimento de um novo sistema?
+\end{questao}
+\begin{resposta}
+\begin{itemize}[nosep]
+  \item \textbf{Maturidade de ferramentas e padrões:} existem ferramentas
+        MDA/MDE estáveis para o domínio? Geradores de código confiáveis? A
+        adoção exige ferramentas que ainda variam muito em qualidade.
+  \item \textbf{Adequação do domínio:} MDE rende mais em domínios estáveis e bem
+        compreendidos, com boas linguagens específicas de domínio (DSL) e
+        abstrações independentes de plataforma (PIM).
+  \item \textbf{Longevidade do sistema:} sistemas de vida longa, que sobrevivem a
+        várias mudanças de plataforma, se beneficiam — o modelo (PIM) é portável;
+        gera-se novo PSM quando a tecnologia muda.
+  \item \textbf{Necessidade de portabilidade} entre múltiplas plataformas-alvo.
+  \item \textbf{Competências e custo de treinamento:} curva de aprendizado da
+        equipe em metamodelagem, transformações e DSLs.
+  \item \textbf{Desempenho:} código gerado automaticamente pode ser menos
+        otimizado que código artesanal — crítico em sistemas de tempo real.
+  \item \textbf{Integração com o processo existente:} controle de versão de
+        modelos, depuração no nível de modelo, integração com a cadeia de
+        ferramentas e cultura da equipe.
+  \item \textbf{Retorno do investimento (ROI):} alto custo inicial \emph{vs.}
+        ganhos de produtividade e manutenção no longo prazo. Sommerville observa
+        que a adoção da MDE ainda é limitada justamente por esse trade-off.
+\end{itemize}
+\end{resposta}
+
+%==========================================================================
+\section{Parte II — Exercise 2 (Stuttgart): Introdução à UML}
+%==========================================================================
+
+\begin{nota}
+\textbf{Resumo dos conceitos (slides do Exercise 2).} \textit{Objeto}: entidade
+concreta com estado, comportamento e identidade. \textit{Classe}: abstração que
+descreve estrutura (atributos), comportamento (operações) e relacionamentos
+(associações) de um conjunto de objetos. \textit{Associação}: ligação entre
+objetos, com multiplicidade em cada extremidade. \textit{Agregação}: relação
+todo–parte ("é parte de"). \textit{Herança/generalização}: relação entre classe
+geral (base) e especializada (derivada), que herda e estende a base.
+\end{nota}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2.1 — Associações entre objetos (polígono)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+(a) Derive um diagrama de classes a partir do diagrama de objetos do polígono
+(sem multiplicidades ainda); cada ponto tem coordenadas X e Y — como expressar
+que os pontos estão em ordem? (b) Qual o número mínimo de pontos para um
+polígono? Acrescente multiplicidades para os casos: (1) cada ponto pertence a
+exatamente um polígono; (2) um ponto pode ser compartilhado por vários polígonos.
+(c) Para dois triângulos que compartilham um lado, desenhe um diagrama de objetos
+para cada caso de (b).
+\end{questao}
+\begin{resposta}
+\textbf{(a) Diagrama de classes.} Identificam-se duas classes, \textit{Polygon}
+e \textit{Point}. A \textbf{ordem} dos pontos é expressa pela restrição
+\texttt{\{ordered\}} na extremidade da associação (ou, equivalentemente, por uma
+associação qualificada/indexada por um número de sequência).
+
+\begin{center}
+\begin{tikzpicture}
+  \node[umlclass=2.6cm] (poly) {\textbf{Polygon}\nodepart{second}\nodepart{third}+ área()\\+ perímetro()};
+  \node[umlclass=2.6cm, right=3.4cm of poly] (pt) {\textbf{Point}\nodepart{second}- x : int\\- y : int\nodepart{third}};
+  \draw[thick] (poly) -- node[above,font=\tiny]{1} node[below,font=\tiny]{$3..*$ \{ordered\}} (pt);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Mínimo de pontos:} um polígono precisa de \textbf{pelo menos 3}
+pontos (vértices). Multiplicidades para cada caso:
+
+\begin{center}
+\begin{tikzpicture}
+  % Caso 1 — composição
+  \node[umlclass=2.2cm] (p1) {\textbf{Polygon}\nodepart{second}\nodepart{third}};
+  \node[umlclass=2.2cm, right=3.2cm of p1] (pt1) {\textbf{Point}\nodepart{second}- x:int\\- y:int\nodepart{third}};
+  \draw[thick] (p1) -- node[above,font=\tiny]{1} node[below,font=\tiny]{$3..*$ \{ordered\}} (pt1);
+  \node[font=\tiny, below=1mm of p1] {Caso 1: ponto pertence a 1 polígono};
+  % diamante de composição
+  \filldraw[fill=black] ($(p1.east)+(0.12,0.18)$) -- ($(p1.east)+(0.32,0.30)$) -- ($(p1.east)+(0.52,0.18)$) -- ($(p1.east)+(0.32,0.06)$) -- cycle;
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}
+  % Caso 2 — agregação compartilhada
+  \node[umlclass=2.2cm] (p2) {\textbf{Polygon}\nodepart{second}\nodepart{third}};
+  \node[umlclass=2.2cm, right=3.2cm of p2] (pt2) {\textbf{Point}\nodepart{second}- x:int\\- y:int\nodepart{third}};
+  \draw[thick] (p2) -- node[above,font=\tiny]{$1..*$} node[below,font=\tiny]{$3..*$ \{ordered\}} (pt2);
+  \node[font=\tiny, below=1mm of p2] {Caso 2: ponto compartilhado por vários polígonos};
+  % diamante de agregação (vazio)
+  \draw ($(p2.east)+(0.12,0.18)$) -- ($(p2.east)+(0.32,0.30)$) -- ($(p2.east)+(0.52,0.18)$) -- ($(p2.east)+(0.32,0.06)$) -- cycle;
+\end{tikzpicture}
+\end{center}
+
+\textbf{(c) Diagramas de objetos — dois triângulos com um lado comum}
+(lado compartilhado entre os vértices $(0,0)$ e $(0,1)$):
+
+\begin{center}
+\begin{tikzpicture}[obj/.style={draw, fill=blue!5, font=\tiny, align=center, inner sep=2pt}, node distance=5mm and 9mm]
+  % Caso 1: 6 objetos Point (vértices do lado comum duplicados)
+  \node[obj] (t1) {\underline{t1 : Polygon}};
+  \node[obj, below left=8mm and 6mm of t1] (a) {\underline{:Point}\\x=-1, y=0};
+  \node[obj, below=of t1] (b) {\underline{:Point}\\x=0, y=1};
+  \node[obj, below right=8mm and 6mm of t1] (c) {\underline{:Point}\\x=0, y=0};
+  \node[obj, right=26mm of t1] (t2) {\underline{t2 : Polygon}};
+  \node[obj, below left=8mm and 6mm of t2] (d) {\underline{:Point}\\x=0, y=1};
+  \node[obj, below=of t2] (e) {\underline{:Point}\\x=0, y=0};
+  \node[obj, below right=8mm and 6mm of t2] (f) {\underline{:Point}\\x=1, y=0};
+  \draw (t1)--(a); \draw (t1)--(b); \draw (t1)--(c);
+  \draw (t2)--(d); \draw (t2)--(e); \draw (t2)--(f);
+  \node[font=\tiny, below=12mm of b] {\textbf{Caso 1:} 6 objetos Point (os 2 vértices do lado comum são duplicados)};
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[obj/.style={draw, fill=green!6, font=\tiny, align=center, inner sep=2pt}, node distance=6mm and 12mm]
+  % Caso 2: 4 objetos Point (2 compartilhados)
+  \node[obj] (t1) {\underline{t1 : Polygon}};
+  \node[obj, right=34mm of t1] (t2) {\underline{t2 : Polygon}};
+  \node[obj, below=10mm of t1] (a) {\underline{:Point}\\x=-1, y=0};
+  \node[obj, below=10mm of t2] (f) {\underline{:Point}\\x=1, y=0};
+  \node[obj, below=24mm of $(t1)!0.5!(t2)$, xshift=-12mm] (top) {\underline{:Point}\\x=0, y=1};
+  \node[obj, right=10mm of top] (bot) {\underline{:Point}\\x=0, y=0};
+  \draw (t1)--(a); \draw (t1)--(top); \draw (t1)--(bot);
+  \draw (t2)--(f); \draw (t2)--(top); \draw (t2)--(bot);
+  \node[font=\tiny, below=4mm of top, xshift=6mm] {\textbf{Caso 2:} 4 objetos Point (os 2 vértices do lado comum são compartilhados)};
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2.2 — Associações entre classes (gestão de carros)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+No diagrama original, várias classes contêm atributos que na verdade são
+ponteiros para outros objetos. Redesenhe o diagrama de classes substituindo os
+ponteiros por associações, introduzindo generalizações onde útil e determinando
+as multiplicidades.
+\end{questao}
+\begin{resposta}
+Os atributos-ponteiro (\texttt{Employer\,ID}, \texttt{Owner\,ID},
+\texttt{Type of owner}, \texttt{Bank\,ID} etc.) são eliminados. Como um carro
+pode ser de uma \textit{Person}, \textit{Company} ou \textit{Bank}, introduz-se
+uma superclasse abstrata \textit{Owner} (proprietário), generalizando as três.
+
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 14mm]
+  \node[abclass=2.6cm] (owner) {\textit{\textbf{Owner}}\nodepart{second}- id\nodepart{third}};
+  \node[umlclass=2.8cm, below left=14mm and 6mm of owner] (person) {\textbf{Person}\nodepart{second}- name\\- age\\- address\nodepart{third}};
+  \node[umlclass=2.2cm, below=16mm of owner] (company) {\textbf{Company}\nodepart{second}- name\nodepart{third}};
+  \node[umlclass=2.2cm, below right=14mm and 6mm of owner] (bank) {\textbf{Bank}\nodepart{second}- name\nodepart{third}};
+  \node[umlclass=2.6cm, right=22mm of owner] (car) {\textbf{Car}\nodepart{second}- model\\- year\nodepart{third}};
+  \node[umlclass=2.8cm, below=34mm of car] (credit) {\textbf{CarCredit}\nodepart{second}- accountNo\\- interestRate\\- balance\nodepart{third}};
+
+  % herança
+  \draw[inherit] (person.north) -- (owner.south west);
+  \draw[inherit] (company.north) -- (owner.south);
+  \draw[inherit] (bank.north) -- (owner.south east);
+  % associações
+  \draw[thick] (owner) -- node[above,font=\tiny]{owns} node[below,font=\tiny]{1\hspace{1.6cm}*} (car);
+  \draw[thick] (person) to[bend right=30] node[left,font=\tiny]{employee\quad}
+        node[right,font=\tiny]{$*$\;\;\;\;\;$0..3$\ employer} (company);
+  \draw[thick] (car) -- node[right,font=\tiny]{1\;\;\;\;$0..1$} (credit);
+  \draw[thick] (credit) -- node[sloped,above,font=\tiny]{granted by} node[sloped,below,font=\tiny]{$*$\quad\quad1} (bank);
+\end{tikzpicture}
+\end{center}
+
+\textbf{Multiplicidades:} uma \textit{Person} pode ter de 0 a 3 \textit{Company}
+como empregador; um \textit{Car} tem exatamente 1 \textit{Owner} (que pode possuir
+vários carros); a compra de um \textit{Car} pode ter 0 ou 1 \textit{CarCredit};
+cada \textit{CarCredit} é concedido por exatamente 1 \textit{Bank}.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2.3 — Diagrama de classes de um editor gráfico}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Desenhe um diagrama de classes para um editor gráfico que suporte agrupamento.
+Um documento tem várias páginas; cada página contém objetos gráficos: texto,
+objetos geométricos e grupos. Um grupo é um conjunto de objetos gráficos (pode
+conter outros grupos), com no mínimo dois objetos; um objeto gráfico é membro
+direto de no máximo um grupo.
+\end{questao}
+\begin{resposta}
+A solução é o padrão \textbf{Composite}: \textit{GraphicObject} é a superclasse
+abstrata; \textit{Group} é simultaneamente um \textit{GraphicObject} e um
+contêiner de \textit{GraphicObject}s.
+
+\begin{center}
+\begin{tikzpicture}[node distance=11mm and 16mm]
+  \node[umlclass=2.4cm] (doc) {\textbf{Document}\nodepart{second}\nodepart{third}};
+  \node[umlclass=2.4cm, right=of doc] (page) {\textbf{Page}\nodepart{second}\nodepart{third}};
+  \node[abclass=3.0cm, right=20mm of page] (go) {\textit{\textbf{GraphicObject}}\nodepart{second}- pos\\- bounds\nodepart{third}+ draw()\\+ move()};
+  \node[umlclass=2.0cm, below left=14mm and 2mm of go] (text) {\textbf{Text}\nodepart{second}- string\nodepart{third}};
+  \node[abclass=2.4cm, below=16mm of go] (geo) {\textit{\textbf{Geometric\\Object}}\nodepart{second}\nodepart{third}};
+  \node[umlclass=1.9cm, below right=14mm and 2mm of go] (group) {\textbf{Group}\nodepart{second}\nodepart{third}};
+  % subclasses geométricas
+  \node[umlbox=1.5cm, below left=12mm and 10mm of geo] (circ) {\textbf{Circle}\nodepart{second}};
+  \node[umlbox=1.5cm, right=4mm of circ] (ell) {\textbf{Ellipse}\nodepart{second}};
+  \node[umlbox=1.6cm, right=4mm of ell] (rect) {\textbf{Rectangle}\nodepart{second}};
+  \node[umlbox=1.4cm, right=4mm of rect] (line) {\textbf{Line}\nodepart{second}};
+  \node[umlbox=1.5cm, below=8mm of rect] (sq) {\textbf{Square}\nodepart{second}};
+
+  \draw[thick] (doc) -- node[above,font=\tiny]{1\;\;\;\;$1..*$} (page);
+  \draw[thick] (page) -- node[above,font=\tiny]{1\;\;\;\;$*$} (go);
+  \draw[inherit] (text.north) -- (go.south west);
+  \draw[inherit] (geo.north) -- (go.south);
+  \draw[inherit] (group.north) -- (go.south east);
+  \draw[inherit] (circ.north) -- (geo.south);
+  \draw[inherit] (ell.north) -- (geo.south);
+  \draw[inherit] (rect.north) -- (geo.south);
+  \draw[inherit] (line.north) -- (geo.south);
+  \draw[inherit] (sq.north) -- (rect.south);
+  % composição do grupo (Composite): Group é o "todo"; GraphicObject é a "parte"
+  \draw[thick] (go.east) to[out=-35,in=35,looseness=1.5]
+        node[pos=0.12,left=1pt,font=\tiny]{$2..*$ membros}
+        node[pos=0.9,left=1pt,font=\tiny]{$0..1$ grupo} (group.east);
+  \filldraw[fill=black] (group.east) -- ++(0.18,0.11) -- ++(0.18,-0.11) -- ++(-0.18,-0.11) -- cycle;
+\end{tikzpicture}
+\end{center}
+
+\textbf{Multiplicidades-chave:} \textit{Group} agrega \textbf{2..*}
+\textit{GraphicObject}s; cada \textit{GraphicObject} é membro direto de
+\textbf{0..1} grupo. Como \textit{Group} herda de \textit{GraphicObject}, grupos
+podem conter grupos (recursão), satisfazendo o requisito de aninhamento.
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 2.4 — Diagrama de classes de um software bancário}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+(a) Identifique classes, atributos, operações, associações e estruturas de
+herança na descrição do sistema bancário e desenhe um diagrama de classes.
+(b) Crie um diagrama de objetos com dados de exemplo.
+\end{questao}
+\begin{resposta}
+\textbf{(a) Diagrama de classes.} Um \textit{Customer} surge ao abrir a primeira
+\textit{Account} e deixa de existir ao encerrar a última. Distinguem-se
+\textit{CurrentAccount} (com limite de cheque especial e juros de débito) e
+\textit{SavingsAccount} (com tipo de poupança). Cada \textit{Transaction}
+(depósito/saque/juros) registra data e valor.
+
+\begin{center}
+\begin{tikzpicture}[node distance=12mm and 18mm]
+  \node[umlclass=3.0cm] (cust) {\textbf{Customer}\nodepart{second}- name\\- address\\- firstAccountDate\nodepart{third}+ openAccount()\\+ closeAccount()};
+  \node[abclass=3.2cm, right=22mm of cust] (acc) {\textit{\textbf{Account}}\nodepart{second}- accountNo \{unique\}\\- creditInterestRate\\- balance\nodepart{third}+ deposit(v)\\+ withdraw(v)\\+ computeInterest()};
+  \node[umlclass=3.0cm, below=16mm of acc] (tx) {\textbf{Transaction}\nodepart{second}- date\\- amount\\- type\nodepart{third}};
+  \node[umlclass=3.0cm, below left=16mm and 0mm of acc] (cur) {\textbf{CurrentAccount}\nodepart{second}- overdraftLimit\\- debitInterestRate\nodepart{third}};
+  \node[umlclass=2.8cm, below right=16mm and 0mm of acc] (sav) {\textbf{SavingsAccount}\nodepart{second}- kindOfSaving\nodepart{third}};
+
+  \draw[thick] (cust) -- node[above,font=\tiny]{owns} node[below,font=\tiny]{1\hspace{1.6cm}$1..*$} (acc);
+  \draw[thick] (acc) -- node[right,font=\tiny]{1\;\;\;\;$*$} (tx);
+  \draw[inherit] (cur.north) -- (acc.south west);
+  \draw[inherit] (sav.north) -- (acc.south east);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Diagrama de objetos (dados de exemplo):}
+
+\begin{center}
+\begin{tikzpicture}[obj/.style={draw, fill=blue!5, rectangle split, rectangle split parts=2, rectangle split part align=left, font=\tiny, inner sep=3pt, text width=3.0cm}, node distance=8mm and 16mm]
+  \node[obj] (c) {\underline{ana : Customer}\nodepart{second}name = "Ana Lima"\\address = "Manaus"\\firstAccountDate = 02/2024};
+  \node[obj, right=of c] (a1) {\underline{cc1 : CurrentAccount}\nodepart{second}accountNo = 1001\\balance = 1.500,00\\overdraftLimit = 500,00};
+  \node[obj, below=of a1] (a2) {\underline{sa1 : SavingsAccount}\nodepart{second}accountNo = 2002\\balance = 8.000,00\\kindOfSaving = "fixed-term"};
+  \node[obj, right=of a1] (t1) {\underline{t1 : Transaction}\nodepart{second}date = 10/06/2026\\amount = 200,00\\type = deposit};
+  \draw (c)--(a1); \draw (c)|-(a2); \draw (a1)--(t1);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%==========================================================================
+\section{Parte III — Exercise 3 (Stuttgart): Introdução à UML (2)}
+%==========================================================================
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3.1 — Identificação de classes (biblioteca universitária)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+(a) Os requisitos estão completos? Que outras perguntas deveriam ser feitas?
+(b) Identifique as classes candidatas pelos substantivos. (c) Descarte os
+substantivos pouco adequados a classe, justificando. (d) Outras sugestões de
+solução?
+\end{questao}
+\begin{resposta}
+\textbf{(a) Requisitos completos? Não.} Perguntas adicionais:
+\begin{itemize}[nosep]
+  \item Como funciona a fila de \emph{reservas} (FIFO)? Há notificação quando o
+        item fica disponível?
+  \item Quais dados do \emph{membro} são armazenados? Há taxa de associação?
+  \item Há \emph{multas} por atraso? Qual o valor e a política?
+  \item Funcionários da biblioteca também podem ser membros? Que
+        \emph{permissões} cada papel possui?
+  \item Como se tratam itens \emph{perdidos ou danificados}?
+  \item Por qual meio os \emph{lembretes} são enviados (e-mail, correio)?
+  \item Quais \emph{critérios de busca} (título, autor, tópico, ISBN)?
+  \item Como é rastreado o estado de \emph{cada cópia} (disponível, emprestada)?
+  \item Quantas vezes um empréstimo pode ser \emph{prorrogado}?
+\end{itemize}
+
+\textbf{(b) Classes candidatas (substantivos):} Library, Book, Magazine, Copy,
+Member, Employee, User, Borrowing/Loan, Reminder, Reservation, Topic, Author,
+Catalogue/Card, System, Year, Unit, Person, Time span.
+
+\textbf{(c) Descarte (com justificativa):}
+\begin{itemize}[nosep]
+  \item \textbf{System, Library} — representam o próprio sistema/contexto, não
+        objetos dentro dele.
+  \item \textbf{Year, Time span} — valores/atributos (ano de edição, prazo).
+  \item \textbf{Unit} — sinônimo genérico de \emph{Copy}/item; redundante.
+  \item \textbf{Catalogue / Card} — artefato da interface ou do sistema legado;
+        corresponde à \emph{função de busca}, não a uma classe de domínio.
+  \item \textbf{Topic, Author} — atributos de \emph{Book} (ou pequenas classes de
+        valor, se houver busca estruturada por autor).
+  \item \textbf{User} — termo guarda-chuva; melhor modelar como superclasse de
+        \emph{Member} e \emph{Employee}.
+\end{itemize}
+\textbf{Classes mantidas:} Publication (super) $\to$ Book, Magazine; Copy;
+Person/User (super) $\to$ Member, Employee; Loan; Reservation; Reminder.
+
+\textbf{(d) Sugestão de solução (esboço):}
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 16mm]
+  \node[abclass=2.4cm] (pub) {\textit{\textbf{Publication}}\nodepart{second}- title\\- topic\nodepart{third}};
+  \node[umlbox=1.8cm, below left=12mm and 2mm of pub] (book) {\textbf{Book}\nodepart{second}- author};
+  \node[umlbox=1.8cm, below right=12mm and 2mm of pub] (mag) {\textbf{Magazine}\nodepart{second}- issue};
+  \node[umlclass=2.0cm, right=24mm of pub] (copy) {\textbf{Copy}\nodepart{second}- id\\- status\nodepart{third}};
+  \node[abclass=2.2cm, below=26mm of pub] (person) {\textit{\textbf{User}}\nodepart{second}- name\\- id\nodepart{third}};
+  \node[umlbox=1.8cm, below left=10mm and 0mm of person] (mem) {\textbf{Member}\nodepart{second}};
+  \node[umlbox=1.8cm, below right=10mm and 0mm of person] (emp) {\textbf{Employee}\nodepart{second}};
+  \node[umlclass=2.2cm, right=22mm of copy] (loan) {\textbf{Loan}\nodepart{second}- date\\- dueDate\nodepart{third}};
+
+  \draw[inherit] (book.north) -- (pub.south);
+  \draw[inherit] (mag.north) -- (pub.south);
+  \draw[inherit] (mem.north) -- (person.south);
+  \draw[inherit] (emp.north) -- (person.south);
+  \draw[thick] (pub) -- node[above,font=\tiny]{1\;\;\;\;$*$} (copy);
+  \draw[thick] (copy) -- node[above,font=\tiny]{1\;\;\;\;$*$} (loan);
+  \draw[thick] (person.east) -| node[near start,above,font=\tiny]{borrows \; 1 \quad $*$} (loan.south);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3.2 — Identificar classes e atributos (funcionários)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Identifique classes e atributos para a administração de \emph{hiwis} (estudantes
+contratados) e funcionários normais de uma universidade e represente-os em um
+diagrama. Há classes elementares?
+\end{questao}
+\begin{resposta}
+\textit{Person} é a superclasse abstrata. \textit{Name} e \textit{Address} são
+\textbf{classes elementares} (de valor), agregadas por composição. O atributo
+\texttt{hourlyRate} é \textbf{de classe} (sublinhado), pois é o mesmo para todo
+hiwi.
+
+\begin{center}
+\begin{tikzpicture}[node distance=12mm and 16mm]
+  \node[abclass=3.0cm] (person) {\textit{\textbf{Person}}\nodepart{second}\nodepart{third}};
+  \node[umlbox=2.4cm, left=18mm of person] (name) {\textbf{Name}\nodepart{second}- firstName\\- lastName};
+  \node[umlbox=2.4cm, right=18mm of person] (addr) {\textbf{Address}\nodepart{second}- zipCode\\- city\\- street};
+  \node[umlclass=3.6cm, below left=14mm and -6mm of person] (hiwi) {\textbf{Hiwi}\nodepart{second}- matriculationNo\\- contractStart\\- contractEnd\\- weeklyWorkTime\\ \underline{- hourlyRate} \{shared\}\nodepart{third}};
+  \node[umlclass=2.8cm, below right=14mm and -6mm of person] (emp) {\textbf{Employee}\nodepart{second}- hireDate\nodepart{third}};
+
+  % composição Name/Address em Person
+  \draw[thick] (name) -- (person);
+  \filldraw[fill=black] ($(person.west)+(-0.06,0.06)$) -- ($(person.west)+(-0.26,0.16)$) -- ($(person.west)+(-0.46,0.06)$) -- ($(person.west)+(-0.26,-0.04)$) -- cycle;
+  \draw[thick] (addr) -- (person);
+  \filldraw[fill=black] ($(person.east)+(0.06,0.06)$) -- ($(person.east)+(0.26,0.16)$) -- ($(person.east)+(0.46,0.06)$) -- ($(person.east)+(0.26,-0.04)$) -- cycle;
+  \draw[inherit] (hiwi.north) -- (person.south);
+  \draw[inherit] (emp.north) -- (person.south);
+\end{tikzpicture}
+\end{center}
+{\small\itshape Sim, existem classes elementares: \textbf{Name} e \textbf{Address},
+que apenas estruturam dados e não têm comportamento próprio relevante.}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 3.3 — Diagrama de objetos e de classes (livros)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+(a) Identifique objetos e associações e represente-os em um diagrama de objetos.
+(b) Identifique as classes e associações e represente-as em um diagrama de classes.
+\end{questao}
+\begin{resposta}
+\textbf{(a) Diagrama de objetos:}
+
+\begin{center}
+\begin{tikzpicture}[obj/.style={draw, fill=blue!5, rectangle split, rectangle split parts=2, rectangle split part align=left, font=\tiny, inner sep=3pt, text width=3.1cm}, link/.style={draw, fill=green!8, font=\tiny, align=center, inner sep=2pt}, node distance=7mm and 12mm]
+  \node[obj] (hans) {\underline{hans : Member}\nodepart{second}name = "Hans Müller"\\address = "Bochum"\\birth = 01/03/1995};
+  \node[obj, below=14mm of hans] (else) {\underline{else : Member}\nodepart{second}name = "Else Wallersee"\\address = "Dortmund"\\birth = 26/03/1975};
+  \node[obj, right=42mm of hans] (pillars) {\underline{:Book}\nodepart{second}title = "Pillars of the Earth"\\author = "Ken Follet"\\year = 1990};
+  \node[obj, below=6mm of pillars] (medicus) {\underline{:Book}\nodepart{second}title = "The Medicus"\\author = "Noah Gordon"\\year = 1987};
+  \node[obj, below=6mm of medicus] (horse) {\underline{:Book}\nodepart{second}title = "The Horse Whisperer"\\author = "Nicholas Evans"\\year = 1995};
+
+  \draw (hans) -- node[above,font=\tiny]{due 12/05/1998} (pillars);
+  \draw (else) -- node[above,sloped,font=\tiny]{due 14/05/1998} (medicus);
+  \draw (else) -- node[below,sloped,font=\tiny]{due 14/05/1998} (horse);
+\end{tikzpicture}
+\end{center}
+
+\textbf{(b) Diagrama de classes} (com \textit{Loan} como classe de associação):
+
+\begin{center}
+\begin{tikzpicture}[node distance=10mm and 26mm]
+  \node[umlclass=3.0cm] (member) {\textbf{Member}\nodepart{second}- name\\- address\\- birthDate\\- number\nodepart{third}};
+  \node[umlclass=2.8cm, right=of member] (book) {\textbf{Book}\nodepart{second}- title\\- author\\- year\nodepart{third}};
+  \node[umlclass=2.6cm, below=14mm of $(member)!0.5!(book)$] (loan) {\textbf{Loan}\nodepart{second}- dueDate\nodepart{third}};
+  \draw[thick] (member) -- node[above,font=\tiny]{borrows} node[below,font=\tiny]{1\hspace{2.2cm}$*$} (book);
+  \draw[dashed] (loan) -- ($(member)!0.5!(book)$);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%==========================================================================
+\section{Parte IV — Exercise 8 (Stuttgart): Análise de Casos de Uso}
+%==========================================================================
+\begin{nota}
+\textbf{Cenário (máquina de venda de bilhetes).} A \emph{Transport Authority
+Undelayed} encomendou o software de controle das novas máquinas de bilhetes.
+Elementos: \emph{Destination Key Panel} (código de 3 dígitos do destino),
+\emph{Ticket Key Panel} (tipo: ida única / múltiplas viagens, normal / primeira
+classe), \emph{Continue/Cancel Key Panel}, \emph{Display}, \emph{Card Drive}
+(GeldKarte), \emph{Coin/Note Slots} e \emph{Printer}. Assume-se pagamento exato
+(sem troco). A manutenção é feita por técnicos de serviço.
+\end{nota}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8.1 — Modelo de casos de uso}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+(a) Nomeie o sistema e os atores externos. (b) Liste os casos de uso,
+distinguindo os fechados (independentes) dos parciais (contidos em outros).
+(c) Especifique-os com os \textit{templates}. (d) Apresente o diagrama de casos
+de uso.
+\end{questao}
+\begin{resposta}
+\textbf{(a) Sistema:} software de controle da \emph{Máquina de Bilhetes}
+(\textit{Ticket Machine}). \textbf{Atores externos:} \emph{Passageiro
+(Passenger)} e \emph{Técnico de Serviço (Service Technician)}.
+
+\textbf{(b) Casos de uso:}
+\begin{itemize}[nosep]
+  \item \textbf{Fechados (independentes):} \emph{Comprar bilhete(s)} e
+        \emph{Manutenção da máquina}.
+  \item \textbf{Parciais (contidos):} \emph{Selecionar destino e tipo de bilhete}
+        e \emph{Pagar tarifa} — ambos incluídos em \emph{Comprar bilhete(s)}.
+\end{itemize}
+
+\textbf{(c) Especificação (templates preenchidos):}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.0cm}p{11.4cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Use Case:} Comprar bilhete(s) \quad\textit{(Categoria: Primary; Ator: Passageiro)}}\\
+\midrule
+Objetivo & Adquirir um ou vários bilhetes para um ou vários destinos. \\
+Pré-condição & Máquina pronta; display mostra \textit{"Selecione um destino"}. \\
+Evento gatilho & Passageiro seleciona um destino. \\
+Pós-cond.\ sucesso & Display volta a mostrar \textit{"Selecione um destino"} (próximo passageiro). \\
+Pós-cond.\ falha & Display mostra mensagem de erro. \\
+Descrição & 1) Selecionar destino e tipo ($\Rightarrow$ UC \emph{Selecionar destino e tipo}); 2) Pagar tarifa ($\Rightarrow$ UC \emph{Pagar tarifa}); 3) Imprimir bilhete e exibir \textit{"Retire seu(s) bilhete(s)"}; 4) Após retirada, exibir \textit{"Selecione um destino"}. \\
+Extensões & 1a) Tecla \emph{continuar} permite selecionar outro bilhete. \\
+Alternativas & 2a) Tecla \emph{cancelar} aborta o processo. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.0cm}p{11.4cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Use Case:} Selecionar destino e tipo de bilhete \quad\textit{(Primary; Passageiro)}}\\
+\midrule
+Objetivo & Selecionar destino e tipo para um bilhete. \\
+Pré-condição & Display mostra \textit{"Selecione um destino"}. \\
+Evento gatilho & Passageiro seleciona um destino. \\
+Pós-cond.\ sucesso & Display mostra os bilhetes selecionados e a tarifa total. \\
+Descrição & 1) Informar código do destino; exibir \textit{"Ida única para XYZ"} e a tarifa. \\
+Extensões & 1a) Mudar para \emph{múltiplas viagens}; 1b) mudar para \emph{primeira classe} (atualiza texto e tarifa). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.0cm}p{11.4cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Use Case:} Pagar tarifa \quad\textit{(Primary; Passageiro)}}\\
+\midrule
+Objetivo & Pagar a tarifa total dos bilhetes selecionados. \\
+Pré-condição & Display mostra bilhetes selecionados e a tarifa total. \\
+Evento gatilho & Passageiro insere a GeldKarte ou dinheiro. \\
+Pós-cond.\ sucesso & Display mostra \textit{"Seu(s) bilhete(s) está(ão) sendo impresso(s)"}. \\
+Pós-cond.\ falha & Display indica crédito insuficiente / erro. \\
+Descrição & 1) Debitar a tarifa da GeldKarte se houver crédito; ejetar GeldKarte. \\
+Alternativas & 1a) Inserir dinheiro até atingir a tarifa (display atualiza o restante); 1b) crédito insuficiente é sinalizado. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{3.0cm}p{11.4cm}@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textbf{Use Case:} Manutenção da máquina \quad\textit{(Secondary; Técnico de Serviço)}}\\
+\midrule
+Objetivo & Manter a máquina pronta para uso. \\
+Pré-condição & Intervalo de manutenção vencido ou display com erro. \\
+Evento gatilho & Técnico abre a máquina. \\
+Pós-cond.\ sucesso & Máquina pronta; display mostra \textit{"Selecione um destino"}. \\
+Descrição & 1) Executar manutenção/reparo; 2) autoteste dos componentes; se OK, exibir \textit{"Selecione um destino"}. \\
+Alternativas & 2a) Falha no autoteste $\Rightarrow$ mensagem de erro. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{(d) Diagrama de casos de uso:}
+
+\begin{center}
+\begin{tikzpicture}[node distance=6mm]
+  \node (pass) at (0,-2.4) {};
+  \pic at (pass) {actor};
+  \node[font=\scriptsize, below=2mm of pass] {Passageiro};
+  \node (tech) at (12,-2.4) {};
+  \pic at (tech) {actor};
+  \node[font=\scriptsize, below=2mm of tech] {Técnico};
+
+  \node[draw, rounded corners, minimum width=8.2cm, minimum height=5.6cm,
+        label={[font=\scriptsize\bfseries]north:Máquina de Bilhetes}] at (6,-2.6) {};
+  \node[ucase] (buy)  at (4.4,-0.6) {Comprar\\ bilhete(s)};
+  \node[ucase] (seld) at (4.4,-2.6) {Selecionar destino\\ e tipo};
+  \node[ucase] (pay)  at (4.4,-4.4) {Pagar tarifa};
+  \node[ucase] (cash) at (7.6,-3.6) {Pagar em\\ dinheiro};
+  \node[ucase] (card) at (7.6,-5.2) {Pagar com\\ GeldKarte};
+  \node[ucase] (maint)at (8.0,-1.2) {Manutenção\\ da máquina};
+
+  \draw (pass) -- (buy);
+  \draw (tech) -- (maint);
+  \draw[darr] (buy) -- node[right,font=\tiny]{\guillemotleft include\guillemotright} (seld);
+  \draw[darr] (buy) to[bend right=20] node[left,font=\tiny]{\guillemotleft include\guillemotright} (pay);
+  \draw[darr] (cash) -- node[sloped,above,font=\tiny]{\guillemotleft extend\guillemotright} (pay);
+  \draw[darr] (card) -- node[sloped,below,font=\tiny]{\guillemotleft extend\guillemotright} (pay);
+\end{tikzpicture}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8.2 — Identificação de objetos}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Identifique os objetos relevantes no software de controle e dê uma breve
+descrição da finalidade de cada um.
+\end{questao}
+\begin{resposta}
+\begin{center}\small
+\begin{tabular}{@{}>{\bfseries}p{4.0cm}p{10.4cm}@{}}
+\toprule
+Objeto & Finalidade \\
+\midrule
+Destination Key Panel & Permite a entrada do código do destino. \\
+Ticket Key Panel & Permite selecionar o tipo de bilhete. \\
+Cancel/Continue Key Panel & Permite cancelar o processo ou selecionar mais bilhetes. \\
+Display & Fornece informações e orienta o usuário. \\
+Card Drive & Lê o crédito da GeldKarte, debita a tarifa e ejeta o cartão. \\
+Coin Slot / Note Slot & Soma o dinheiro inserido; sinaliza quando a tarifa foi paga. \\
+Printer & Imprime e ejeta o bilhete; sinaliza quando foi retirado. \\
+Ticket Machine & Nó central de controle; coordena os demais objetos e executa o que os periféricos não fazem. \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8.3 — Modelo de análise dinâmica (sequência)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Crie um diagrama de sequência para o caso de uso \emph{Comprar bilhete(s)} no
+cenário: destino 200 (Central Station); múltiplas viagens; pagamento com
+GeldKarte; há crédito suficiente.
+\end{questao}
+\begin{resposta}
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[font=\scriptsize]
+  \def\xa{0} \def\xb{2.3} \def\xc{4.6} \def\xd{7.2} \def\xe{9.6} \def\xf{11.9} \def\xg{14.0}
+  \def\ybot{-9.4}
+  \node (cust) at (\xa,0) {};
+  \pic at (\xa,0.42) {actor};
+  \node at (\xa,0.02) {Passageiro};
+  \node[draw, fill=blue!6] (dkp) at (\xb,0) {:DestKeyPanel};
+  \node[draw, fill=blue!6] (tkp) at (\xc,0) {:TicketKeyPanel};
+  \node[draw, fill=blue!6] (tm)  at (\xd,0) {:TicketMachine};
+  \node[draw, fill=blue!6] (disp)at (\xe,0) {:Display};
+  \node[draw, fill=blue!6] (cd)  at (\xf,0) {:CardDrive};
+  \node[draw, fill=blue!6] (pr)  at (\xg,0) {:Printer};
+  \foreach \x in {\xa,\xb,\xc,\xd,\xe,\xf,\xg} \draw[dashed,gray] (\x,-0.5) -- (\x,\ybot);
+
+  \draw[arr] (\xa,-1.0) -- node[above]{informa destino 200} (\xb,-1.0);
+  \draw[arr] (\xb,-1.5) -- node[above]{setDestination(200)} (\xd,-1.5);
+  \draw[arr] (\xd,-2.0) -- node[above]{show("Ida p/ Central", tarifa)} (\xe,-2.0);
+  \draw[arr] (\xa,-2.8) -- node[above]{seleciona múltiplas viagens} (\xc,-2.8);
+  \draw[arr] (\xc,-3.3) -- node[above]{setTicketKind(Multiple)} (\xd,-3.3);
+  \draw[arr] (\xd,-3.8) -- node[above]{updateText(tarifa)} (\xe,-3.8);
+  \draw[arr] (\xa,-4.6) -- node[above]{insere GeldKarte} (\xf,-4.6);
+  \draw[arr] (\xf,-5.1) -- node[above]{cardInserted(crédito)} (\xd,-5.1);
+  \draw[arr] (\xd,-5.6) -- node[above]{debit(tarifa)} (\xf,-5.6);
+  \draw[darr] (\xf,-6.1) -- node[above]{ok / ejeta cartão} (\xd,-6.1);
+  \draw[arr] (\xd,-6.7) -- node[above]{printTicket()} (\xg,-6.7);
+  \draw[darr] (\xg,-7.2) -- node[above]{ticketPrinted} (\xd,-7.2);
+  \draw[arr] (\xd,-7.7) -- node[above]{show("Retire seu(s) bilhete(s)")} (\xe,-7.7);
+  \draw[arr] (\xd,-8.4) -- node[above]{show("Selecione um destino")} (\xe,-8.4);
+\end{tikzpicture}}
+\end{center}
+\end{resposta}
+
+%--------------------------------------------------------------------------
+\subsection*{Questão 8.4 — Modelo de análise estática (classes)}
+%--------------------------------------------------------------------------
+\begin{questao}{Enunciado}
+Crie um modelo de análise estática (diagrama de classes) do software de controle.
+Cada componente de hardware é representado por uma classe de controle. Introduza
+herança de forma razoável e especifique as multiplicidades.
+\end{questao}
+\begin{resposta}
+A \textit{TicketMachine} (controladora) associa-se a cada classe de controle de
+hardware. Introduzem-se as superclasses abstratas \textit{KeyPanel} (painéis de
+teclas) e \textit{PaymentDevice} (dispositivos de pagamento).
+
+\begin{center}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[node distance=9mm and 12mm]
+  \node[umlclass=3.0cm] (tm) {\textbf{TicketMachine}\nodepart{second}- state\\- currentSale\nodepart{third}+ sellTicket()\\+ selfTest()};
+  \node[umlbox=2.2cm, above right=6mm and 14mm of tm] (disp) {\textbf{Display}\nodepart{second}+ show(txt)};
+  \node[umlbox=2.2cm, below right=2mm and 14mm of tm] (pr) {\textbf{Printer}\nodepart{second}+ print()};
+  \node[abclass=2.4cm, above left=8mm and 10mm of tm] (kp) {\textit{\textbf{KeyPanel}}\nodepart{second}+ readKey()};
+  \node[abclass=2.6cm, below left=8mm and 10mm of tm] (pd) {\textit{\textbf{PaymentDevice}}\nodepart{second}+ collect(v)};
+  % subclasses KeyPanel
+  \node[umlbox=2.0cm, above=12mm of kp, xshift=-34mm] (dkp) {\textbf{DestKeyPanel}\nodepart{second}};
+  \node[umlbox=2.0cm, above=12mm of kp] (tkp) {\textbf{TicketKeyPanel}\nodepart{second}};
+  \node[umlbox=2.4cm, above=12mm of kp, xshift=36mm] (ccp) {\textbf{Cancel/Cont.\ KeyPanel}\nodepart{second}};
+  % subclasses PaymentDevice
+  \node[umlbox=1.9cm, below=12mm of pd, xshift=-30mm] (card) {\textbf{CardDrive}\nodepart{second}};
+  \node[umlbox=1.7cm, below=12mm of pd] (coin) {\textbf{CoinSlot}\nodepart{second}};
+  \node[umlbox=1.7cm, below=12mm of pd, xshift=30mm] (note) {\textbf{NoteSlot}\nodepart{second}};
+  % domínio
+  \node[umlclass=2.2cm, right=14mm of pr] (ticket) {\textbf{Ticket}\nodepart{second}- destination\\- kind\\- fare\nodepart{third}};
+
+  \draw[thick] (tm) -- node[above,font=\tiny]{1\;\;1} (disp);
+  \draw[thick] (tm) -- node[above,font=\tiny]{1\;\;1} (pr);
+  \draw[thick] (tm) -- node[above,sloped,font=\tiny]{1\;\;$1..*$} (kp);
+  \draw[thick] (tm) -- node[below,sloped,font=\tiny]{1\;\;$1..*$} (pd);
+  \draw[thick] (tm.south) to[bend right=10] node[below,font=\tiny]{1\;\;$*$} (ticket.south);
+  \draw[inherit] (dkp.south) -- (kp.north);
+  \draw[inherit] (tkp.south) -- (kp.north);
+  \draw[inherit] (ccp.south) -- (kp.north);
+  \draw[inherit] (card.north) -- (pd.south);
+  \draw[inherit] (coin.north) -- (pd.south);
+  \draw[inherit] (note.north) -- (pd.south);
+\end{tikzpicture}}
+\end{center}
+\textbf{Multiplicidades:} a \textit{TicketMachine} possui exatamente 1
+\textit{Display} e 1 \textit{Printer}, $1..*$ \textit{KeyPanel} e $1..*$
+\textit{PaymentDevice}, e gerencia $*$ \textit{Ticket}s por venda.
+\end{resposta}
+
+%==========================================================================
+\vspace{8pt}\hrule\vspace{6pt}
+\begin{center}
+  {\small \textit{Referências:} Ian Sommerville, \textbf{Software Engineering},
+  10ª ed., Pearson, 2016 (Cap.\ 5 — \textit{System Modeling}). \;
+  IAS — Institute of Industrial Automation and Software Engineering,
+  Universität Stuttgart, \textbf{Exercises Software Engineering for Real-Time
+  Systems}: Exercise 2 (Introduction to UML), Exercise 3 (Introduction to
+  UML 2) e Exercise 8 (Use Case Analysis), WS 04/05.}
+\end{center}
+
+\end{document}
