@@ -1,0 +1,754 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{listings}
+
+\geometry{a4paper, top=3cm, bottom=2.5cm, left=3cm, right=2cm, headheight=25pt}
+\setstretch{1.35}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{resultbg}{RGB}{240,248,255}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codekw}{RGB}{0,51,153}
+\definecolor{codecmt}{RGB}{110,110,110}
+\definecolor{codestr}{RGB}{140,10,10}
+
+\hypersetup{colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue, citecolor=ufamblue}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{ufamblue}{\textbf{PPGEE/UFAM} --- Verif.\ e S\'intese de Sist.\ Ciber-F\'isicos}}
+\fancyhead[R]{\small\textcolor{ufamblue}{Lista 2 --- DSVerifier \& $k$-Indu\c{c}\~ao}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ufamblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}[block]
+  {\large\bfseries\color{ufamblue}}
+  {Exerc\'icio \thesection.}{0.8em}{}
+  [\vspace{-0.3em}\textcolor{ufamblue}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.5ex}{1.5ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{ufamgreen}}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1.5ex}{0.8ex}
+
+\tcbset{
+  resultbox/.style={
+    colback=resultbg, colframe=ufamblue, fonttitle=\bfseries\small,
+    title=Resultado, boxrule=0.8pt, arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  },
+  notabox/.style={
+    colback=orange!5, colframe=orange!60!black, fonttitle=\bfseries\small,
+    title=Nota did\'atica, boxrule=0.7pt, arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  },
+  quotebox/.style={
+    colback=gray!6, colframe=gray!55, fonttitle=\bfseries\small,
+    title=Cita\c{c}\~ao direta, boxrule=0.6pt, arc=2pt,
+    left=6pt, right=6pt, top=3pt, bottom=3pt
+  }
+}
+
+\lstdefinestyle{cstyle}{
+  language=C, backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekw}\bfseries, commentstyle=\color{codecmt}\itshape,
+  stringstyle=\color{codestr}, numbers=left, numberstyle=\tiny\color{gray},
+  numbersep=6pt, frame=single, rulecolor=\color{gray!40}, breaklines=true,
+  showstringspaces=false, tabsize=2, xleftmargin=1em
+}
+\lstdefinestyle{shstyle}{
+  backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize,
+  frame=single, rulecolor=\color{gray!40}, breaklines=true,
+  showstringspaces=false, xleftmargin=1em
+}
+
+\newcommand{\vv}[1]{\texttt{#1}}
+
+\begin{document}
+
+%==============================================================
+% CAPA
+%==============================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[0.4cm]
+{\Large\bfseries\color{ufamblue} UNIVERSIDADE FEDERAL DO AMAZONAS}\\[0.2cm]
+{\large\color{ufamblue} Programa de P\'os-Gradua\c{c}\~ao em Engenharia El\'etrica --- PPGEE}\\[0.1cm]
+{\large\color{ufamblue} Linha 1 --- Sistemas Inteligentes e Microeletr\^onica}\\[0.4cm]
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[2.5cm]
+
+{\LARGE\bfseries Lista de Exerc\'icios 02}\\[0.4cm]
+{\Large\bfseries Verifica\c{c}\~ao de Sistemas Digitais e $k$-Indu\c{c}\~ao}\\[0.4cm]
+{\large PGENE601/PPGINF554 --- Verifica\c{c}\~ao e S\'intese Autom\'atica}\\[0.1cm]
+{\large de Sistemas Ciber-F\'isicos e Embarcados}\\[0.4cm]
+{\normalsize Semana 5 (28/09/2026 a 04/10/2026)}\\[3cm]
+
+\begin{tabular}{rl}
+  \textbf{Disciplina:} & Verifica\c{c}\~ao e S\'intese Autom\'atica de Sist.\ Ciber-F\'isicos e Emb. \\[0.3cm]
+  \textbf{Docente:}    & Prof.\ Dr.\ Lucas C.\ Cordeiro \\[0.3cm]
+  \textbf{Discente:}   & Matheus Serr\~ao Uch\^oa \\[0.3cm]
+  \textbf{N\'ivel:}    & P\'os-Gradua\c{c}\~ao --- Mestrado \\[0.3cm]
+  \textbf{Artigos-base:} & DSVerifier (SPIN 2015) e $k$-Indu\c{c}\~ao (STTT 2017) \\[0.3cm]
+  \textbf{Data:}       & Manaus, \today \\
+\end{tabular}
+
+\vfill
+{\color{ufamblue}\rule{\linewidth}{1.5pt}}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+%==============================================================
+% ARTIGOS DE REFERÊNCIA
+%==============================================================
+\section*{Artigos de Refer\^encia}
+\addcontentsline{toc}{section}{Artigos de Refer\^encia}
+
+\textbf{Artigo A.} H.\,I.\ Ismail, I.\,V.\ Bessa, L.\,C.\ Cordeiro, E.\,B.\ de Lima Filho e
+J.\,E.\ Chaves Filho. \emph{DSVerifier: A Bounded Model Checking Tool for Digital Systems}.
+SPIN 2015, LNCS 9232, pp.~126--131.
+
+\textbf{Artigo B.} M.\,Y.\,R.\ Gadelha, H.\,I.\ Ismail e L.\,C.\ Cordeiro. \emph{Handling Loops
+in Bounded Model Checking of C Programs via $k$-Induction}. STTT, 2017.
+
+Todas as respostas abaixo citam diretamente o texto dos artigos (caixas cinzas) sempre que a
+justificativa depende da formula\c{c}\~ao exata usada pelos autores.
+
+\newpage
+
+%==============================================================
+% EXERCÍCIO 1
+%==============================================================
+\section{Efeitos de \emph{finite word length} (Artigo A)}
+
+\subsection*{Enunciado}
+Controlador de segunda ordem $H(z) = \dfrac{2{,}813z^2 - 0{,}0163z - 1{,}872}{z^2 + 1{,}068z + 0{,}1239}$,
+planta de motor de indu\c{c}\~ao, per\'iodo de amostragem $0{,}5\,$s, formato \vv{int\_bits=4},
+\vv{frac\_bits=10}, \vv{min=-5.0}, \vv{max=5.0}.
+
+\subsection{(a) Faixa representável e resolução do formato $\langle 4,10\rangle$}
+
+O Artigo A usa a conven\c{c}\~ao de ponto fixo em que \vv{int\_bits} \emph{inclui} o bit de
+sinal (a struct \vv{implementation} declara diretamente \vv{int\_bits} e \vv{frac\_bits}, sem
+um campo separado de sinal). Em complemento de dois, com $I=4$ bits inteiros (sinal incluso) e
+$F=10$ bits fracion\'arios, a palavra tem $I+F=14$ bits e representa valores
+$v = m \cdot 2^{-F}$, onde $m$ \'e um inteiro em complemento de dois de $I+F$ bits:
+\[
+  m \in \bigl[-2^{I+F-1},\; 2^{I+F-1}-1\bigr] = [-8192,\; 8191].
+\]
+
+\begin{align*}
+  v_{\min} &= -2^{I-1} = -2^{3} = -8{,}000000 \\
+  v_{\max} &= 2^{I-1} - 2^{-F} = 8 - 2^{-10} = 8 - 0{,}0009765625 = 7{,}9990234375 \\
+  \Delta   &= 2^{-F} = 2^{-10} = 0{,}0009765625 \approx 9{,}7656\times10^{-4}
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+Faixa representável $\langle4,10\rangle$: $[-8{,}0;\ 7{,}999023]$. Resolu\c{c}\~ao (LSB):
+$\Delta = 2^{-10} \approx 0{,}000977$.
+\end{tcolorbox}
+
+\subsection{(b) Os coeficientes e a faixa $[-5,5]$ cabem em $\langle4,10\rangle$?}
+
+Os coeficientes de $H(z)$, conforme o pr\'oprio arquivo de especifica\c{c}\~ao do DSVerifier
+(\vv{ds.b = \{2.813, -0.0163, -1.872\}}, \vv{ds.a = \{1.0, 1.068, 0.1239\}}), e a faixa de
+entrada $[-5{,}0;\,5{,}0]$:
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Valor & Dentro de $[-8{,}0;\,7{,}999023]$? & \\
+\midrule
+$b_0=2{,}813$   & Sim & $-8 \le 2{,}813 \le 7{,}999$ \\
+$b_1=-0{,}0163$ & Sim & \\
+$b_2=-1{,}872$  & Sim & \\
+$a_0=1{,}0$     & Sim & \\
+$a_1=1{,}068$   & Sim & \\
+$a_2=0{,}1239$  & Sim & \\
+$[-5{,}0;\,5{,}0]$ & Sim & $[-5,5]\subset[-8;7{,}999]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[resultbox]
+\textbf{Tudo cabe.} Nenhum coeficiente nem a faixa de entrada excede $[-8{,}0;\,7{,}999023]$,
+logo $\langle4,10\rangle$ \'e um formato v\'alido em termos de \emph{faixa} (n\~ao h\'a
+overflow estrutural nos valores nominais). Isso n\~ao implica representa\c{c}\~ao
+\textbf{exata}: por exemplo $0{,}1239$ n\~ao \'e um m\'ultiplo de $2^{-10}$ e ser\'a
+arredondado para o m\'ultiplo mais pr\'oximo, $130/1024 \approx 0{,}126953$ (erro de
+quantiza\c{c}\~ao $\approx 3\times10^{-3}$) --- esse \'e precisamente o efeito de
+\emph{finite word length} que o Artigo A se prop\~oe a verificar (overflow \emph{durante a
+execu\c{c}\~ao} do filtro, quando somas/produtos intermedi\'arios de estados internos, n\~ao
+apenas os coeficientes nominais, podem extrapolar a faixa).
+\end{tcolorbox}
+
+\subsection{(c) Por que a inicialização precisa ocorrer antes da instrumentação}
+
+\begin{tcolorbox}[quotebox]
+``DSVerifier performs three main procedures: initialization, validation, and instrumentation
+[\ldots] the first step is to initialize its internal parameters for quantization, that is, it
+computes the maximum and minimum representable numbers for the chosen FWL format. [\ldots] In
+the last step, DSVerifier adds explicit calls to the verification engine (for the evaluated
+properties), using functions available in ESBMC (e.g., \_\_ESBMC\_assume and
+\_\_ESBMC\_assert), in order to check for property violations.'' (Artigo A, Se\c{c}\~ao~2)
+\end{tcolorbox}
+
+A instrumenta\c{c}\~ao \'e o passo que \textbf{escreve, como texto C literal}, as chamadas
+\vv{\_\_ESBMC\_assert(x <= max \&\& x >= min)} (e equivalentes para overflow/limit
+cycle) dentro do arquivo ANSI-C gerado. Para emitir essas linhas, a instrumenta\c{c}\~ao
+precisa j\'a conhecer os valores num\'ericos concretos de \vv{max} e \vv{min} --- eles
+entram como \textbf{constantes literais} no c\'odigo gerado, n\~ao como express\~oes a
+resolver depois.
+
+\begin{tcolorbox}[notabox]
+O ESBMC, que roda \textbf{depois} (Fig.~1 do Artigo A: C Parser $\to$ GOTO Program $\to$ GOTO
+Symex $\to$ SMT Solver), \'e um \emph{model checker de C gen\'erico}: ele n\~ao tem nenhuma
+no\c{c}\~ao embutida de ``ponto fixo'', ``FWL'' ou ``formato $\langle k,l\rangle$'' --- s\'o
+enxerga \vv{assert}/\vv{assume} com constantes literais. Se o c\'alculo de \vv{max}/\vv{min}
+fosse adiado para ``durante a verifica\c{c}\~ao'', n\~ao haveria mais nenhum componente no
+pipeline capaz de calcul\'a-lo: o DSVerifier j\'a delegou o controle ao ESBMC nesse ponto, e o
+arquivo ANSI-C j\'a foi escrito e fechado. Por isso a inicializa\c{c}\~ao \'e necessariamente
+uma etapa de \emph{gera\c{c}\~ao de c\'odigo} (tempo de compila\c{c}\~ao/instrumenta\c{c}\~ao),
+estritamente anterior e externa \`a verifica\c{c}\~ao propriamente dita.
+\end{tcolorbox}
+
+\subsection{(d) Oscilação persistente com entrada constante}
+
+\begin{tcolorbox}[quotebox]
+``Limit Cycle. There can be persistent oscillations in the output of a system with constant
+input. DSVerifier is able to check for zero-input limit cycles, for any initial condition.''
+(Artigo A, Se\c{c}\~ao~2.1)
+\end{tcolorbox}
+
+\begin{tcolorbox}[resultbox]
+A propriedade \'e \textbf{Limit Cycle} (ciclo-limite), definida no artigo exatamente como
+oscila\c{c}\~ao persistente na sa\'ida de um sistema com entrada constante (o artigo
+verifica, em particular, ciclos-limite de entrada nula --- \emph{zero-input} --- para
+qualquer condi\c{c}\~ao inicial).
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% EXERCÍCIO 2
+%==============================================================
+\section{Arquitetura e completude do DSVerifier (Artigo A)}
+
+\subsection{(a) Fluxo de verificação e posição do módulo}
+
+\begin{tcolorbox}[quotebox]
+``DSVerifier is an internal module for the efficient SMT-based context-bounded model checker
+(ESBMC) [\ldots]. The complete verification tool includes four components from ESBMC [\ldots]:
+C parser, GOTO Program, GOTO Symex, and SMT solver. [\ldots] The DSVerifier module is included
+\emph{before} the C parser.'' (Artigo A, Se\c{c}\~ao~2, Fig.~1)
+\end{tcolorbox}
+
+Fluxo completo: \emph{Digital System Specification} $\to$ \textbf{DSVerifier}
+(internamente: Initialization $\to$ Validation $\to$ Instrumentation) $\to$ arquivo ANSI-C
+$\to$ \textbf{C Parser} $\to$ \textbf{GOTO Program} $\to$ \textbf{GOTO Symex} $\to$
+\textbf{SMT Solver} (Boolector).
+
+\begin{tcolorbox}[notabox]
+\'E a \'unica posi\c{c}\~ao poss\'ivel porque o que o m\'odulo \textbf{produz} \'e,
+literalmente, um arquivo-texto ANSI-C (``an ANSI-C code file is generated [\ldots] this file
+is directly sent to the C parser module''). O pr\'oximo est\'agio capaz de consumir texto C
+\'e, por defini\c{c}\~ao, o C Parser --- o \emph{front-end} de qualquer \emph{toolchain}
+baseada em fonte C. N\~ao pode entrar depois do C Parser (GOTO Program j\'a espera uma
+representa\c{c}\~ao intermedi\'aria, n\~ao texto-fonte), nem depois do GOTO Symex ou no SMT
+Solver (o DSVerifier n\~ao tem nenhuma no\c{c}\~ao de IR-GOTO ou de f\'ormula SMT --- ele
+s\'o sabe emitir C). A posi\c{c}\~ao \'e ditada inteiramente pelo tipo do artefato de sa\'ida.
+\end{tcolorbox}
+
+\subsection{(b) ANSI-C em vez de SMT direto: uma vantagem e uma limitação}
+
+\textbf{Vantagem.} O DSVerifier reaproveita integralmente o \emph{pipeline} maduro do ESBMC
+(parser, tradu\c{c}\~ao GOTO, execu\c{c}\~ao simb\'olica, codifica\c{c}\~ao SMT e m\'ultiplos
+\emph{back-ends} de solver intercambi\'aveis) sem precisar implementar seu pr\'oprio
+codificador SMT ou sem\^antica de \emph{bit-vectors}; basta saber gerar C corretamente. Como o
+pr\'oprio artigo nota, o arquivo gerado ``can be verified by any C model-checker that supports
+bit-vector reasoning'' --- portabilidade/independ\^encia de ferramenta.
+
+\textbf{Limita\c{c}\~ao.} A qualidade da verifica\c{c}\~ao fica inteiramente refém da
+sem\^antica gen\'erica de C que o ESBMC oferece: o DSVerifier n\~ao pode expressar nem
+explorar nenhuma otimiza\c{c}\~ao espec\'ifica de dom\'inio (por exemplo, um procedimento de
+decis\~ao dedicado a aritm\'etica de ponto fixo Q-format), pois tudo precisa antes ser
+reduzido a opera\c{c}\~oes inteiras/\emph{bit-vector} de C puro; qualquer imprecis\~ao,
+inconsist\^encia de solidez (como a incompletude discutida no Artigo B) ou escolha de modelo
+de mem\'oria do ESBMC \'e herdada de forma transparente, sem que o DSVerifier tenha qualquer
+oportunidade de intervir no n\'ivel da f\'ormula SMT.
+
+\subsection{(c) A assimetria entre estabilidade/fase mínima e as demais propriedades}
+
+\begin{tcolorbox}[quotebox]
+``The verification of stability and minimum-phase is complete and sound, since it does not
+depend on system outputs and inputs. However, the verification of other property types is
+typically unsound, unless some induction technique is used.'' (Artigo A, Se\c{c}\~ao~2.2)
+\end{tcolorbox}
+
+Estabilidade e fase m\'inima s\~ao propriedades \textbf{puramente alg\'ebricas dos
+coeficientes} do filtro (localiza\c{c}\~ao de p\'olos/zeros no plano $z$): dado um conjunto
+\textbf{fixo e finito} de coeficientes quantizados, verificar se todos os p\'olos (ou zeros)
+est\~ao dentro do c\'irculo unit\'ario \'e um c\'alculo fechado, de tamanho constante, que
+\textbf{dispensa completamente o racioc\'inio sobre execu\c{c}\~oes} --- n\~ao \'e preciso
+desenrolar nenhum la\c{c}o de controle nem simular a opera\c{c}\~ao do filtro ao longo do
+tempo; n\~ao h\'a ``$k$'' a escolher, porque n\~ao h\'a sequ\^encia temporal de entradas/sa\'idas
+envolvida.
+
+\begin{tcolorbox}[notabox]
+Overflow e ciclo-limite, ao contr\'ario, s\~ao propriedades \textbf{sobre execu\c{c}\~oes}:
+perguntam se \emph{alguma} sequ\^encia de entradas, ao longo de um n\'umero potencialmente
+ilimitado de amostras, algum dia causa overflow ou faz o sistema entrar em oscila\c{c}\~ao
+persistente. Isso exige desenrolar a equa\c{c}\~ao de diferen\c{c}as do filtro por um
+horizonte temporal que, em opera\c{c}\~ao real, \'e ilimitado --- exatamente o cen\'ario em
+que BMC puro (desenrolamento at\'e $k$) \'e estruturalmente incompleto: um resultado
+``sucesso'' em profundidade $k$ nunca descarta uma viola\c{c}\~ao no passo $k+1$. Da\'i a
+necessidade de uma t\'ecnica de indu\c{c}\~ao (Artigo B) para elevar a garantia limitada a
+$k$ passos para uma garantia v\'alida \emph{para todo tempo}.
+\end{tcolorbox}
+
+\subsection{(d) Aumentar \texttt{-{}-x-size} não estabelece corretude}
+
+O par\^ametro \vv{--x-size} \'e o limite $k$ de desenrolamento (``the verification bound, i.e.,
+the number of times the digital system will be unwound''). Um resultado \vv{successful} com
+um dado \vv{--x-size=k} licencia apenas a afirma\c{c}\~ao \textbf{limitada}: ``nenhuma
+viola\c{c}\~ao da propriedade foi encontrada dentro das primeiras $k$ itera\c{c}\~oes de
+opera\c{c}\~ao do sistema digital'' --- o equivalente a $Base_k$ insatisfat\'ivel em BMC puro.
+
+\begin{tcolorbox}[resultbox]
+Aumentar \vv{--x-size} at\'e a verifica\c{c}\~ao passar \textbf{nunca} estabelece corretude do
+projeto \emph{para todo tempo de opera\c{c}\~ao}, porque overflow/ciclo-limite n\~ao t\^em um
+limiar de completude (\emph{completeness threshold}) conhecido a priori: sempre \'e poss\'ivel,
+em princ\'ipio, que a viola\c{c}\~ao s\'o se manifeste em $k+1$, $k+50$ ou qualquer profundidade
+maior que a testada. Um ``successful'' com \vv{--x-size=k} prova estritamente que \textbf{n\~ao
+h\'a} contraexemplo nos primeiros $k$ passos --- nunca que n\~ao existe contraexemplo algum.
+S\'o o passo indutivo do Artigo B (Exerc\'icio~5) fornece uma prova v\'alida para
+\emph{qualquer} n\'umero de itera\c{c}\~oes.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% EXERCÍCIO 3
+%==============================================================
+\section{Os três casos da $k$-indução (Artigo B)}
+
+\begin{lstlisting}[style=cstyle,caption={Programa motivador, Artigo B (Fig.\ 2)}]
+int main(void) {
+  uint64_t i = 1, sn = 0;
+  uint32_t n;
+  assume(n >= 1);
+  while (i <= n) {
+    sn = sn + a;
+    i++;
+  }
+  assert(sn == n * a);
+}
+\end{lstlisting}
+
+\subsection{(a) Por que BMC tradicional falha e quantos desdobramentos seriam necessários}
+
+\vv{n} \'e \vv{uint32\_t} e n\~ao recebe cota superior al\'em de \vv{assume(n>=1)}, isto \'e,
+$n \in [1,\,2^{32}-1]$. BMC tradicional fixa um limite $k$ de desenrolamento; para qualquer $k$
+escolhido, existe um valor de $n>k$ para o qual o la\c{c}o ainda n\~ao terminou ap\'os $k$
+itera\c{c}\~oes --- a \emph{unwinding assertion} correspondente falharia, ou o BMC simplesmente
+nunca cobre esse caso. Como o pr\'oprio Artigo B afirma:
+
+\begin{tcolorbox}[quotebox]
+``BMC techniques find this difficult as the number of loop iterations, represented by \texttt{n},
+is non-deterministically chosen; full unwinding would require $2^{32}-1$ unfoldings.''
+(Artigo B, Se\c{c}\~ao~3)
+\end{tcolorbox}
+
+\begin{tcolorbox}[resultbox]
+S\~ao necess\'arios $2^{32}-1$ desdobramentos para uma verifica\c{c}\~ao exaustiva --- o
+n\'umero vem diretamente do maior valor represent\'avel por \vv{uint32\_t} ($2^{32}-1$), j\'a
+que o la\c{c}o executa no m\'aximo \vv{n} vezes. Nenhum $k$ fixo e finito, na pr\'atica,
+alcan\c{c}a esse limite em tempo/mem\'oria vi\'aveis --- da\'i a necessidade de $k$-indu\c{c}\~ao.
+\end{tcolorbox}
+
+\subsection{(b) Transformação do caso base para $k=2$}
+
+\begin{tcolorbox}[quotebox]
+``[\ldots] the base case simply inserts an unwinding assumption to the respective loop-free
+program $P'$, consisting of the termination condition $\sigma$ after the loop, to ensure that
+it finds a counterexample of depth $k$ without reporting any false incorrect result (i.e., to
+avoid unfolding loops partially).'' (Artigo B, Se\c{c}\~ao~4.1.2)
+\end{tcolorbox}
+
+\begin{lstlisting}[style=cstyle,caption={Caso base, $k=2$ (padr\~ao da Fig.\ 9 do Artigo B)}]
+int main(void) {
+  uint64_t i, sn = 0;
+  uint32_t n = nondet_uint();
+  assume(n >= 1);
+  i = 1;
+  if (i <= n) {            // copia 1
+    sn = sn + a;
+    i++;
+    if (i <= n) {          // copia 2
+      sn = sn + a;
+      i++;
+    }
+  }
+  assume(i > n);           // unwinding assumption
+  assert(sn == n * a);
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[resultbox]
+A instru\c{c}\~ao inserida ao final \'e um \textbf{\vv{assume(i > n)}} (n\~ao um \vv{assert}).
+Seu papel \'e \textbf{descartar} exatamente as execu\c{c}\~oes em que o la\c{c}o \textbf{ainda
+n\~ao terminou} ap\'os as $k=2$ c\'opias (isto \'e, os casos com $n>k$, onde \vv{sn} s\'o
+acumulou $k\cdot a$ em vez de $n\cdot a$). Sem esse \vv{assume}, o \vv{assert(sn==n*a)}
+falharia trivialmente para qualquer $n>k$ --- n\~ao por um bug real, mas simplesmente porque o
+la\c{c}o foi desenrolado poucas vezes demais. O \vv{assume} \'e o que \textbf{impede que a
+ferramenta reporte um contraexemplo falso} (falso positivo de bug), causado por
+desenrolamento parcial, garantindo que o caso base s\'o julgue execu\c{c}\~oes genuinamente
+completas ($n\le k$).
+\end{tcolorbox}
+
+\subsection{(c) Transformação da condição de avanço para $k=2$}
+
+\begin{lstlisting}[style=cstyle,caption={Condição de avanço (\emph{forward condition}), $k=2$ (padrão da Fig.\ 10 do Artigo B)}]
+int main(void) {
+  uint64_t i, sn = 0;
+  uint32_t n = nondet_uint();
+  assume(n >= 1);
+  i = 1;
+  if (i <= n) {
+    sn = sn + a;
+    i++;
+    if (i <= n) {
+      sn = sn + a;
+      i++;
+    }
+  }
+  assert(i > n);           // check loop invariant
+  assert(sn == n * a);
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[resultbox]
+\textbf{N\~ao \'e a mesma instru\c{c}\~ao.} O caso base insere um \vv{assume(i>n)}; a
+condi\c{c}\~ao de avan\c{c}o insere um \textbf{\vv{assert(i>n)}} --- ``\emph{check loop
+invariant}'', nas palavras do pr\'oprio c\'odigo-figura do artigo. A diferen\c{c}a de
+significado \'e o ato de fala: o \vv{assume} do caso base \emph{descarta} (filtra) as
+execu\c{c}\~oes n\~ao-conclu\'idas para evitar falso positivo de bug; o \vv{assert} da
+condi\c{c}\~ao de avan\c{c}o \emph{prova ativamente} que o la\c{c}o \textbf{sempre} termina
+dentro de $k$ itera\c{c}\~oes (isto \'e, tenta demonstrar que $n\le k$ \'e uma consequ\^encia
+necess\'aria, o que s\'o \'e poss\'ivel se o la\c{c}o for de fato limitado por $k$). Para este
+programa espec\'ifico, como \vv{n} \'e irrestrito em $[1,2^{32}-1]$, a condi\c{c}\~ao de
+avan\c{c}o \textbf{nunca} ter\'a sucesso para nenhum $k$ finito (sempre existe $n=k+1$) --- \'e
+precisamente por isso que a prova de corretude deste programa depende do \textbf{passo
+indutivo} (Exerc\'icio~4), n\~ao da condi\c{c}\~ao de avan\c{c}o.
+\end{tcolorbox}
+
+\subsection{(d) Por que a ordem base $\to$ avanço/indutivo importa}
+
+\begin{tcolorbox}[quotebox]
+``The algorithm runs up to a maximum number of iterations and only increases the value of $k$
+if it can not falsify the property during the base case. Note that $k$ is incremented only at
+the start of the \texttt{else} branch in line~9 of Fig.~3.'' (Artigo B, Se\c{c}\~ao~4.1)
+\end{tcolorbox}
+
+Pelo pseudoc\'odigo da Fig.~3, a cada itera\c{c}\~ao do algoritmo: primeiro roda-se
+\vv{base\_case(P, phi, k)}; se ele encontra um contraexemplo, o algoritmo retorna
+\vv{false} \textbf{imediatamente}; s\'o no ramo \vv{else} (caso base \emph{n\~ao} achou bug)
+\'e que \vv{k} \'e incrementado e ent\~ao se tenta \vv{forward\_condition} e, falhando essa,
+\vv{inductive\_step}.
+
+\begin{tcolorbox}[notabox]
+A ordem importa por \textbf{corretude}, n\~ao s\'o por efici\^encia. A validade cl\'assica da
+$k$-indu\c{c}\~ao (Eq.~2 do Artigo B, Se\c{c}\~ao~2.3) exige a conjun\c{c}\~ao de \textbf{duas}
+condi\c{c}\~oes: $Base_k$ insatisfat\'ivel (nenhuma viola\c{c}\~ao alcan\c{c}\'avel do estado
+inicial em at\'e $k$ passos) \textbf{e} $Step_k$ insatisfat\'ivel (nenhuma transi\c{c}\~ao de
+$k$ estados bons para um estado ruim). O algoritmo da Fig.~3 obt\'em a metade ``$Base_k$'' de
+forma \emph{acumulada}: a cada itera\c{c}\~ao do la\c{c}o externo, o caso base j\'a foi
+checado (sem bug) para todos os valores de $k$ percorridos at\'e ali. Se a condi\c{c}\~ao de
+avan\c{c}o ou o passo indutivo fossem executados \textbf{primeiro}, o algoritmo poderia
+retornar \vv{true} baseado apenas em $Step_k$ insatisfat\'ivel, \textbf{sem} nunca ter
+confirmado $Base_k$ insatisfat\'ivel no mesmo $k$ --- ou seja, poderia reportar corretude
+mesmo havendo um bug genu\'ino, alcan\c{c}\'avel do estado inicial em poucos passos, que
+simplesmente nunca chegou a ser checado. Checar o caso base primeiro n\~ao \'e apenas mais
+barato computacionalmente (o pr\'oprio artigo nota que rodar a condi\c{c}\~ao de avan\c{c}o ou
+o passo indutivo com $k$ pequeno demais desperdi\c{c}a recursos, j\'a que ``loops are usually
+unfolded at least two times'') --- \'e o que garante que todo veredito \vv{true} tem, de fato,
+tanto a \^ancora ($Base_k$) quanto o passo ($Step_k$) da indu\c{c}\~ao matem\'atica estabelecidos.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% EXERCÍCIO 4
+%==============================================================
+\section{O passo indutivo e suas transformações (Artigo B)}
+
+O la\c{c}o \vv{while(c) \{E;\}} \'e convertido em \vv{A; while(c) \{ S; E; U; R; \}} (Eq.~4).
+
+\subsection{(a) Função de cada bloco}
+
+\begin{tcolorbox}[quotebox]
+``$A$ is the code (or sequence of commands) responsible for assigning non-deterministic values
+to all loops variables, i.e., the state is havocked before the loop, $c$ is the termination
+condition of the loop \texttt{while}, $S$ is the code to store the current state of the
+program variables before executing the statements of $E$, $E$ is the original body of the
+\texttt{while} loop, $U$ is the code to update all state variables with local values after
+executing $E$, and $R$ is the code to remove redundant states.'' (Artigo B, Se\c{c}\~ao~4.1.2)
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{@{}p{1.3cm}p{12.8cm}@{}}
+\toprule
+Bloco & Função \\
+\midrule
+$A$ & \emph{Havoc}: atribui valores n\~ao determin\'isticos a todas as vari\'aveis do la\c{c}o, \textbf{antes} do la\c{c}o começar --- generaliza o estado inicial para que o model checker explore implicitamente todas as configura\c{c}\~oes poss\'iveis. \\
+$S$ & Salva (armazena) o estado corrente das vari\'aveis do programa \textbf{antes} de executar $E$ na itera\c{c}\~ao atual --- popula o vetor de estados \vv{sv}. \\
+$U$ & Atualiza todas as vari\'aveis de estado com os valores locais \textbf{depois} de executar $E$. \\
+$R$ & Remove estados redundantes (repetidos), via um \vv{assume} que compara o vetor de estados salvo com o estado atual. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{(b) O bloco $R$ e a terminação do passo indutivo}
+
+O bloco $R$ \'e um \vv{assume} do tipo $sv_1[0]\neq cs_1 \wedge sv_1[0]\neq cs_1\wedge
+sv_2[1]\neq cs_2 \wedge \ldots$ (Eq.~8), isto \'e, exige que o estado da itera\c{c}\~ao atual
+seja \textbf{diferente} de todos os estados salvos nas itera\c{c}\~oes anteriores.
+
+\begin{tcolorbox}[notabox]
+$R$ elimina execu\c{c}\~oes em que a sequ\^encia de $k$ estados percorridos \textbf{n\~ao \'e
+um caminho simples} (isto \'e, revisita um estado j\'a visto --- um ciclo dentro da janela de
+$k$ itera\c{c}\~oes). Isso \'e necess\'ario porque a validade cl\'assica da $k$-indu\c{c}\~ao
+sobre sistemas de transi\c{c}\~ao (Sheeran et al.\ 2000; E\'en \& S\"orensson 2003, citados no
+Artigo B) exige que os $k{+}1$ estados testados no passo indutivo sejam
+\textbf{genuinamente distintos}: sem essa restri\c{c}\~ao, o SMT solver poderia ``provar'' o
+passo indutivo trivialmente sobre um \textbf{ciclo curto} que se repete indefinidamente sem
+progresso real, produzindo uma conclus\~ao \emph{unsound} (o passo pareceria v\'alido para
+qualquer $n$ apenas porque o mesmo pequeno conjunto de estados foi revisitado, sem cobrir o
+comportamento real do programa para valores maiores). Ao proibir estados repetidos, $R$
+garante que, quando o passo indutivo termina com sucesso, a resposta \'e de fato \'util
+(sound) --- corresponde a uma cadeia real e crescente de estados do programa, n\~ao a um
+artefato de um la\c{c}o de estados degenerado.
+\end{tcolorbox}
+
+\subsection{(c) Havoc apenas das variáveis do laço vs.\ Große et al.\ (todas as variáveis)}
+
+\begin{tcolorbox}[quotebox]
+``Similar to Donaldson et al.\ [8,9], we havoc only the variables that occur in the loop, i.e.,
+all loops variables are assigned non-deterministic values. [\ldots] Differently from our
+approach, Gro\ss{}e et al.\ havoc all program variables, which makes it difficult to check for
+the reachability of an error since they do not provide enough information to constrain the
+havocked variables in the program.'' (Artigo B, Se\c{c}\~ao~4)
+\end{tcolorbox}
+
+\begin{tcolorbox}[resultbox]
+Ao randomizar \textbf{todas} as vari\'aveis do programa (inclusive as que o la\c{c}o nunca
+toca), o m\'etodo de Gro\ss{}e et al.\ destr\'oi qualquer rela\c{c}\~ao/invariante que essas
+vari\'aveis n\~ao-relacionadas ao la\c{c}o mantinham com o restante do estado --- n\~ao
+sobra informa\c{c}\~ao suficiente para \textbf{restringir} os valores havockeados de forma
+coerente com o que \'e de fato alcan\c{c}\'avel. Na pr\'atica, isso torna imposs\'ivel
+raciocinar com precis\~ao sobre se um estado de erro \'e \textbf{realmente} alcan\c{c}\'avel:
+o solver passa a considerar combina\c{c}\~oes de valores para vari\'aveis n\~ao-relacionadas
+ao la\c{c}o que nunca ocorreriam em uma execu\c{c}\~ao real, inflando artificialmente o
+espa\c{c}o de estados considerado (com risco de falsos alarmes) ou impedindo a prova de
+alcan\c{c}abilidade (por faltar contexto). Havockear apenas as \emph{vari\'aveis do la\c{c}o}
+(Defini\c{c}\~ao~2/3 do Artigo B) preserva intactas as rela\c{c}\~oes entre o restante do
+estado do programa e a l\'ogica externa ao la\c{c}o, mantendo o racioc\'inio sobre
+alcan\c{c}abilidade preciso.
+\end{tcolorbox}
+
+\subsection{(d) Por que a hipótese $\{Post \wedge \neg(i \le n)\}$ prova o caso geral}
+
+\begin{tcolorbox}[quotebox]
+``Lemma 1 If the induction hypothesis $\{Post\wedge\neg(i\le n)\}$ holds for $k+1$ consecutive
+iterations, then it also holds for $k$ preceding iterations. [\ldots] the SMT solver can
+easily verify Lemma~1 and conclude that \texttt{sn == n*a} is an inductive invariant relative
+to \texttt{n}.'' (Artigo B, Se\c{c}\~ao~4.3.3)
+\end{tcolorbox}
+
+A chave \'e que, no passo indutivo, o bloco $A$ atribui valores \textbf{n\~ao-determin\'isticos
+gen\'ericos} \`as vari\'aveis do la\c{c}o (via \vv{nondet\_uint()}) --- o racioc\'inio n\~ao
+fixa nenhum valor concreto de \vv{n}, nem assume que o estado inicial da janela de $k+1$
+itera\c{c}\~oes \'e alcan\c{c}ado a partir de um \vv{n} espec\'ifico. O que \'e provado \'e um
+\textbf{esquema geral}: ``\emph{para quaisquer} $k{+}1$ estados consecutivos que satisfa\c{c}am
+$Post\wedge\neg(i\le n)$, o mesmo vale para os $k$ estados anteriores''.
+
+\begin{tcolorbox}[resultbox]
+Combinando essa hip\'otese gen\'erica (v\'alida para qualquer janela de $k{+}1$ itera\c{c}\~oes,
+n\~ao amarrada a um \vv{n} concreto) com o caso base --- que j\'a estabeleceu
+\vv{sn==n*a} para todo $n\le k$ --- obt\'em-se, por indu\c{c}\~ao matem\'atica cl\'assica
+(base + passo), que a propriedade vale para \textbf{qualquer} $n\ge1$, e n\~ao apenas at\'e o
+limite $k$ explorado explicitamente. Isso \'e exatamente o que separa $k$-indu\c{c}\~ao de BMC
+puro: o passo indutivo, uma vez estabelecido, generaliza para infinitos valores de \vv{n} sem
+precisar desenrolar mais nenhum deles.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% EXERCÍCIO 5
+%==============================================================
+\section{Integração entre os dois artigos}
+
+\subsection{(a) Qual dos três casos fecha a lacuna de solidez do Artigo A}
+
+\'E o \textbf{passo indutivo}. O caso base apenas encontra bugs at\'e profundidade $k$ ---
+n\~ao contribui nenhuma garantia positiva de aus\^encia de erro al\'em de $k$. A
+\textbf{condi\c{c}\~ao de avan\c{c}o} prova a propriedade ``em todos os estados alcan\c{c}\'aveis
+dentro de $k$ itera\c{c}\~oes'' --- ainda uma garantia \textbf{limitada} a $k$, id\^entica em
+esp\'irito ao BMC puro que o Artigo A j\'a descreve como insuficiente (``t\'ipicamente n\~ao
+s\'olida''). Apenas o \textbf{passo indutivo}, ao provar que a validade em $k$ itera\c{c}\~oes
+consecutivas implica validade em $k{+}1$ (Lema~1), e combinado com o caso base como \^ancora,
+produz uma conclus\~ao v\'alida para \textbf{qualquer} n\'umero de itera\c{c}\~oes --- a
+``t\'ecnica de indu\c{c}\~ao'' que o Artigo A antecipa como necess\'aria para tornar
+overflow/ciclo-limite tão s\'olidos quanto estabilidade/fase m\'inima.
+
+\begin{tcolorbox}[notabox]
+\textbf{Os outros dois casos s\~ao dispens\'aveis \emph{para esse fim espec\'ifico}?}
+A condi\c{c}\~ao de avan\c{c}o \'e dispens\'avel para fechar a lacuna de solidez em sistemas
+genuinamente de opera\c{c}\~ao ilimitada (ela s\'o ajuda quando o la\c{c}o de fato termina
+dentro de algum $k$ pequeno, um atalho de efici\^encia, n\~ao uma fonte de solidez
+\emph{unbounded}). J\'a o \textbf{caso base n\~ao \'e dispens\'avel}, mesmo para esse fim
+espec\'ifico: pela Eq.~2 do Artigo B, a validade da $k$-indu\c{c}\~ao exige $Base_k$ insatisfat\'ivel
+\textbf{junto com} $Step_k$ insatisfat\'ivel --- sem confirmar o caso base, o passo indutivo
+sozinho n\~ao garante aus\^encia de bug nos primeiros $k$ passos (ver Exerc\'icio~3d). O caso
+base \'e a \^ancora l\'ogica sem a qual o passo indutivo n\~ao licencia nenhuma conclus\~ao
+sobre o programa completo.
+\end{tcolorbox}
+
+\subsection{(b) Alterações necessárias no fluxo do DSVerifier}
+
+Pela Fig.~1 do Artigo A, a $k$-indu\c{c}\~ao do Artigo B \'e implementada como transforma\c{c}\~oes
+aplicadas \textbf{no n\'ivel da representa\c{c}\~ao intermedi\'aria GOTO-program}, durante a
+convers\~ao C/C++ $\to$ GOTO (``these transformations take place at the intermediate
+representation level, during the conversion of the C/C++ program into a GOTO-program''), ou
+seja, \textbf{dentro} do pr\'oprio ESBMC, entre os est\'agios ``C Parser'' e ``GOTO Symex''.
+
+\begin{tcolorbox}[resultbox]
+O m\'odulo DSVerifier em si (Initialization $\to$ Validation $\to$ Instrumentation, antes do
+C Parser) \textbf{n\~ao precisa de nenhuma altera\c{c}\~ao}: o arquivo ANSI-C que ele gera
+continua id\^entico. A mudan\c{c}a ocorre exclusivamente na \textbf{etapa 5} da metodologia da
+Fig.~2 do Artigo A (``Verify Using a BMC tool''): em vez de invocar o ESBMC em modo de BMC puro
+(desenrolamento simples at\'e \vv{--x-size}), invoca-se o ESBMC com a $k$-indu\c{c}\~ao
+habilitada (na pr\'atica, as flags \vv{--k-induction --k-step <k>} usadas nos experimentos do
+Artigo B). Como as transforma\c{c}\~oes de $k$-indu\c{c}\~ao agem automaticamente sobre
+\emph{qualquer} la\c{c}o presente no GOTO-program, elas se aplicam tamb\'em aos la\c{c}os de
+verifica\c{c}\~ao que a pr\'opria instrumenta\c{c}\~ao do DSVerifier injeta, sem que o
+DSVerifier precise ``saber'' que a $k$-indu\c{c}\~ao existe.
+\end{tcolorbox}
+
+\subsection{(c) O código gerado pelo DSVerifier respeita as restrições do passo indutivo?}
+
+\begin{tcolorbox}[quotebox]
+``[\ldots] the inductive step of our $k$-induction algorithm does not support heap-manipulating
+programs and unbounded recursion [\ldots] Most of the incorrect results provided by ESBMC are
+related to bugs in the coding of the inductive step transformations, because we do not support
+\texttt{continue} and \texttt{return} (from inside a loop) statements.'' (Artigo B, Introdu\c{c}\~ao
+e Se\c{c}\~ao~5.2)
+\end{tcolorbox}
+
+\begin{tcolorbox}[resultbox]
+\textbf{Sim, respeita.} As realiza\c{c}\~oes de filtros/controladores digitais que o
+DSVerifier gera (formas diretas, formas delta e cascata --- vetores de coeficientes
+\vv{ds.a}/\vv{ds.b} de tamanho fixo conhecido em tempo de gera\c{c}\~ao, via \vv{a\_size}/
+\vv{b\_size}) s\~ao n\'ucleos num\'ericos \textbf{est\'aticos, simples e n\~ao-recursivos}: um
+la\c{c}o (ou sequ\^encia de la\c{c}os) que acumula somas e produtos sobre \emph{arrays} de
+tamanho fixo, sem aloca\c{c}\~ao din\^amica (\emph{heap}), sem chamadas recursivas (a
+realiza\c{c}\~ao de um filtro \'e inerentemente iterativa, espelhando diretamente a
+equa\c{c}\~ao de diferen\c{c}as) e sem desvios de controle antecipados (\vv{continue}/\vv{return})
+dentro do la\c{c}o de processamento de amostras.
+\end{tcolorbox}
+
+A caracter\'istica decisiva \'e que c\'odigo de realiza\c{c}\~ao de sistemas digitais \'e um
+\textbf{``la\c{c}o de aritm\'etica em linha reta''}: em cada itera\c{c}\~ao executa-se sempre a
+mesma sequ\^encia fixa de multiplica\c{c}\~oes e somas sobre estados/coeficientes de tamanho
+est\'atico, sem ramifica\c{c}\~ao de controle que dependa de dados nem estrutura de dados
+din\^amica --- exatamente a classe de programas para a qual as transforma\c{c}\~oes do
+Artigo B (havoc de vari\'aveis escalares/vetoriais de tamanho fixo conhecido, bloco $R$ sobre
+um \vv{statet} tamb\'em de tamanho fixo) foram desenhadas.
+
+\subsection{(d) Mais resultados corretos \emph{e} mais \emph{wrong proofs}: o que pesa mais?}
+
+\begin{tcolorbox}[quotebox]
+``Wrong proofs is the number of false positive results (i.e., the tool reports SAFE
+incorrectly).'' (Artigo B, Se\c{c}\~ao~5.2) --- Tabela~1: ESBMC paralelo, 3153 resultados
+corretos / 265 \emph{wrong proofs}; CPAchecker, 2349 resultados corretos / 26 \emph{wrong
+proofs}.
+\end{tcolorbox}
+
+\begin{center}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+& ESBMC sequencial & ESBMC paralelo & CPAchecker \\
+\midrule
+Resultados corretos & 3071 & \textbf{3153} & 2349 \\
+\emph{Wrong proofs} (falso SAFE) & 111 & 265 & \textbf{26} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[resultbox]
+Para um engenheiro decidindo se adota a ferramenta na verifica\c{c}\~ao de um controlador
+embarcado \textbf{cr\'itico}, o n\'umero de \emph{wrong proofs} pesa muito mais do que o
+n\'umero bruto de resultados corretos --- e a raz\~ao \'e a assimetria de consequ\^encias
+entre os dois tipos de erro:
+\begin{itemize}[leftmargin=1.6cm]
+  \item Um \textbf{timeout/unknown} (nenhum veredito) \'e um modo de falha \emph{seguro}: a
+  engenharia simplesmente n\~ao ganha um certificado formal e recorre a outra t\'ecnica
+  (teste, revis\~ao manual, outra ferramenta) --- nenhum dano \'e feito, nenhuma confian\c{c}a
+  falsa \'e criada.
+  \item Uma \textbf{\emph{wrong proof}} \'e um modo de falha \emph{perigoso}: a ferramenta
+  certifica como SAFE um controlador que na verdade cont\'em um defeito. Isso gera
+  \textbf{confian\c{c}a falsa} --- exatamente o cen\'ario que a verifica\c{c}\~ao formal existe
+  para eliminar. Um controlador defeituoso pode ser embarcado em produ\c{c}\~ao \emph{acreditando-se}
+  que foi formalmente verificado.
+\end{itemize}
+Relativamente, o ESBMC paralelo erra com falso-SAFE em $265/3153\approx8{,}4\%$ dos casos
+resolvidos, contra $26/2349\approx1{,}1\%$ do CPAchecker --- quase $8\times$ mais frequente.
+Vale notar ainda que a pr\'opria implementa\c{c}\~ao paralela do ESBMC \textbf{piora} esse
+n\'umero em rela\c{c}\~ao \`a sequencial (111$\to$265 \emph{wrong proofs}), precisamente porque
+processos que estourariam mem\'oria/tempo na vers\~ao sequencial (e ficariam honestamente
+``unknown'') s\~ao convertidos em vereditos definitivos na vers\~ao paralela --- um ganho de
+cobertura obtido \`a custa de solidez. Para certifica\c{c}\~ao de um sistema cr\'itico, a
+escolha razo\'avel \'e privilegiar a menor taxa de falso-SAFE (CPAchecker, ou ESBMC sequencial
+em vez do paralelo), mesmo abrindo m\~ao de cobertura bruta --- e, idealmente, usar
+m\'ultiplas ferramentas/t\'ecnicas em conjunto, j\'a que nenhuma delas tem taxa zero de
+\emph{wrong proofs}.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% REFERÊNCIAS
+%==============================================================
+\begin{thebibliography}{9}
+\bibitem{dsverifier} H.~I.~Ismail, I.~V.~Bessa, L.~C.~Cordeiro, E.~B.~de Lima Filho,
+  J.~E.~Chaves Filho. \emph{DSVerifier: A Bounded Model Checking Tool for Digital Systems}.
+  SPIN 2015, LNCS 9232, pp.~126--131.
+\bibitem{kinduction} M.~Y.~R.~Gadelha, H.~I.~Ismail, L.~C.~Cordeiro. \emph{Handling Loops in
+  Bounded Model Checking of C Programs via $k$-Induction}. STTT, 2017.
+\end{thebibliography}
+
+\end{document}
