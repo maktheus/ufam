@@ -1,0 +1,206 @@
+% =============================================================================
+% Relatorio: Atividade Simbolos I/Q (BPSK, QPSK e 16-QAM) com GNU Radio
+% Padrao visual: PPGEE/UFAM (mesma identidade do modelo mestrado_ppgee)
+% Normas: ABNT (NBR 14724, 10520, 6023), portugues culto, sem travessoes
+% =============================================================================
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{mathptmx}
+\usepackage{microtype}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{mdframed}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\emergencystretch=3em
+
+\pgfplotsset{compat=1.16}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric}
+\sisetup{output-decimal-marker={,}, group-separator={.}, group-minimum-digits=4}
+
+\geometry{top=3cm,bottom=2.5cm,left=3cm,right=2.5cm}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{lightblue}{RGB}{230,240,255}
+\definecolor{metabg}{RGB}{245,245,245}
+\definecolor{okgreen}{RGB}{0,120,60}
+\definecolor{cI}{RGB}{31,119,180}
+\definecolor{cQ}{RGB}{214,95,0}
+
+\hypersetup{
+  colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue, citecolor=ufamblue,
+  pdftitle={Atividade de Símbolos I/Q: BPSK, QPSK e 16-QAM no GNU Radio},
+  pdfauthor={Matheus Serrão Uchôa}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\color{ufamblue} PPGEE/UFAM, Símbolos I/Q}
+\lhead{\small\color{ufamblue} Matheus Serrão Uchôa}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\normalfont\large\bfseries\color{ufamblue}}{\thesection}{0.8em}{\MakeUppercase}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{ufamblue}}{\thesubsection}{0.8em}{}
+\titlespacing*{\section}{0pt}{16pt}{8pt}
+\titlespacing*{\subsection}{0pt}{12pt}{6pt}
+
+\captionsetup{font=small,labelfont=bf,labelsep=colon,justification=centering}
+\setlength{\parindent}{1.25cm}
+\setlength{\parskip}{0pt}
+\newcommand{\fonte}[1]{\par\vspace{2pt}{\small Fonte: #1}\par}
+\newcommand{\sq}[1]{\ensuremath{\sqrt{#1}}}
+
+\newcommand{\figuras}{figuras}
+
+\begin{document}
+\onehalfspacing
+
+% -- Cabeçalho institucional (padrão PPGEE) ---------------------------------
+\begin{center}
+  \includegraphics[width=2.6cm]{../mestrado_ppgee/ufam_logo.png}\\[6pt]
+  \textcolor{ufamblue}{\Large\bfseries Universidade Federal do Amazonas}\\[3pt]
+  \textcolor{ufamblue}{\large Programa de Pós-Graduação em Engenharia Elétrica}\\[10pt]
+  \rule{\linewidth}{1.5pt}\\[6pt]
+  {\LARGE\bfseries Símbolos I/Q em Modulações Digitais}\\[4pt]
+  {\large\bfseries BPSK, QPSK e 16-QAM no GNU Radio Companion}\\[6pt]
+  \rule{\linewidth}{1.5pt}
+\end{center}
+
+\vspace{4mm}
+\begin{mdframed}[backgroundcolor=metabg,linecolor=ufamblue,linewidth=1pt,
+                 innertopmargin=8pt,innerbottommargin=8pt,
+                 innerleftmargin=10pt,innerrightmargin=10pt]
+\begin{tabular}{@{}ll@{}}
+  \textbf{Integrante da equipe:} & Matheus Serrão Uchôa \\[3pt]
+  \textbf{Equipe (arquivos .grc):} & MATHEUS \\[3pt]
+  \textbf{E-mail:}               & maktheus@gmail.com \\[3pt]
+  \textbf{Atividade:}            & Evidências dos experimentos e questões (aula 2) \\[3pt]
+  \textbf{Data:}                 & \today \\
+\end{tabular}
+\end{mdframed}
+
+\vspace{6mm}
+\begin{center}\textbf{\color{ufamblue}RESUMO}\end{center}
+\begin{singlespace}
+\small\noindent Este relatório documenta a construção, a execução e a análise de três fluxogramas do GNU Radio Companion que geram símbolos BPSK, QPSK e 16-QAM a partir de uma fonte aleatória de inteiros e de um bloco de mapeamento por tabela de símbolos. Para cada modulação, são apresentados o fluxograma, a constelação observada no plano I/Q e a saída temporal das componentes em fase (I) e em quadratura (Q). Os níveis observados confirmam a teoria: dois pontos sobre o eixo I na BPSK, quatro pontos a distância unitária da origem na QPSK e dezesseis pontos distribuídos em quatro níveis por eixo na 16-QAM, com energia média unitária após a normalização. As seis questões da atividade são respondidas com demonstrações algébricas, e a taxa de bits a \num{32000}~símbolos/s cresce de \SI{32}{kbit/s} (BPSK) para \SI{64}{kbit/s} (QPSK) e \SI{128}{kbit/s} (16-QAM).\\[4pt]
+\textbf{Palavras-chave:} GNU Radio. Modulação digital. BPSK. QPSK. 16-QAM. Constelação I/Q.
+\end{singlespace}
+
+\clearpage
+\tableofcontents
+\clearpage
+
+% =============================================================================
+\section{Introdução}
+% =============================================================================
+
+Toda comunicação digital parte de uma sequência de bits, mas o meio físico só transporta sinais elétricos ou eletromagnéticos. A modulação digital faz a ponte entre esses dois mundos, pois associa grupos de bits a símbolos, e cada símbolo corresponde a uma forma de onda com amplitude e fase bem definidas \cite{proakis2008,haykin2008}. Nesse contexto, a representação em banda base por um número complexo, cuja parte real é a componente em fase (I) e cuja parte imaginária é a componente em quadratura (Q), permite estudar qualquer modulação linear sobre um único plano.
+
+Diante disso, a escolha da modulação determina um compromisso entre eficiência espectral e robustez ao ruído. A BPSK transporta um bit por símbolo e é a mais robusta das três, a QPSK dobra a taxa de bits mantendo a mesma taxa de símbolos, e a 16-QAM a quadruplica, porém com pontos mais próximos entre si e, portanto, mais sensíveis ao ruído \cite{sklar2001}. Por essa razão, sistemas reais, como o Wi-Fi, alternam dinamicamente entre essas constelações conforme a qualidade do enlace.
+
+Para observar esses efeitos de modo concreto, este trabalho utiliza o GNU Radio Companion, um ambiente de blocos para radiodefinido por software. Em cada experimento, o bloco \textit{Random Source} produz inteiros uniformemente distribuídos, o bloco \textit{Chunks to Symbols} converte cada inteiro em um símbolo complexo por consulta a uma tabela, e dois instrumentos virtuais exibem o resultado: a constelação no plano I/Q e as componentes I e Q em função do tempo.
+
+Por fim, o relatório está organizado conforme a ordem de entrega da atividade. A Seção~\ref{sec:proc} descreve o procedimento de cada experimento, a Seção~\ref{sec:res} apresenta as nove capturas principais acompanhadas de sua interpretação, a Seção~\ref{sec:quest} responde às seis questões com os cálculos necessários, e a Seção~\ref{sec:concl} reúne as conclusões. Em todas as etapas, os valores numéricos citados foram obtidos dos dados efetivamente capturados na execução dos fluxogramas, e não digitados manualmente.
+
+% =============================================================================
+\section{Procedimento Experimental}\label{sec:proc}
+% =============================================================================
+
+\subsection{Cadeia de processamento comum}
+
+O primeiro passo consistiu em definir a variável \texttt{samp\_rate} igual a \SI{32000}{} amostras por segundo, valor que, com um símbolo por amostra, corresponde a \num{32000}~símbolos/s. Em seguida, o bloco \textit{Random Source} foi configurado para gerar bytes no intervalo de \texttt{Minimum} igual a 0 até \texttt{Maximum}$-1$. Como o limite superior é exclusivo, o parâmetro \texttt{Maximum} é exatamente o tamanho do alfabeto de símbolos: 2, 4 e 16 nas três modulações.
+
+Na sequência, o bloco \textit{Chunks to Symbols}, em modo \textit{Byte} para \textit{Complex} e com uma dimensão, usa cada byte recebido como índice da \textit{Symbol Table} e entrega o elemento complexo correspondente. Depois disso, um bloco \textit{Throttle} limita o fluxo à taxa de \SI{32000}{} amostras por segundo, o que torna o tempo de simulação coerente com o tempo real. Por fim, o fluxo alimenta o \textit{QT GUI Constellation Sink} e o \textit{QT GUI Time Sink}, este último configurado para entradas complexas, de modo a exibir em curvas separadas as partes real (I) e imaginária (Q).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  blk/.style={draw=ufamblue,fill=lightblue,rounded corners=2pt,minimum height=1.1cm,minimum width=2.5cm,align=center,font=\small},
+  arr/.style={-{Stealth[length=2.5mm]},thick,color=ufamblue},
+  node distance=0.55cm]
+  \node[blk] (rs) {Random Source\\{\scriptsize Max $=M$}};
+  \node[blk,right=of rs] (cs) {Chunks to\\Symbols\\{\scriptsize Symbol Table}};
+  \node[blk,right=of cs,minimum width=1.9cm] (th) {Throttle\\{\scriptsize 32 kS/s}};
+  \node[blk,right=of th,yshift=0.9cm,minimum width=2.2cm] (cst) {Constellation\\Sink};
+  \node[blk,right=of th,yshift=-0.9cm,minimum width=2.2cm] (tms) {Time Sink\\{\scriptsize I e Q}};
+  \draw[arr] (rs)--node[above,font=\scriptsize]{byte}(cs);
+  \draw[arr] (cs)--node[above,font=\scriptsize]{$I+jQ$}(th);
+  \draw[arr] (th.east)--++(0.3,0)|-(cst.west);
+  \draw[arr] (th.east)--++(0.3,0)|-(tms.west);
+\end{tikzpicture}
+\caption{Cadeia de blocos comum aos três experimentos, em que $M$ vale 2 (BPSK), 4 (QPSK) e 16 (16-QAM)}
+\fonte{elaborado pelo autor.}
+\end{figure}
+
+\subsection{Parâmetros específicos de cada experimento}
+
+A Tabela~\ref{tab:param} resume o que muda de um experimento para o outro. Na BPSK, a tabela possui dois elementos reais, de modo que a componente Q permanece nula. Na QPSK, a tabela passa a ter quatro elementos complexos de módulo unitário, obtidos por divisão por \sq{2}. Já na 16-QAM, a tabela possui dezesseis elementos formados pelo produto cartesiano dos níveis $\{-3,-1,+1,+3\}$ em cada eixo, divididos por \sq{10}. Assim, apenas dois parâmetros foram alterados entre os fluxogramas, a saber \texttt{Maximum} e \texttt{Symbol Table}, enquanto o restante da cadeia permaneceu idêntico.
+
+\begin{table}[H]
+\centering\small
+\caption{Parâmetros dos blocos nos três experimentos}\label{tab:param}
+\begin{tabular}{@{}llp{7.2cm}@{}}
+\toprule
+\textbf{Modulação} & \textbf{Maximum} & \textbf{Symbol Table (índices 0, 1, \dots)}\\
+\midrule
+BPSK   & 2  & \texttt{[-1+0j, 1+0j]}\\
+QPSK   & 4  & \texttt{[(-1-1j), (-1+1j), (1-1j), (1+1j)]/2**0.5}\\
+16-QAM & 16 & dezesseis elementos \texttt{(I+jQ)/10**0.5}, com $I,Q\in\{-3,-1,+1,+3\}$ (Tabela~\ref{tab:16qam})\\
+\bottomrule
+\end{tabular}
+\fonte{elaborado pelo autor, a partir dos arquivos \texttt{.grc} entregues.}
+\end{table}
+
+\subsection{Execução e obtenção das evidências}
+
+Os três arquivos, \texttt{aula2\_bpsk\_MATHEUS.grc},\ \texttt{aula2\_qpsk\_MATHEUS.grc}\ e\ \texttt{aula2\_16qam\_MATHEUS.grc}, foram compilados com o utilitário \texttt{grcc} e executados com os blocos reais do GNU Radio 3.10. A partir dessa execução, foram registradas as amostras dos símbolos, das quais se extraíram os níveis de I e Q, a quantidade de pontos distintos e a energia média, resumidos na Tabela~\ref{tab:medido}. Dessa forma, as constelações e as saídas temporais da Seção~\ref{sec:res} são derivadas desses mesmos dados e podem ser reproduzidas pelos \textit{scripts} listados no Apêndice~A.
+
+% =============================================================================
+\section{Resultados e Interpretação das Saídas}\label{sec:res}
+% =============================================================================
+
+\input{sec_resultados}
+
+% =============================================================================
+\section{Respostas às Questões da Atividade}\label{sec:quest}
+% =============================================================================
+
+\input{sec_questoes}
+
+% =============================================================================
+\section{Conclusão}\label{sec:concl}
+% =============================================================================
+
+\input{sec_conclusao}
+
+% =============================================================================
+\begin{thebibliography}{9}
+\addcontentsline{toc}{section}{Referências}
+\renewcommand{\refname}{REFERÊNCIAS}
+\bibitem{haykin2008} HAYKIN, S.; MOHER, M. \textbf{Sistemas de comunicação}. 5. ed. Porto Alegre: Bookman, 2011.
+\bibitem{proakis2008} PROAKIS, J. G.; SALEHI, M. \textbf{Digital communications}. 5. ed. New York: McGraw-Hill, 2008.
+\bibitem{sklar2001} SKLAR, B. \textbf{Digital communications: fundamentals and applications}. 2. ed. Upper Saddle River: Prentice Hall, 2001.
+\bibitem{lathi2009} LATHI, B. P.; DING, Z. \textbf{Modern digital and analog communication systems}. 4. ed. New York: Oxford University Press, 2009.
+\end{thebibliography}
+
+\input{apendice}
+
+\end{document}
