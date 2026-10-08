@@ -28,11 +28,11 @@ Quanto à constelação, a Figura~\ref{fig:bpsk-const} exibe somente dois pontos
 
 \figconst{bpsk}{BPSK}
 
-A saída temporal da Figura~\ref{fig:bpsk-temp} confirma esse comportamento. A componente I alterna aleatoriamente entre $-1$ e $+1$, com degraus de duração múltipla de $\SI{0,03125}{ms}$, que é o período de um símbolo a \SI{32000}{símbolos\per\second}. Em contraste, a componente Q permanece constante em zero durante todo o intervalo observado.
+A saída temporal da Figura~\ref{fig:bpsk-temp} confirma esse comportamento. A componente I alterna aleatoriamente entre $-1$ e $+1$, com degraus de duração múltipla de $\SI{0,03125}{ms}$, que é o período de um símbolo a \num{32000}~símbolos/s. Em contraste, a componente Q permanece constante em zero durante todo o intervalo observado.
 
 \figtemp{bpsk}{BPSK}
 
-Em resumo, os resultados validam as previsões: dois símbolos, amplitude unitária, energia média igual a 1 e ausência de componente em quadratura. Dessa forma, a BPSK transporta 1 bit por símbolo e, a \SI{32000}{símbolos\per\second}, resulta em \SI{32}{kbit/s}, valor que será ampliado nas modulações seguintes.
+Em resumo, os resultados validam as previsões: dois símbolos, amplitude unitária, energia média igual a 1 e ausência de componente em quadratura. Dessa forma, a BPSK transporta 1 bit por símbolo e, a \num{32000}~símbolos/s, resulta em \SI{32}{kbit/s}, valor que será ampliado nas modulações seguintes.
 
 \subsection{Captura 4 a 6: QPSK}
 
@@ -48,7 +48,7 @@ No domínio do tempo, a Figura~\ref{fig:qpsk-temp} mostra que I e Q assumem, cad
 
 \figtemp{qpsk}{QPSK}
 
-Em síntese, a QPSK ocupou o eixo Q, que estava ocioso na BPSK, e com isso dobrou a quantidade de bits por símbolo mantendo a energia média igual a 1. Portanto, a \SI{32000}{símbolos\per\second} a taxa de bits chega a \SI{64}{kbit/s}, sem aumentar a taxa de símbolos nem a largura de banda associada.
+Em síntese, a QPSK ocupou o eixo Q, que estava ocioso na BPSK, e com isso dobrou a quantidade de bits por símbolo mantendo a energia média igual a 1. Portanto, a \num{32000}~símbolos/s a taxa de bits chega a \SI{64}{kbit/s}, sem aumentar a taxa de símbolos nem a largura de banda associada.
 
 \subsection{Captura 7 a 9: 16-QAM}
 
@@ -64,7 +64,7 @@ A saída temporal da Figura~\ref{fig:16qam-temp} reforça essa leitura, pois tan
 
 \figtemp{16qam}{16-QAM}
 
-Por fim, a energia média calculada sobre os 5000 símbolos capturados foi $1{,}0048$, valor muito próximo do teórico 1, e o pequeno desvio decorre apenas da frequência amostral com que cada ponto apareceu. Assim, a 16-QAM entrega 4 bits por símbolo e \SI{128}{kbit/s} a \SI{32000}{símbolos\per\second}, ao custo de pontos mais próximos entre si.
+Por fim, a energia média calculada sobre os 5000 símbolos capturados foi $1{,}0048$, valor muito próximo do teórico 1, e o pequeno desvio decorre apenas da frequência amostral com que cada ponto apareceu. Assim, a 16-QAM entrega 4 bits por símbolo e \SI{128}{kbit/s} a \num{32000}~símbolos/s, ao custo de pontos mais próximos entre si.
 
 \subsection{Síntese dos valores observados}
 
@@ -100,6 +100,6 @@ QPSK   & 4  & $\pm0{,}7071$ & $\pm0{,}7071$ & 1 & 1,0000 & 64\\
 \legend{Pontos distintos observados,Taxa de bits (kbit/s)}
 \end{axis}
 \end{tikzpicture}
-\caption{Comparação entre as três modulações a \SI{32000}{símbolos\per\second}}\label{fig:comp}
+\caption{Comparação entre as três modulações a \num{32000}~símbolos/s}\label{fig:comp}
 \fonte{elaborado pelo autor, com os valores da Tabela~\ref{tab:medido}.}
 \end{figure}
