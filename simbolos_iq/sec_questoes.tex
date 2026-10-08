@@ -1,0 +1,214 @@
+% Respostas às questões. Cada resposta segue o encadeamento: conceito, cálculo, evidência, consequência.
+
+\subsection*{Questão 1. Qual é a diferença entre bit e símbolo?}
+
+O bit é a menor unidade de informação, pois assume apenas um entre dois valores, 0 ou 1, e mede a quantidade de informação em escolha binária. O símbolo, por outro lado, é o elemento do alfabeto efetivamente transmitido pelo canal, isto é, uma forma de onda com amplitude e fase específicas, que no plano I/Q corresponde a um ponto da constelação. Dessa maneira, bit pertence ao domínio da informação, enquanto símbolo pertence ao domínio do sinal.
+
+A relação entre ambos depende do tamanho do alfabeto. Em uma modulação com $M$ símbolos distintos, cada símbolo carrega $\log_2 M$ bits, de modo que BPSK ($M=2$) leva 1 bit, QPSK ($M=4$) leva 2 bits e 16-QAM ($M=16$) leva 4 bits por símbolo. Consequentemente, a taxa de bits é o produto da taxa de símbolos pelo número de bits por símbolo, $R_b = R_s \log_2 M$.
+
+Essa distinção explica por que aumentar a ordem da modulação eleva a vazão sem exigir mais largura de banda, já que a taxa de símbolos, que governa a ocupação espectral, permanece constante. Por conseguinte, o fluxo do GNU Radio ilustra bem o conceito: o \textit{Random Source} entrega índices que representam grupos de bits, e o \textit{Chunks to Symbols} os converte em símbolos complexos.
+
+Em síntese, o bit é aquilo que se deseja comunicar e o símbolo é o veículo físico escolhido para comunicá-lo. Portanto, a eficiência de uma modulação é medida pela quantidade de bits que cada símbolo consegue transportar sem comprometer demasiadamente a robustez ao ruído \cite{proakis2008}.
+
+\subsection*{Questão 2. Quantos símbolos são necessários para transmitir 100 bits em BPSK e em QPSK?}
+
+O número de símbolos necessários é obtido dividindo-se a quantidade de bits pelo número de bits por símbolo e arredondando-se para cima, ou seja, $N_s=\lceil N_b/\log_2 M\rceil$. Assim, é preciso conhecer primeiro quantos bits cada símbolo transporta em cada modulação, o que já foi estabelecido na questão anterior.
+
+Para a BPSK, com $\log_2 2 = 1$ bit por símbolo, resulta $N_s = 100/1 = 100$ símbolos. Para a QPSK, com $\log_2 4 = 2$ bits por símbolo, resulta $N_s = 100/2 = 50$ símbolos. Como 100 é par, não há necessidade de símbolo de preenchimento em nenhum dos dois casos.
+
+A Figura~\ref{fig:q2} confirma graficamente essa relação inversa entre bits por símbolo e quantidade de símbolos. Observa-se que dobrar o número de bits por símbolo reduz à metade o número de símbolos para a mesma mensagem, e, caso a 16-QAM fosse empregada, bastariam 25 símbolos.
+
+Portanto, a QPSK transmite os mesmos 100 bits em metade do tempo da BPSK quando ambas operam à mesma taxa de símbolos, o que ratifica a vantagem de eficiência espectral das modulações de ordem superior.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=22pt, width=0.7\linewidth, height=5.2cm,
+  ylabel={Símbolos necessários}, xlabel={Modulação},
+  symbolic x coords={BPSK,QPSK,16-QAM}, xtick=data,
+  nodes near coords, ymin=0, ymax=120, enlarge x limits=0.25,
+  ymajorgrids, grid style={gray!30}, tick label style={font=\small},
+  title={Símbolos para transmitir 100 bits}]
+\addplot[fill=ufamblue!70] coordinates {(BPSK,100) (QPSK,50) (16-QAM,25)};
+\end{axis}
+\end{tikzpicture}
+\caption{Quantidade de símbolos necessários para transmitir 100 bits}\label{fig:q2}
+\fonte{elaborado pelo autor, com $N_s=\lceil 100/\log_2 M\rceil$.}
+\end{figure}
+
+\subsection*{Questão 3. O que os eixos I e Q representam? Por que Q é zero na BPSK da atividade?}
+
+Os eixos I e Q representam as duas componentes ortogonais do sinal em banda base. O eixo I (\textit{in-phase}) é a amplitude associada à portadora em cosseno, e o eixo Q (\textit{quadrature}) é a amplitude associada à portadora em seno, defasada de $90^\circ$. Em termos matemáticos, o sinal passa-banda é $s(t)=I(t)\cos(2\pi f_c t)-Q(t)\sin(2\pi f_c t)$, e o símbolo complexo é $I+jQ$ \cite{haykin2008}.
+
+Visto que as duas portadoras são ortogonais, podem ser moduladas de forma independente e somadas sem interferência mútua. Por isso, o plano I/Q funciona como um mapa completo do símbolo: a distância à origem é a amplitude $\sqrt{I^2+Q^2}$ e o ângulo é a fase $\arctan(Q/I)$.
+
+Na BPSK da atividade, a \textit{Symbol Table} é \texttt{[-1+0j, 1+0j]}, de modo que a parte imaginária de ambos os símbolos é nula. Em outras palavras, a informação está codificada apenas na fase, que vale $180^\circ$ para o índice 0 e $0^\circ$ para o índice 1, e essa diferença se manifesta integralmente no sinal da componente I.
+
+Em consequência, a constelação BPSK ocupa somente o eixo horizontal, com dois pontos em $\pm 1$, e a curva de Q no gráfico temporal permanece sobre o valor zero. O eixo Q só passa a ser utilizado a partir da QPSK, na qual o segundo bit de cada símbolo é transportado justamente pela quadratura.
+
+\subsection*{Questão 4. Para 32.000 símbolos por segundo, qual é a taxa de bits por segundo na BPSK e na QPSK?}
+
+A taxa de bits é obtida por $R_b = R_s \cdot \log_2 M$, em que $R_s=\SI{32000}{símbolos\per\second}$ é a taxa de símbolos definida por \texttt{samp\_rate}, com um símbolo por amostra. Esse cálculo decorre diretamente da definição de símbolo como portador de $\log_2 M$ bits.
+
+Para a BPSK, tem-se $R_b = 32000 \times \log_2 2 = 32000 \times 1 = \SI{32000}{bit\per\second} = \SI{32}{kbit/s}$. Para a QPSK, tem-se $R_b = 32000 \times \log_2 4 = 32000 \times 2 = \SI{64000}{bit\per\second} = \SI{64}{kbit/s}$. A título de comparação, a 16-QAM resultaria em $32000\times 4=\SI{128000}{bit\per\second}$.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=24pt, width=0.7\linewidth, height=5.4cm,
+  ylabel={Taxa de bits (kbit/s)}, xlabel={Modulação (a \SI{32000}{símbolos\per\second})},
+  symbolic x coords={BPSK,QPSK,16-QAM}, xtick=data,
+  nodes near coords, ymin=0, ymax=150, enlarge x limits=0.25,
+  ymajorgrids, grid style={gray!30}, tick label style={font=\small},
+  title={Taxa de bits por modulação}]
+\addplot[fill=cI!80] coordinates {(BPSK,32) (QPSK,64) (16-QAM,128)};
+\end{axis}
+\end{tikzpicture}
+\caption{Taxa de bits para taxa de símbolos fixa em \SI{32000}{símbolos\per\second}}\label{fig:q4}
+\fonte{elaborado pelo autor, com $R_b=R_s\log_2 M$.}
+\end{figure}
+
+Como mostra a Figura~\ref{fig:q4}, a taxa de bits dobra da BPSK para a QPSK sem alterar a taxa de símbolos. Logo, a largura de banda ocupada permanece a mesma, e o ganho de vazão é obtido apenas à custa de uma constelação mais densa.
+
+\subsection*{Questão 5. Parâmetros alterados para transformar o fluxo BPSK em QPSK}
+
+Dois parâmetros foram modificados: o \texttt{Maximum} do \textit{Random Source}, que passou de 2 para 4, e a \texttt{Symbol Table} do \textit{Chunks to Symbols}, que passou de dois elementos reais para quatro elementos complexos. Os demais blocos, incluindo o \textit{Throttle} e os instrumentos de visualização, permaneceram inalterados, e isso mostra que o mapeamento é a única parte da cadeia que define a modulação.
+
+\paragraph{(a) Por que o Maximum passou de 2 para 4.} O \textit{Random Source} gera inteiros no intervalo de \texttt{Minimum} até \texttt{Maximum}$-1$, já que o limite superior é exclusivo. Com \texttt{Maximum} igual a 2, só existem os índices 0 e 1, suficientes para a tabela da BPSK. Como a QPSK precisa de quatro símbolos, são necessários quatro índices distintos, 0, 1, 2 e 3, o que exige \texttt{Maximum} igual a 4. Se o valor permanecesse em 2, os pontos associados aos índices 2 e 3 jamais apareceriam, e a constelação exibiria apenas dois dos quatro pontos.
+
+\paragraph{(b) Como os índices selecionam os elementos da Symbol Table.} O \textit{Chunks to Symbols}, com uma dimensão, interpreta cada byte de entrada $v$ como posição na tabela e devolve o elemento \texttt{tabela[}$v$\texttt{]}, contando a partir de zero. Assim, o índice 0 seleciona o primeiro elemento, o índice 1 o segundo, o índice 2 o terceiro e o índice 3 o quarto. Cada índice equivale também ao valor decimal de um par de bits, visto que $0=00_2$, $1=01_2$, $2=10_2$ e $3=11_2$, e isso explica a correspondência da alínea seguinte.
+
+\paragraph{(c) Ponto $(I,Q)$ de cada índice e par de bits.} Na tabela adotada, o bit mais significativo comanda a componente I e o bit menos significativo comanda a componente Q, sendo o bit 0 mapeado para sinal negativo e o bit 1 para sinal positivo. Esse mapeamento é de Gray, pois símbolos vizinhos na constelação diferem em apenas um bit, o que minimiza o número de erros de bit causados por um erro de símbolo \cite{proakis2008}. A Tabela~\ref{tab:qpsk} apresenta o resultado, e a Figura~\ref{fig:qpsk-teo} o mostra no plano I/Q.
+
+\begin{table}[H]
+\centering\small
+\caption{Mapeamento QPSK adotado, com $1/\sqrt2\approx 0{,}7071$}\label{tab:qpsk}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\textbf{Índice} & \textbf{Bits} & \textbf{Elemento da tabela} & \textbf{I} & \textbf{Q} & \textbf{$|s|$}\\
+\midrule
+0 & 00 & \texttt{(-1-1j)/2**0.5} & $-0{,}7071$ & $-0{,}7071$ & 1\\
+1 & 01 & \texttt{(-1+1j)/2**0.5} & $-0{,}7071$ & $+0{,}7071$ & 1\\
+2 & 10 & \texttt{(+1-1j)/2**0.5} & $+0{,}7071$ & $-0{,}7071$ & 1\\
+3 & 11 & \texttt{(+1+1j)/2**0.5} & $+0{,}7071$ & $+0{,}7071$ & 1\\
+\bottomrule
+\end{tabular}
+\fonte{elaborado pelo autor.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=2.0]
+  \draw[gray!50,->] (-1.35,0)--(1.4,0) node[right,font=\small]{I};
+  \draw[gray!50,->] (0,-1.35)--(0,1.4) node[above,font=\small]{Q};
+  \draw[ufamblue!50,dashed] (0,0) circle (1);
+  \foreach \x/\y/\b/\i in {-1/-1/00/0,-1/1/01/1,1/-1/10/2,1/1/11/3}{
+    \fill[ufamblue] ({\x*0.7071},{\y*0.7071}) circle (1.6pt);
+    \node[font=\scriptsize,align=center] at ({\x*0.7071+\x*0.30},{\y*0.7071+\y*0.17}) {\b\\ índice \i};
+  }
+  \draw[<->,okgreen,thick] (0,0)--(0.7071,0.7071) node[midway,above left,font=\scriptsize]{$|s|=1$};
+\end{tikzpicture}
+\caption{Constelação QPSK teórica com mapeamento de Gray e raio unitário}\label{fig:qpsk-teo}
+\fonte{elaborado pelo autor.}
+\end{figure}
+
+\paragraph{(d) Por que dividir por $\sqrt2$, com demonstração.} Sem normalização, cada elemento da tabela, como $1+1j$, tem módulo $\sqrt{1^2+1^2}=\sqrt2\approx1{,}414$, de modo que a energia por símbolo seria 2. Para que todos os símbolos fiquem à distância 1 da origem, basta dividir cada um por seu próprio módulo. A demonstração para um símbolo genérico $s=(\pm1\pm j)/\sqrt2$ é
+\begin{equation}
+|s|^2=\left(\pm\frac{1}{\sqrt2}\right)^2+\left(\pm\frac{1}{\sqrt2}\right)^2=\frac12+\frac12=1
+\quad\Rightarrow\quad |s|=1.
+\end{equation}
+Como os quatro símbolos diferem apenas nos sinais, que desaparecem ao se elevar ao quadrado, a conclusão vale para todos eles. Dessa forma, a QPSK normalizada tem energia média $E_s=1$ e a mesma potência da BPSK, o que permite comparar as modulações em igualdade de condições.
+
+\paragraph{(e) Como obter amplitude $A$.} Basta multiplicar todos os elementos da tabela por $A$, ou seja, \texttt{A*[(-1-1j), (-1+1j), (1-1j), (1+1j)]/2**0.5}. Com isso, $|s|^2=A^2\left(\tfrac12+\tfrac12\right)=A^2$, logo $|s|=A$ e os símbolos passam a repousar sobre uma circunferência de raio $A$, com energia por símbolo $E_s=A^2$. De forma equivalente, a divisão por $\sqrt2$ pode ser substituída por $A/\sqrt2$ como fator comum, e os pontos ficam em $(\pm A/\sqrt2,\ \pm A/\sqrt2)$.
+
+\subsection*{Questão 6. Sobre a configuração 16-QAM}
+
+A 16-QAM transmite 4 bits por símbolo e distribui seus dezesseis pontos em uma grade regular de $4\times4$ sobre o plano I/Q. Nesse arranjo, tanto a amplitude quanto a fase variam entre os símbolos, e isso diferencia a modulação das anteriores, em que apenas a fase era usada. As alíneas a seguir detalham as escolhas do fluxo.
+
+\paragraph{(a) Por que o Maximum foi alterado para 16.} Como o \textit{Random Source} gera valores de \texttt{Minimum} até \texttt{Maximum}$-1$, para obter os índices de 0 a 15, que endereçam os dezesseis elementos da tabela, é preciso \texttt{Maximum} igual a 16. Esse valor corresponde ao tamanho do alfabeto $M=2^4$, e cada índice representa um grupo de 4 bits, de $0000_2$ a $1111_2$. Valores menores deixariam símbolos sem uso, e valores maiores provocariam consulta fora da tabela.
+
+\paragraph{(b) Como foram obtidos os 16 símbolos e a ordem adotada.} Os símbolos resultam do produto cartesiano dos quatro níveis de amplitude $\{-3,-1,+1,+3\}$ em cada eixo, o que gera $4\times4=16$ pares $(I,Q)$. Para a ordem, o índice $i=4a+b$ é formado pelos dois bits mais significativos $a$, que escolhem o nível de I, e pelos dois bits menos significativos $b$, que escolhem o nível de Q. Em cada eixo, vale o código de Gray de dois bits, $00\to-3$, $01\to-1$, $11\to+1$ e $10\to+3$, de modo que níveis adjacentes diferem em um único bit. A Tabela~\ref{tab:16qam} mostra a tabela construída, já com os valores divididos por $\sqrt{10}$, e a Figura~\ref{fig:qam-teo} a ilustra no plano I/Q.
+
+\begin{table}[H]
+\centering\footnotesize
+\caption{Symbol Table da 16-QAM (ordem do índice 0 ao 15), com $1/\sqrt{10}\approx0{,}3162$}\label{tab:16qam}
+\begin{tabular}{@{}cccccc@{\hspace{1.2cm}}cccccc@{}}
+\toprule
+\textbf{Índ.} & \textbf{Bits} & \textbf{$I$} & \textbf{$Q$} & \textbf{$I/\sqrt{10}$} & \textbf{$Q/\sqrt{10}$} &
+\textbf{Índ.} & \textbf{Bits} & \textbf{$I$} & \textbf{$Q$} & \textbf{$I/\sqrt{10}$} & \textbf{$Q/\sqrt{10}$}\\
+\midrule
+0  & 0000 & $-3$ & $-3$ & $-0{,}949$ & $-0{,}949$ & 8  & 1000 & $+3$ & $-3$ & $+0{,}949$ & $-0{,}949$\\
+1  & 0001 & $-3$ & $-1$ & $-0{,}949$ & $-0{,}316$ & 9  & 1001 & $+3$ & $-1$ & $+0{,}949$ & $-0{,}316$\\
+2  & 0010 & $-3$ & $+3$ & $-0{,}949$ & $+0{,}949$ & 10 & 1010 & $+3$ & $+3$ & $+0{,}949$ & $+0{,}949$\\
+3  & 0011 & $-3$ & $+1$ & $-0{,}949$ & $+0{,}316$ & 11 & 1011 & $+3$ & $+1$ & $+0{,}949$ & $+0{,}316$\\
+4  & 0100 & $-1$ & $-3$ & $-0{,}316$ & $-0{,}949$ & 12 & 1100 & $+1$ & $-3$ & $+0{,}316$ & $-0{,}949$\\
+5  & 0101 & $-1$ & $-1$ & $-0{,}316$ & $-0{,}316$ & 13 & 1101 & $+1$ & $-1$ & $+0{,}316$ & $-0{,}316$\\
+6  & 0110 & $-1$ & $+3$ & $-0{,}316$ & $+0{,}949$ & 14 & 1110 & $+1$ & $+3$ & $+0{,}316$ & $+0{,}949$\\
+7  & 0111 & $-1$ & $+1$ & $-0{,}316$ & $+0{,}316$ & 15 & 1111 & $+1$ & $+1$ & $+0{,}316$ & $+0{,}316$\\
+\bottomrule
+\end{tabular}
+\fonte{elaborado pelo autor.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95]
+  \draw[gray!50,->] (-4.3,0)--(4.5,0) node[right,font=\small]{I};
+  \draw[gray!50,->] (0,-4.3)--(0,4.5) node[above,font=\small]{Q};
+  \foreach \v in {-3,-1,1,3}{
+    \draw[gray!25] (\v,-3.8)--(\v,3.8);
+    \draw[gray!25] (-3.8,\v)--(3.8,\v);
+  }
+  \foreach \a/\x in {00/-3,01/-1,11/1,10/3}{
+    \foreach \b/\y in {00/-3,01/-1,11/1,10/3}{
+      \fill[ufamblue] (\x,\y) circle (2pt);
+      \node[font=\tiny,above right=-1pt] at (\x,\y) {\a\b};
+    }
+  }
+  \foreach \v/\t in {-3/$-3$,-1/$-1$,1/$+1$,3/$+3$}{
+    \node[font=\scriptsize,below] at (\v,-3.95) {\t};
+    \node[font=\scriptsize,left] at (-3.95,\v) {\t};
+  }
+  \node[font=\small,color=ufamblue] at (0,-4.65) {Níveis em unidades de $1/\sqrt{10}$; rótulos: bits $b_3b_2b_1b_0$};
+\end{tikzpicture}
+\caption{Constelação 16-QAM teórica com rótulos de Gray}\label{fig:qam-teo}
+\fonte{elaborado pelo autor.}
+\end{figure}
+
+\paragraph{(c) Por que dividir por $\sqrt{10}$, com demonstração.} Sem normalização, a energia média dos dezesseis símbolos não é unitária. Cada nível $\pm1$ e $\pm3$ aparece quatro vezes em cada eixo, e portanto
+\begin{equation}
+E[I^2]=\frac{4\cdot1+4\cdot1+4\cdot9+4\cdot9}{16}=\frac{80}{16}=5,
+\qquad
+E[Q^2]=5,
+\end{equation}
+\begin{equation}
+E_s=E[I^2+Q^2]=5+5=10.
+\end{equation}
+Para que a energia média seja 1, divide-se cada componente por $\sqrt{E_s}=\sqrt{10}$. Isso porque a energia escala com o quadrado da amplitude, de modo que
+\begin{equation}
+E_s'=\frac{1}{16}\sum_{k=1}^{16}\left[\left(\frac{I_k}{\sqrt{10}}\right)^2+\left(\frac{Q_k}{\sqrt{10}}\right)^2\right]=\frac{1}{10}\cdot\frac{160}{16}=\frac{10}{10}=1.
+\end{equation}
+Dessa forma, a 16-QAM passa a ter a mesma energia média por símbolo que a BPSK e a QPSK normalizadas, e a comparação entre as três modulações é feita à mesma potência média.
+
+\paragraph{(d) Por que as amplitudes não são todas iguais.} Na QPSK, os quatro pontos repousam sobre uma única circunferência, e a informação está somente na fase. Na 16-QAM, os pontos combinam dois níveis de cada eixo, e o módulo $|s|=\sqrt{(I^2+Q^2)/10}$ assume três valores distintos. Os quatro pontos de canto, com $(\pm3,\pm3)$, têm $|s|=\sqrt{18/10}\approx1{,}342$; os oito pontos de borda, com $(\pm1,\pm3)$ e $(\pm3,\pm1)$, têm $|s|=\sqrt{10/10}=1$; e os quatro pontos internos, com $(\pm1,\pm1)$, têm $|s|=\sqrt{2/10}\approx0{,}447$. A Figura~\ref{fig:aneis} resume essa distribuição.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=26pt, width=0.72\linewidth, height=5.4cm,
+  ylabel={Quantidade de símbolos}, xlabel={Amplitude $|s|$},
+  symbolic x coords={0{,}447,1{,}000,1{,}342}, xtick=data,
+  nodes near coords, ymin=0, ymax=10, enlarge x limits=0.3,
+  ymajorgrids, grid style={gray!30}, tick label style={font=\small},
+  title={Anéis de amplitude da 16-QAM normalizada}]
+\addplot[fill=cQ!80] coordinates {(0{,}447,4) (1{,}000,8) (1{,}342,4)};
+\end{axis}
+\end{tikzpicture}
+\caption{Distribuição dos 16 símbolos da 16-QAM em três anéis de amplitude}\label{fig:aneis}
+\fonte{elaborado pelo autor, com $|s|=\sqrt{(I^2+Q^2)/10}$.}
+\end{figure}
+
+A razão dessa diferença é que a QAM codifica informação simultaneamente em amplitude e em fase, ao passo que a QPSK usa somente a fase. Essa escolha tem um preço, pois, com a mesma energia média, a distância mínima entre pontos vizinhos cai de $\sqrt2\approx1{,}414$ na QPSK para $2/\sqrt{10}\approx0{,}632$ na 16-QAM, e a razão entre os quadrados dessas distâncias é $2/0{,}4=5$, ou cerca de $\SI{7}{dB}$. Em consequência, a 16-QAM exige relação sinal-ruído cerca de \SI{7}{dB} maior para manter a mesma probabilidade de erro de símbolo vizinho, além de requerer amplificadores lineares, por não ter envoltória constante \cite{sklar2001}.

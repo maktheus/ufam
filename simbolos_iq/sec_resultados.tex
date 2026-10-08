@@ -1,0 +1,105 @@
+% Resultados: por modulação, quatro parágrafos (fluxo, constelação, saída temporal, interpretação).
+\newcommand{\figfluxo}[2]{%
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{figuras/#1_fluxo.png}
+\caption{Fluxo do GNU Radio para #2, com os parâmetros \textit{Random Source/Maximum} e \textit{Chunks to Symbols/Symbol Table}}\label{fig:#1-fluxo}
+\fonte{captura de tela do GNU Radio Companion com o arquivo \texttt{.grc} entregue; o painel inferior transcreve os parâmetros lidos do arquivo.}
+\end{figure}}
+\newcommand{\figconst}[2]{%
+\begin{figure}[H]\centering
+\includegraphics[width=0.78\linewidth]{figuras/#1_constelacao.png}
+\caption{Constelação #2 observada no plano I/Q}\label{fig:#1-const}
+\fonte{elaborado pelo autor, a partir de 5000 símbolos produzidos pelos blocos do GNU Radio.}
+\end{figure}}
+\newcommand{\figtemp}[2]{%
+\begin{figure}[H]\centering
+\includegraphics[width=\linewidth]{figuras/#1_temporal.png}
+\caption{Saída temporal das componentes I e Q da #2}\label{fig:#1-temp}
+\fonte{elaborado pelo autor, a partir dos mesmos símbolos produzidos pelos blocos do GNU Radio.}
+\end{figure}}
+
+\subsection{Captura 1 a 3: BPSK}
+
+O fluxo da BPSK, mostrado na Figura~\ref{fig:bpsk-fluxo}, liga o \textit{Random Source} com \texttt{Maximum} igual a 2 ao \textit{Chunks to Symbols} com \texttt{Symbol Table} \texttt{[-1+0j, 1+0j]}, e daí ao \textit{Throttle} e aos dois instrumentos de visualização. Como o alfabeto possui apenas dois símbolos, cada símbolo carrega um único bit. Desse modo, o fluxo é o mais simples dos três e serve de referência para as modificações posteriores.
+
+\figfluxo{bpsk}{BPSK}
+
+Quanto à constelação, a Figura~\ref{fig:bpsk-const} exibe somente dois pontos, em $(-1,0)$ e $(+1,0)$, ambos sobre o eixo I. Nos 5000 símbolos capturados, foram observados exatamente 2 pontos distintos, e a componente Q foi nula em todas as amostras. Por consequência, a informação da BPSK está inteiramente na fase, que vale $180^\circ$ ou $0^\circ$.
+
+\figconst{bpsk}{BPSK}
+
+A saída temporal da Figura~\ref{fig:bpsk-temp} confirma esse comportamento. A componente I alterna aleatoriamente entre $-1$ e $+1$, com degraus de duração múltipla de $\SI{0,03125}{ms}$, que é o período de um símbolo a \SI{32000}{símbolos\per\second}. Em contraste, a componente Q permanece constante em zero durante todo o intervalo observado.
+
+\figtemp{bpsk}{BPSK}
+
+Em resumo, os resultados validam as previsões: dois símbolos, amplitude unitária, energia média igual a 1 e ausência de componente em quadratura. Dessa forma, a BPSK transporta 1 bit por símbolo e, a \SI{32000}{símbolos\per\second}, resulta em \SI{32}{kbit/s}, valor que será ampliado nas modulações seguintes.
+
+\subsection{Captura 4 a 6: QPSK}
+
+Na QPSK, a Figura~\ref{fig:qpsk-fluxo} mostra que a topologia permaneceu a mesma e que apenas dois parâmetros mudaram: \texttt{Maximum} passou a 4 e a \texttt{Symbol Table} passou a ter quatro elementos complexos divididos por \sq{2}. Assim, cada índice de 0 a 3 corresponde a um par de bits, e o fluxo gera 2 bits por símbolo sem qualquer outra alteração na cadeia.
+
+\figfluxo{qpsk}{QPSK}
+
+A constelação da Figura~\ref{fig:qpsk-const} apresenta quatro pontos, um em cada quadrante, em $(\pm0{,}7071,\ \pm0{,}7071)$. A amplitude medida foi igual a 1 para os quatro pontos, de modo que todos repousam sobre a mesma circunferência de raio unitário. Isso demonstra, na prática, a eficácia da normalização por \sq{2}.
+
+\figconst{qpsk}{QPSK}
+
+No domínio do tempo, a Figura~\ref{fig:qpsk-temp} mostra que I e Q assumem, cada uma, apenas os valores $-0{,}7071$ e $+0{,}7071$, e que variam de forma independente uma da outra. Em outras palavras, ambos os eixos agora carregam informação, e cada um transporta um bit do par que compõe o símbolo.
+
+\figtemp{qpsk}{QPSK}
+
+Em síntese, a QPSK ocupou o eixo Q, que estava ocioso na BPSK, e com isso dobrou a quantidade de bits por símbolo mantendo a energia média igual a 1. Portanto, a \SI{32000}{símbolos\per\second} a taxa de bits chega a \SI{64}{kbit/s}, sem aumentar a taxa de símbolos nem a largura de banda associada.
+
+\subsection{Captura 7 a 9: 16-QAM}
+
+O fluxo da 16-QAM, apresentado na Figura~\ref{fig:16qam-fluxo}, utiliza \texttt{Maximum} igual a 16 e uma \texttt{Symbol Table} de dezesseis elementos, formados pelos níveis $\{-3,-1,+1,+3\}$ em cada eixo e divididos por \sq{10}. Como a tabela precisa de 16 índices, o alfabeto passa a ter $2^4$ símbolos, e cada um carrega 4 bits. A cadeia de blocos continua idêntica à das modulações anteriores.
+
+\figfluxo{16qam}{16-QAM}
+
+Na constelação da Figura~\ref{fig:16qam-const}, foram observados 16 pontos distintos dispostos em grade regular de $4\times4$. Os quatro níveis observados em cada eixo são $-0{,}9487$, $-0{,}3162$, $+0{,}3162$ e $+0{,}9487$, equivalentes a $\pm3/\sqrt{10}$ e $\pm1/\sqrt{10}$. Os níveis estão destacados pelas linhas tracejadas e rotulados nas bordas da figura.
+
+\figconst{16qam}{16-QAM}
+
+A saída temporal da Figura~\ref{fig:16qam-temp} reforça essa leitura, pois tanto I quanto Q saltam entre exatamente quatro patamares horizontais, que coincidem com os níveis identificados na constelação. Além disso, a amplitude $|s|$ assumiu três valores, $0{,}4472$, $1{,}0000$ e $1{,}3416$, o que evidencia que os símbolos não pertencem a uma única circunferência, como ocorria na QPSK.
+
+\figtemp{16qam}{16-QAM}
+
+Por fim, a energia média calculada sobre os 5000 símbolos capturados foi $1{,}0048$, valor muito próximo do teórico 1, e o pequeno desvio decorre apenas da frequência amostral com que cada ponto apareceu. Assim, a 16-QAM entrega 4 bits por símbolo e \SI{128}{kbit/s} a \SI{32000}{símbolos\per\second}, ao custo de pontos mais próximos entre si.
+
+\subsection{Síntese dos valores observados}
+
+A Tabela~\ref{tab:medido} reúne os valores extraídos diretamente dos dados capturados e a Figura~\ref{fig:comp} compara a densidade das constelações. Observa-se que o número de pontos distintos coincide com $M$ nas três modulações, que a energia média ficou em 1 e que a taxa de bits cresce com $\log_2 M$.
+
+\begin{table}[H]
+\centering\small
+\caption{Valores observados nos 5000 símbolos capturados em cada modulação}\label{tab:medido}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Modulação} & \textbf{Pontos} & \textbf{Níveis em I} & \textbf{Níveis em Q} & \textbf{$|s|$ distintos} & \textbf{$E_s$ médio} & \textbf{$R_b$ (kbit/s)}\\
+\midrule
+BPSK   & 2  & $\pm1$ & $0$ & 1 & 1,0000 & 32\\
+QPSK   & 4  & $\pm0{,}7071$ & $\pm0{,}7071$ & 1 & 1,0000 & 64\\
+16-QAM & 16 & $\pm0{,}9487;\ \pm0{,}3162$ & $\pm0{,}9487;\ \pm0{,}3162$ & 3 & 1,0048 & 128\\
+\bottomrule
+\end{tabular}
+\fonte{elaborado pelo autor, a partir de \texttt{dados/resumo.json}, gerado dos arquivos \texttt{.csv} capturados.}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar, bar width=18pt, width=0.8\linewidth, height=5.6cm,
+  ylabel={Quantidade}, symbolic x coords={BPSK,QPSK,16-QAM}, xtick=data,
+  nodes near coords, ymin=0, ymax=150, enlarge x limits=0.3,
+  ymajorgrids, grid style={gray!30}, tick label style={font=\small},
+  legend style={at={(0.5,-0.2)},anchor=north,legend columns=-1,font=\small},
+  title={Pontos observados e taxa de bits (kbit/s)}]
+\addplot[fill=ufamblue!70] coordinates {(BPSK,2) (QPSK,4) (16-QAM,16)};
+\addplot[fill=cQ!80] coordinates {(BPSK,32) (QPSK,64) (16-QAM,128)};
+\legend{Pontos distintos observados,Taxa de bits (kbit/s)}
+\end{axis}
+\end{tikzpicture}
+\caption{Comparação entre as três modulações a \SI{32000}{símbolos\per\second}}\label{fig:comp}
+\fonte{elaborado pelo autor, com os valores da Tabela~\ref{tab:medido}.}
+\end{figure}
