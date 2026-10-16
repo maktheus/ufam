@@ -1,0 +1,941 @@
+\documentclass[aspectratio=169,12pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,decorations.pathreplacing,calc,patterns}
+
+%==============================================================
+% TEMA E CORES UFAM
+%==============================================================
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamlightblue}{RGB}{0,102,170}
+\definecolor{ufamgold}{RGB}{204,153,0}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{matrixbg}{RGB}{240,248,255}
+\definecolor{resultcolor}{RGB}{0,80,40}
+\definecolor{alertred}{RGB}{180,30,30}
+
+\setbeamercolor{palette primary}{bg=ufamblue, fg=white}
+\setbeamercolor{palette secondary}{bg=ufamlightblue, fg=white}
+\setbeamercolor{palette tertiary}{bg=ufamgold, fg=black}
+\setbeamercolor{palette quaternary}{bg=ufamblue, fg=white}
+\setbeamercolor{structure}{fg=ufamblue}
+\setbeamercolor{section in toc}{fg=ufamblue}
+\setbeamercolor{frametitle}{bg=ufamblue, fg=white}
+\setbeamercolor{title}{bg=ufamblue, fg=white}
+\setbeamercolor{block title}{bg=ufamlightblue, fg=white}
+\setbeamercolor{block body}{bg=matrixbg, fg=black}
+\setbeamercolor{block title alerted}{bg=alertred, fg=white}
+\setbeamercolor{block body alerted}{bg=red!5, fg=black}
+\setbeamercolor{block title example}{bg=ufamgreen, fg=white}
+\setbeamercolor{block body example}{bg=green!5, fg=black}
+
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette primary}
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette secondary}
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.5ex,dp=1.5ex,center]{palette primary}
+      \usebeamerfont{date in head/foot}
+      \insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}
+  }
+}
+
+%==============================================================
+\title[Segmenta\c{c}\~ao Morfol\'ogica]{Improved Image Segmentation Method\\Based on Morphological Reconstruction}
+\subtitle{Wu, Y., Peng, X., Ruan, K. \textit{et al.} --- \textit{Multimedia Tools and Applications}, 2017}
+\author[M.\ Uch\^oa]{Matheus Serr\~ao Uch\^oa}
+\institute[UFAM/IComp]{%
+  Universidade Federal do Amazonas --- IComp\\
+  Processamento Digital de Imagens}
+\date{\today}
+
+\begin{document}
+
+%==============================================================
+% SLIDE 1 — CAPA
+%==============================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+%==============================================================
+% SLIDE 2 — ROTEIRO
+%==============================================================
+\begin{frame}{Roteiro}
+\tableofcontents
+\end{frame}
+
+%==============================================================
+\section{Introdu\c{c}\~ao e Motiva\c{c}\~ao}
+%==============================================================
+
+%==============================================================
+% SLIDE 3
+%==============================================================
+\begin{frame}{O que \'e a Transformada Watershed?}
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\begin{itemize}
+  \item Interpreta a imagem como \textbf{superf\'icie topogr\'afica}
+  \item Pixels claros $\to$ ``montanhas''; escuros $\to$ ``vales''
+  \item \'Agua sobe simultaneamente a partir de cada m\'inimo local
+  \item Onde as \'aguas se encontram $\to$ \textbf{linha de watershed} (fronteira)
+  \item Cada regi\~ao inundada $=$ \textbf{bacia de capta\c{c}\~ao} (segmento)
+\end{itemize}
+\end{column}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.65]
+  % Topographic surface
+  \draw[thick, ufamblue, fill=blue!8]
+    (0,0) -- (0.5,1.2) -- (1.2,0.3) -- (1.8,1.8) -- (2.5,0.5) --
+    (3.2,2.0) -- (3.8,0.4) -- (4.5,1.5) -- (5,0) -- cycle;
+  % Water levels
+  \fill[blue!30, opacity=0.5] (0,0) -- (0.5,1.0) -- (1.2,0.3) -- (1.2,0) -- cycle;
+  \fill[red!30, opacity=0.5] (1.2,0) -- (1.2,0.3) -- (2.5,0.5) -- (2.5,0) -- cycle;
+  \fill[green!30, opacity=0.5] (2.5,0) -- (2.5,0.5) -- (3.8,0.4) -- (3.8,0) -- cycle;
+  \fill[orange!30, opacity=0.5] (3.8,0) -- (3.8,0.4) -- (5,0) -- cycle;
+  % Labels
+  \draw[<-, thick, alertred] (1.2,0.3) -- (1.2,-0.5) node[below, font=\tiny]{Watershed};
+  \draw[<-, thick, alertred] (2.5,0.5) -- (2.5,-0.5) node[below, font=\tiny]{Watershed};
+  \draw[<-, thick, alertred] (3.8,0.4) -- (3.8,-0.5) node[below, font=\tiny]{Watershed};
+  \node[font=\tiny, blue!70!black] at (0.6,-0.2) {$B_1$};
+  \node[font=\tiny, red!70!black] at (1.85,-0.2) {$B_2$};
+  \node[font=\tiny, green!60!black] at (3.15,-0.2) {$B_3$};
+  \node[font=\tiny, orange!70!black] at (4.4,-0.2) {$B_4$};
+\end{tikzpicture}
+
+\vspace{0.3cm}
+{\footnotesize Met\'afora topogr\'afica da watershed.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 4
+%==============================================================
+\begin{frame}{O Problema: Sobre-Segmenta\c{c}\~ao}
+
+\begin{alertblock}{Problema Central}
+Aplicada diretamente ao gradiente, a watershed trata \textbf{cada m\'inimo local} como uma bacia separada $\Rightarrow$ centenas de regi\~oes esp\'urias.
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Causas da sobre-segmenta\c{c}\~ao:}
+\begin{itemize}
+  \item Ru\'ido na imagem
+  \item Varia\c{c}\~oes de textura
+  \item Artefatos de quantiza\c{c}\~ao
+  \item M\'inimos locais esp\'urios no gradiente
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Tentativas anteriores:}
+\begin{itemize}
+  \item Limiar global \'unico para suprimir m\'inimos rasos
+  \item[\color{alertred}$\times$] Falha em imagens com objetos de \textbf{tamanhos diferentes}
+  \item[\color{alertred}$\times$] Limiar alto $\to$ perde objetos pequenos
+  \item[\color{alertred}$\times$] Limiar baixo $\to$ fragmenta objetos grandes
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 5
+%==============================================================
+\begin{frame}{Limita\c{c}\~ao do Limiar \'Unico}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.85, >=Stealth]
+  % Left scenario
+  \node[font=\small\bfseries, ufamblue] at (2.3,3.8) {Limiar Alto};
+  \draw[thick] (0,0) rectangle (4.5,3.2);
+  % Large object - well segmented
+  \draw[thick, ufamgreen, fill=green!10] (0.5,0.5) rectangle (3.5,2.5);
+  \node[font=\tiny] at (2.0,1.5) {Objeto grande OK};
+  % Small objects - lost
+  \draw[thick, red, dashed] (4.0,2.5) circle (0.3);
+  \node[font=\tiny, alertred] at (4.0,1.8) {Perdido!};
+
+  % Right scenario
+  \begin{scope}[xshift=6.5cm]
+  \node[font=\small\bfseries, ufamblue] at (2.3,3.8) {Limiar Baixo};
+  \draw[thick] (0,0) rectangle (4.5,3.2);
+  % Large object - over-segmented
+  \draw[thick, red, dashed] (0.5,0.5) rectangle (3.5,2.5);
+  \draw[red, dashed] (2.0,0.5) -- (2.0,2.5);
+  \draw[red, dashed] (0.5,1.5) -- (3.5,1.5);
+  \node[font=\tiny, alertred] at (2.0,1.0) {Fragmentado!};
+  % Small objects - preserved
+  \draw[thick, ufamgreen, fill=green!10] (4.0,2.5) circle (0.3);
+  \node[font=\tiny] at (4.0,1.8) {OK};
+  \end{scope}
+
+  % Arrow between
+  \draw[<->, very thick, ufamgold] (5.0,1.6) -- (6.0,1.6);
+  \node[font=\tiny\bfseries, ufamgold] at (5.5,2.0) {Trade-off};
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Tese Central do Artigo}
+\textbf{Nenhum limiar \'unico} resolve simultaneamente objetos de m\'ultiplas escalas.\\
+$\Rightarrow$ \'E necess\'aria uma abordagem \textbf{multi-escala} com \textbf{reconstru\c{c}\~ao morfol\'ogica}.
+\end{block}
+
+\end{frame}
+
+%==============================================================
+\section{Fundamentos de Morfologia Matem\'atica}
+%==============================================================
+
+%==============================================================
+% SLIDE 6
+%==============================================================
+\begin{frame}{Opera\c{c}\~oes Morfol\'ogicas B\'asicas}
+
+Sejam $F$ uma imagem e $B$ um elemento estruturante:
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Dilata\c{c}\~ao $\delta_B$}
+\[
+  (\delta_B F)(x,y) = \max_{(u,v)\in B} F(x-u,\,y-v)
+\]
+Expande regi\~oes claras, preenche buracos escuros.
+\end{block}
+
+\begin{block}{Abertura $\gamma_B$}
+\[
+  \gamma_B(F) = \delta_B(\varepsilon_B(F))
+\]
+Remove picos claros pequenos.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Eros\~ao $\varepsilon_B$}
+\[
+  (\varepsilon_B F)(x,y) = \min_{(u,v)\in B} F(x+u,\,y+v)
+\]
+Encolhe regi\~oes claras, elimina pontos claros.
+\end{block}
+
+\begin{block}{Fechamento $\varphi_B$}
+\[
+  \varphi_B(F) = \varepsilon_B(\delta_B(F))
+\]
+Remove vales escuros pequenos.
+\end{block}
+\end{column}
+\end{columns}
+
+\vspace{0.4cm}
+
+\begin{exampleblock}{Gradiente Morfol\'ogico}
+\[
+  g(I) = \delta_B(I) - \varepsilon_B(I)
+\]
+Valores altos nas bordas, $\approx 0$ em regi\~oes homog\^eneas --- \'e a superf\'icie para a watershed.
+\end{exampleblock}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 7
+%==============================================================
+\begin{frame}{Reconstru\c{c}\~ao Morfol\'ogica}
+
+\begin{block}{Defini\c{c}\~ao}
+Dados um \textbf{marcador} $J$ e uma \textbf{m\'ascara} $I$ (com $J \leq I$ pixel a pixel):
+\[
+  R^{\delta}_I(J):\quad
+  J^{(1)} = \delta_B(J) \wedge I,\quad
+  J^{(2)} = \delta_B(J^{(1)}) \wedge I,\quad
+  \ldots\quad \text{at\'e } J^{(n+1)} = J^{(n)}
+\]
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.6]
+  % Mask
+  \draw[thick, ufamblue, fill=blue!5] plot[smooth] coordinates {(0,0) (0.5,2) (1.5,3) (2.5,1) (3,2.5) (4,3.5) (5,1) (5.5,0)};
+  \node[font=\tiny, ufamblue] at (4.5,3.8) {M\'ascara $I$};
+  % Marker (eroded)
+  \draw[thick, alertred, dashed] plot[smooth] coordinates {(0,0) (0.5,0.5) (1.5,1.5) (2.5,0.3) (3,1.0) (4,2.0) (5,0.3) (5.5,0)};
+  \node[font=\tiny, alertred] at (1.0,0.2) {Marcador $J$};
+  % Reconstruction result
+  \draw[ultra thick, ufamgreen] plot[smooth] coordinates {(0,0) (0.5,2) (1.5,3) (2.5,0.3) (3,2.5) (4,3.5) (5,0.3) (5.5,0)};
+  \node[font=\tiny, ufamgreen] at (3.8,1.0) {$R^{\delta}_I(J)$};
+\end{tikzpicture}
+\end{column}
+\begin{column}{0.52\textwidth}
+\textbf{Propriedades-chave:}
+\begin{itemize}
+  \item Propaga picos do marcador pelas regi\~oes conectadas da m\'ascara
+  \item Para nas ``barreiras'' de intensidade
+  \item \textbf{Preserva a forma} dos objetos remanescentes
+  \item Superior \`a abertura padr\~ao: n\~ao encolhe bordas
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 8
+%==============================================================
+\begin{frame}{Abertura e Fechamento por Reconstru\c{c}\~ao}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\begin{block}{Abertura por Reconstru\c{c}\~ao}
+\begin{enumerate}
+  \item Erodir: $I_e = \varepsilon_B(I)$
+  \item Reconstruir: $I_{\mathrm{obr}} = R^{\delta}_I(I_e)$
+\end{enumerate}
+\vspace{0.2cm}
+\textbf{Efeito:} suprime picos claros (ru\'ido) \textbf{sem distorcer} as bordas reais dos objetos.
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Fechamento por Reconstru\c{c}\~ao}
+\begin{enumerate}
+  \item Dilatar: $I_d = \delta_B(I)$
+  \item Reconstruir no complemento
+\end{enumerate}
+\vspace{0.2cm}
+\textbf{Efeito:} remove buracos escuros dentro dos objetos \textbf{preservando} sua geometria.
+\end{block}
+\end{column}
+\end{columns}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Vantagem sobre Abertura/Fechamento Padr\~ao}
+A abertura padr\~ao $\gamma_B$ encolhe as bordas dos objetos. A abertura por reconstru\c{c}\~ao \textbf{restaura completamente} a forma de qualquer objeto que sobreviveu \`a eros\~ao --- apenas os picos menores que $B$ s\~ao eliminados.
+\end{exampleblock}
+
+\end{frame}
+
+%==============================================================
+\section{M\'etodo Proposto}
+%==============================================================
+
+%==============================================================
+% SLIDE 9
+%==============================================================
+\begin{frame}{Vis\~ao Geral do Pipeline}
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=0.3cm and 0.4cm,
+  mybox/.style={draw, thick, rounded corners=3pt, text=white,
+              font=\footnotesize\bfseries, minimum height=0.8cm,
+              minimum width=2.0cm, align=center},
+  arr/.style={->, thick, ufamblue},
+  >=Stealth
+]
+  \node[mybox, fill=ufamblue] (input) {Imagem\\Original};
+  \node[mybox, fill=ufamlightblue, right=of input] (grad) {Gradiente\\Morfol\'ogico};
+  \node[mybox, fill=ufamgreen!80!black, right=of grad] (recon) {Abertura +\\Fechamento\\por Reconstr.};
+  \node[mybox, fill=ufamgold!80!black, right=of recon, text=black] (fg) {Marcadores\\Foreground};
+  \node[mybox, fill=ufamgold!80!black, below=0.5cm of fg, text=black] (bg) {Marcadores\\Background};
+  \node[mybox, fill=alertred!80!black, right=of fg, yshift=-0.4cm] (impose) {Imposi\c{c}\~ao\\de M\'inimos};
+  \node[mybox, fill=ufamblue, right=of impose] (ws) {Watershed\\Controlada};
+
+  \draw[arr] (input) -- (grad);
+  \draw[arr] (grad) -- (recon);
+  \draw[arr] (recon) -- (fg);
+  \draw[arr] (recon) |- (bg);
+  \draw[arr] (fg) -- (impose);
+  \draw[arr] (bg) -| (impose);
+  \draw[arr] (impose) -- (ws);
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{enumerate}
+  \item \textbf{Gradiente morfol\'ogico} da imagem original
+  \item \textbf{Limpeza} via abertura + fechamento por reconstru\c{c}\~ao (multi-escala)
+  \item Extra\c{c}\~ao de \textbf{marcadores foreground} (m\'aximos regionais)
+  \item Extra\c{c}\~ao de \textbf{marcadores background} (SKIZ via dist\^ancia)
+  \item \textbf{Imposi\c{c}\~ao de m\'inimos} no gradiente
+  \item \textbf{Watershed controlada por marcadores}
+\end{enumerate}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 10
+%==============================================================
+\begin{frame}{Etapa 1 --- Gradiente Morfol\'ogico}
+
+\begin{block}{C\'alculo}
+\[
+  g(I) = \delta_B(I) - \varepsilon_B(I)
+\]
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\textbf{Caracter\'isticas:}
+\begin{itemize}
+  \item Valores altos nas \textbf{transi\c{c}\~oes de borda}
+  \item Valores $\approx 0$ em regi\~oes \textbf{homog\^eneas}
+  \item Forma a superf\'icie topogr\'afica para a watershed
+  \item Problema: cont\'em \textbf{muitos m\'inimos locais esp\'urios}
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Resultado:} cada m\'inimo local gerar\'a uma bacia de capta\c{c}\~ao $\Rightarrow$ sobre-segmenta\c{c}\~ao se usado diretamente.
+\end{column}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.55]
+  % Simulated gradient with many minima
+  \draw[thick, ufamblue] plot[smooth] coordinates {
+    (0,1) (0.3,2.5) (0.6,0.8) (0.9,1.5) (1.2,0.3) (1.5,3.5)
+    (1.8,0.5) (2.1,1.2) (2.4,0.4) (2.7,0.9) (3.0,3.8)
+    (3.3,0.6) (3.6,1.0) (3.9,0.2) (4.2,2.8) (4.5,0.7)
+    (4.8,1.3) (5.1,0.5) (5.4,1.8) (5.7,0.3)
+  };
+  \node[font=\tiny\bfseries] at (2.8,4.3) {Gradiente com m\'inimos esp\'urios};
+  % Mark spurious minima
+  \fill[alertred] (0.6,0.8) circle (2pt);
+  \fill[alertred] (1.2,0.3) circle (2pt);
+  \fill[alertred] (1.8,0.5) circle (2pt);
+  \fill[alertred] (2.4,0.4) circle (2pt);
+  \fill[alertred] (3.3,0.6) circle (2pt);
+  \fill[alertred] (3.9,0.2) circle (2pt);
+  \fill[alertred] (4.5,0.7) circle (2pt);
+  \fill[alertred] (5.1,0.5) circle (2pt);
+  \fill[alertred] (5.7,0.3) circle (2pt);
+  \node[font=\tiny, alertred] at (3.0,-0.3) {$\bullet$ = m\'inimos locais};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 11
+%==============================================================
+\begin{frame}{Etapa 2 --- Eros\~ao Multi-Escala e Reconstru\c{c}\~ao}
+
+\begin{block}{Inova\c{c}\~ao Central do Artigo}
+Usar elementos estruturantes de \textbf{tamanhos diferentes} para cada escala de objeto:
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Abertura por Reconstru\c{c}\~ao:}
+\begin{enumerate}
+  \item $I_e = \varepsilon_{B_k}(I)$ com $B_k$ adaptado \`a escala $k$
+  \item $I_{\mathrm{obr}} = R^{\delta}_I(I_e)$
+\end{enumerate}
+\vspace{0.2cm}
+$B$ pequeno $\to$ preserva detalhes finos\\
+$B$ grande $\to$ elimina ru\'ido em regi\~oes grandes
+
+\vspace{0.3cm}
+\textbf{Fechamento por Reconstru\c{c}\~ao:}
+\begin{enumerate}
+  \item $I_d = \delta_{B_k}(I_{\mathrm{obr}})$
+  \item Reconstru\c{c}\~ao no complemento
+\end{enumerate}
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.7]
+  % Multi-scale SE illustration
+  \fill[blue!20] (0,0) rectangle (0.4,0.4);
+  \draw[thick] (0,0) rectangle (0.4,0.4);
+  \node[font=\tiny, below] at (0.2,-0.1) {$B_1$ (3$\times$3)};
+
+  \fill[blue!30] (1.5,-0.2) rectangle (2.3,0.6);
+  \draw[thick] (1.5,-0.2) rectangle (2.3,0.6);
+  \node[font=\tiny, below] at (1.9,-0.3) {$B_2$ (5$\times$5)};
+
+  \fill[blue!40] (3.2,-0.5) rectangle (4.4,0.7);
+  \draw[thick] (3.2,-0.5) rectangle (4.4,0.7);
+  \node[font=\tiny, below] at (3.8,-0.6) {$B_3$ (9$\times$9)};
+
+  % Objects they target
+  \draw[->, thick, ufamgreen] (0.2,0.6) -- (0.2,1.3);
+  \node[font=\tiny, ufamgreen, above] at (0.2,1.3) {Obj.\ peq.};
+
+  \draw[->, thick, ufamgold!80!black] (1.9,0.8) -- (1.9,1.3);
+  \node[font=\tiny, ufamgold!80!black, above] at (1.9,1.3) {Obj.\ m\'ed.};
+
+  \draw[->, thick, ufamblue] (3.8,0.9) -- (3.8,1.3);
+  \node[font=\tiny, ufamblue, above] at (3.8,1.3) {Obj.\ grande};
+\end{tikzpicture}
+
+\vspace{0.4cm}
+{\footnotesize As bacias de capta\c{c}\~ao s\~ao semeadas separadamente em m\'ultiplas escalas.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 12
+%==============================================================
+\begin{frame}{Etapa 3 --- Extra\c{c}\~ao de Marcadores Foreground}
+
+\begin{block}{Procedimento}
+\begin{enumerate}
+  \item Extrair os \textbf{m\'aximos regionais} da imagem reconstru\'ida:
+  \[
+    M_{fg} = \texttt{imregionalmax}(I_{\mathrm{obrcbr}})
+  \]
+  \item Remover blobs muito pequenos (\'area $<$ limiar) com \texttt{bwareaopen}
+  \item Resultado: cada componente conexa \'e um \textbf{marcador foreground} (semente de bacia)
+\end{enumerate}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{M\'aximos Regionais}
+Uma componente conexa de pixels \'e um \textbf{m\'aximo regional} se todos os seus vizinhos t\^em valor \textbf{estritamente menor}. Ap\'os a reconstru\c{c}\~ao, os objetos t\^em interiores planos, gerando m\'aximos regionais bem definidos exatamente dentro de cada objeto.
+\end{exampleblock}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 13
+%==============================================================
+\begin{frame}{Etapa 4 --- Extra\c{c}\~ao de Marcadores Background (SKIZ)}
+
+\begin{block}{Skeleton by Influence Zones (SKIZ)}
+\begin{enumerate}
+  \item Binarizar a imagem limpa $\to$ m\'ascara foreground
+  \item Calcular a \textbf{transformada de dist\^ancia} $D$ do background
+  \item Aplicar watershed a $D$: as linhas de crista ($DL = 0$) s\~ao os marcadores background
+\end{enumerate}
+\end{block}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.7, >=Stealth]
+  % Objects
+  \fill[ufamblue!30] (0.5,0.5) circle (0.6);
+  \fill[ufamblue!30] (3.0,1.0) circle (0.9);
+  \fill[ufamblue!30] (1.5,2.5) circle (0.5);
+
+  % SKIZ lines
+  \draw[thick, alertred, dashed] (1.5,0) -- (1.8,1.5) -- (0.5,2.0) -- (0,2.5);
+  \draw[thick, alertred, dashed] (1.8,1.5) -- (2.5,2.8) -- (3.5,3.0);
+  \draw[thick, alertred, dashed] (1.8,1.5) -- (4.0,0);
+
+  % Labels
+  \node[font=\tiny\bfseries, ufamblue] at (0.5,0.5) {$O_1$};
+  \node[font=\tiny\bfseries, ufamblue] at (3.0,1.0) {$O_2$};
+  \node[font=\tiny\bfseries, ufamblue] at (1.5,2.5) {$O_3$};
+  \node[font=\tiny, alertred] at (3.5,2.2) {SKIZ (bg markers)};
+
+  \draw[thick] (0,0) rectangle (4.0,3.0);
+\end{tikzpicture}
+\end{center}
+
+{\footnotesize Os marcadores background ficam no ``ponto m\'edio'' entre objetos, evitando que as linhas de watershed invadam os objetos.}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 14
+%==============================================================
+\begin{frame}{Etapa 5 --- Imposi\c{c}\~ao de M\'inimos}
+
+\begin{block}{Modifica\c{c}\~ao de Homotopia}
+\[
+  G_{\mathrm{mod}} = \texttt{imimposemin}\!\left(G,\; M_{fg} \cup M_{bg}\right)
+\]
+\end{block}
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\textbf{O que faz:}
+\begin{itemize}
+  \item Reescreve o gradiente para que m\'inimos regionais existam \textbf{somente} nas posi\c{c}\~oes dos marcadores
+  \item Todos os outros m\'inimos locais s\~ao ``preenchidos'' at\'e o n\'ivel vizinho
+  \item Preserva a rela\c{c}\~ao de ordem relativa
+  \item Implementado via reconstru\c{c}\~ao geod\'esica no complemento
+\end{itemize}
+\end{column}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.55]
+  % Before
+  \node[font=\tiny\bfseries, ufamblue] at (2.5,4.5) {Antes};
+  \draw[thick, gray] plot[smooth] coordinates {
+    (0,2) (0.5,1) (1,2.5) (1.5,0.5) (2,3) (2.5,0.3) (3,2.8) (3.5,1.2) (4,2) (4.5,0.8) (5,2)
+  };
+  \fill[alertred] (0.5,1) circle (2pt);
+  \fill[alertred] (1.5,0.5) circle (2pt);
+  \fill[alertred] (2.5,0.3) circle (2pt);
+  \fill[alertred] (3.5,1.2) circle (2pt);
+  \fill[alertred] (4.5,0.8) circle (2pt);
+\end{tikzpicture}
+
+\vspace{0.2cm}
+
+\begin{tikzpicture}[scale=0.55]
+  % After
+  \node[font=\tiny\bfseries, ufamgreen] at (2.5,4.5) {Depois};
+  \draw[thick, ufamgreen!80!black] plot[smooth] coordinates {
+    (0,2) (0.8,1.8) (1,2.5) (1.5,1.8) (2,3) (2.5,0.3) (3,2.8) (3.2,2.5) (4,2) (4.3,1.8) (5,2)
+  };
+  \fill[ufamgreen] (2.5,0.3) circle (3pt);
+  \node[font=\tiny, ufamgreen] at (2.5,-0.3) {Marcador};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 15
+%==============================================================
+\begin{frame}{Etapa 6 --- Watershed Controlada por Marcadores}
+
+\begin{block}{Resultado Final}
+A watershed \'e aplicada ao gradiente modificado $G_{\mathrm{mod}}$:
+\begin{itemize}
+  \item Todos os m\'inimos esp\'urios foram eliminados
+  \item A inunda\c{c}\~ao come\c{c}a \textbf{somente} nos marcadores definidos
+  \item Cada bacia de capta\c{c}\~ao corresponde a \textbf{exatamente um objeto}
+  \item Linhas de watershed coincidem com \textbf{bordas reais}
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.8, >=Stealth]
+  % Traditional watershed (over-segmented)
+  \node[font=\small\bfseries, alertred] at (2,3.5) {Watershed Tradicional};
+  \draw[thick] (0,0) rectangle (4,3);
+  % Many small regions
+  \draw[thin, red!50] (0.5,0) -- (0.5,3);
+  \draw[thin, red!50] (1.0,0) -- (1.0,3);
+  \draw[thin, red!50] (1.5,0) -- (1.5,3);
+  \draw[thin, red!50] (2.0,0) -- (2.0,3);
+  \draw[thin, red!50] (2.5,0) -- (2.5,3);
+  \draw[thin, red!50] (3.0,0) -- (3.0,3);
+  \draw[thin, red!50] (3.5,0) -- (3.5,3);
+  \draw[thin, red!50] (0,0.5) -- (4,0.5);
+  \draw[thin, red!50] (0,1.0) -- (4,1.0);
+  \draw[thin, red!50] (0,1.5) -- (4,1.5);
+  \draw[thin, red!50] (0,2.0) -- (4,2.0);
+  \draw[thin, red!50] (0,2.5) -- (4,2.5);
+  \node[font=\footnotesize, alertred] at (2,1.5) {Sobre-segmentado};
+
+  % Proposed method
+  \begin{scope}[xshift=6cm]
+  \node[font=\small\bfseries, ufamgreen] at (2,3.5) {M\'etodo Proposto};
+  \draw[thick] (0,0) rectangle (4,3);
+  % Clean regions
+  \draw[ultra thick, ufamgreen] (0,0) -- (0,3) -- (4,3) -- (4,0) -- cycle;
+  \draw[ultra thick, ufamgreen] plot[smooth cycle] coordinates {(0.5,0.5) (1.5,0.3) (2.0,1.0) (1.5,1.5) (0.5,1.2)};
+  \draw[ultra thick, ufamgreen] plot[smooth cycle] coordinates {(2.5,1.5) (3.5,1.3) (3.7,2.5) (2.8,2.7)};
+  \draw[ultra thick, ufamgreen] (0.3,2.0) circle (0.4);
+  \node[font=\footnotesize, ufamgreen] at (2,-0.4) {Segmenta\c{c}\~ao precisa};
+  \end{scope}
+
+  \draw[->, ultra thick, ufamblue] (4.3,1.5) -- (5.7,1.5);
+\end{tikzpicture}
+\end{center}
+
+\end{frame}
+
+%==============================================================
+\section{Formul\c{c}\~ao Matem\'atica}
+%==============================================================
+
+%==============================================================
+% SLIDE 16
+%==============================================================
+\begin{frame}{Resumo Matem\'atico do Algoritmo}
+
+\begin{enumerate}
+  \item \textbf{Gradiente morfol\'ogico:}
+  \[
+    G = \delta_B(I) - \varepsilon_B(I)
+  \]
+
+  \item \textbf{Abertura por reconstru\c{c}\~ao:}
+  \[
+    I_{\mathrm{obr}} = R^{\delta}_I\!\left(\varepsilon_{B_k}(I)\right)
+  \]
+
+  \item \textbf{Fechamento por reconstru\c{c}\~ao:}
+  \[
+    I_{\mathrm{obrcbr}} = \left[R^{\varepsilon}_{I_{\mathrm{obr}}}\!\left(\delta_{B_k}(I_{\mathrm{obr}})\right)\right]^c
+  \]
+
+  \item \textbf{Marcadores foreground:}
+  $M_{fg} = \texttt{imregionalmax}(I_{\mathrm{obrcbr}})$
+
+  \item \textbf{Marcadores background (SKIZ):}
+  $M_{bg} = \texttt{watershed}\!\left(\texttt{bwdist}(\overline{M_{fg}})\right) == 0$
+
+  \item \textbf{Imposi\c{c}\~ao:}
+  $G_{\mathrm{mod}} = \texttt{imimposemin}(G,\; M_{fg} \cup M_{bg})$
+
+  \item \textbf{Segmenta\c{c}\~ao final:}
+  $L = \texttt{watershed}(G_{\mathrm{mod}})$
+\end{enumerate}
+
+\end{frame}
+
+%==============================================================
+\section{Resultados Experimentais}
+%==============================================================
+
+%==============================================================
+% SLIDE 17 — Pipeline detalhado
+%==============================================================
+\begin{frame}{Pipeline Aplicado: Segmenta\c{c}\~ao de Moedas}
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{apresentacao_imgs/pipeline_detalhado.png}
+\end{center}
+
+{\footnotesize Cada etapa do pipeline aplicada \`a imagem \textit{coins}: (1)~original, (2)~gradiente morfol\'ogico, (3)~abertura por reconstru\c{c}\~ao, (4)~fechamento por reconstru\c{c}\~ao, (5)~marcadores FG, (6)~marcadores BG (SKIZ), (7)~combina\c{c}\~ao, (8)~resultado final com \textbf{25 regi\~oes} (vs.\ 15.983 da watershed direta).}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 18 — Caso 1: Moedas
+%==============================================================
+\begin{frame}{Caso 1: Segmenta\c{c}\~ao de Moedas}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso1_moedas.png}
+\end{center}
+
+\begin{alertblock}{An\'alise}
+Watershed direta: \textbf{15.983 regi\~oes} (sobre-segmenta\c{c}\~ao extrema). M\'etodo proposto: \textbf{25 regi\~oes} --- cada moeda \'e segmentada individualmente com contornos precisos.
+\end{alertblock}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 19 — Caso 2: Células
+%==============================================================
+\begin{frame}{Caso 2: Segmenta\c{c}\~ao de C\'elulas (Imagem Biom\'edica)}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso2_celulas.png}
+\end{center}
+
+\begin{exampleblock}{An\'alise}
+Imagem de mitose celular. Watershed direta: \textbf{16.766 regi\~oes}. M\'etodo proposto: \textbf{250 regi\~oes} --- redu\c{c}\~ao de $\sim$98,5\%, preservando as estruturas celulares relevantes.
+\end{exampleblock}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 20 — Caso 3: Multi-escala
+%==============================================================
+\begin{frame}{Caso 3: Objetos Multi-Escala com Ru\'ido}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso3_multiescala.png}
+\end{center}
+
+\begin{block}{An\'alise}
+Imagem sint\'etica com 1 ret\^angulo grande, 1 c\'irculo m\'edio e 3 c\'irculos pequenos + ru\'ido gaussiano. Watershed direta: \textbf{17.350 regi\~oes}. M\'etodo proposto: \textbf{5 regi\~oes} --- exatamente o n\'umero correto de objetos.
+\end{block}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 21 — Caso 4: Cameraman
+%==============================================================
+\begin{frame}{Caso 4: Imagem Real (Cameraman)}
+
+\begin{center}
+\includegraphics[width=0.92\textwidth]{apresentacao_imgs/caso4_cameraman.png}
+\end{center}
+
+\begin{block}{An\'alise}
+Cena natural complexa. Watershed direta: \textbf{29.967 regi\~oes}. M\'etodo proposto: \textbf{8 regi\~oes} --- segmenta c\^amera, pessoa, c\'eu, grama e edif\'icios como regi\~oes coerentes.
+\end{block}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 22 — Tabela comparativa
+%==============================================================
+\begin{frame}{Compara\c{c}\~ao Quantitativa}
+
+\begin{center}
+\includegraphics[width=0.85\textwidth]{apresentacao_imgs/tabela_metricas.png}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Principais Achados}
+\begin{itemize}
+  \item Redu\c{c}\~ao de \textbf{99,7\%} a \textbf{99,97\%} no n\'umero de regi\~oes esp\'urias
+  \item Caso multi-escala: n\'umero \textbf{exato} de objetos recuperado (5/5)
+  \item Contornos fechados, \textbf{largura de 1 pixel}, m\'inima sub/sobre-segmenta\c{c}\~ao
+  \item \textbf{Robusto} a ru\'ido gaussiano ($\sigma = 15$)
+\end{itemize}
+\end{alertblock}
+
+\end{frame}
+
+%==============================================================
+\section{Conclus\~oes}
+%==============================================================
+
+%==============================================================
+% SLIDE 23
+%==============================================================
+\begin{frame}{Contribui\c{c}\~oes do Artigo}
+
+\begin{enumerate}
+  \item \textbf{Eros\~ao multi-escala para gera\c{c}\~ao de marcadores}
+  \begin{itemize}
+    \item Elementos estruturantes adaptados ao tamanho de cada objeto
+    \item Semeia bacias de capta\c{c}\~ao em todas as escalas simultaneamente
+  \end{itemize}
+
+  \vspace{0.3cm}
+
+  \item \textbf{Reconstru\c{c}\~ao morfol\'ogica para limpeza do gradiente}
+  \begin{itemize}
+    \item Superior \`a abertura/fechamento padr\~ao: preserva bordas
+    \item Remove ru\'ido sem distorcer a geometria dos objetos
+  \end{itemize}
+
+  \vspace{0.3cm}
+
+  \item \textbf{Extra\c{c}\~ao sistem\'atica de marcadores FG + BG}
+  \begin{itemize}
+    \item M\'aximos regionais (foreground) + SKIZ (background)
+    \item Garante que cada linha de watershed cai sobre uma borda real
+  \end{itemize}
+
+  \vspace{0.3cm}
+
+  \item \textbf{Pipeline integrado}
+  \begin{itemize}
+    \item Segmenta\c{c}\~ao com contornos fechados e precisos em imagens multi-escala
+    \item Aplic\'avel a imagens biom\'edicas, sensoriamento remoto, inspe\c{c}\~ao industrial
+  \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 24
+%==============================================================
+\begin{frame}{Conclus\~ao e Mensagem Principal}
+
+\begin{block}{Mensagem Principal}
+A \textbf{qualidade dos marcadores} --- e n\~ao a transformada watershed em si --- \'e o fator determinante da qualidade da segmenta\c{c}\~ao. O m\'etodo proposto dedica o n\'ucleo do algoritmo \`a computa\c{c}\~ao rigorosa desses marcadores via reconstru\c{c}\~ao morfol\'ogica multi-escala.
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Aplica\c{c}\~oes}
+\begin{columns}[T]
+\begin{column}{0.3\textwidth}
+\centering
+\textbf{Biom\'edica}\\
+C\'elulas, tecidos, \'org\~aos
+\end{column}
+\begin{column}{0.3\textwidth}
+\centering
+\textbf{Sensoriamento Remoto}\\
+Edif\'icios, vegeta\c{c}\~ao
+\end{column}
+\begin{column}{0.3\textwidth}
+\centering
+\textbf{Inspe\c{c}\~ao Industrial}\\
+Defeitos, pe\c{c}as
+\end{column}
+\end{columns}
+\end{exampleblock}
+
+\vspace{0.5cm}
+
+\begin{center}
+{\Large\bfseries\color{ufamblue} Obrigado!}\\[0.3cm]
+{\small Wu, Y., Peng, X., Ruan, K. \textit{et al.} \textit{Multimedia Tools and Applications}, vol.\ 76, pp.\ 19781--19793, 2017.}
+\end{center}
+
+\end{frame}
+
+%==============================================================
+% SLIDE 25 — REFERÊNCIAS
+%==============================================================
+\begin{frame}{Refer\^encias}
+
+\begin{thebibliography}{9}
+\footnotesize
+
+\bibitem{wu2017}
+Wu, Y., Peng, X., Ruan, K. \textit{et al.}
+\textit{Improved image segmentation method based on morphological reconstruction}.
+Multimedia Tools and Applications, v.\ 76, p.\ 19781--19793, 2017.
+
+\bibitem{gonzalez2018}
+Gonzalez, R.\ C.; Woods, R.\ E.
+\textit{Digital Image Processing}. 4.\ ed.\ Pearson, 2018.
+
+\bibitem{soille2003}
+Soille, P.
+\textit{Morphological Image Analysis: Principles and Applications}. 2.\ ed.\ Springer, 2003.
+
+\bibitem{vincent1993}
+Vincent, L.; Soille, P.
+Watersheds in digital spaces: an efficient algorithm based on immersion simulations.
+\textit{IEEE Trans.\ PAMI}, v.\ 13, n.\ 6, p.\ 583--598, 1991.
+
+\bibitem{matlab}
+MathWorks.
+\textit{Marker-Controlled Watershed Segmentation}.
+MATLAB Documentation, 2024.
+
+\end{thebibliography}
+
+\end{frame}
+
+\end{document}

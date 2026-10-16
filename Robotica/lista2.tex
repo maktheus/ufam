@@ -1,0 +1,572 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,angles,quotes}
+
+\geometry{a4paper, top=3cm, bottom=2.5cm, left=3cm, right=2cm, headheight=15pt}
+\setstretch{1.5}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{resultbg}{RGB}{240,248,255}
+
+\hypersetup{colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{ufamblue}{\textbf{IComp/UFAM} --- Introdução à Robótica}}
+\fancyhead[R]{\small\textcolor{ufamblue}{Lista 2 --- Cinemática DH}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ufamblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}[block]
+  {\large\bfseries\color{ufamblue}}
+  {Questão \thesection.}{0.8em}{}
+  [\vspace{-0.3em}\textcolor{ufamblue}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.5ex}{1.5ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{ufamgreen}}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1.5ex}{0.8ex}
+
+\tcbset{
+  resultbox/.style={
+    colback=resultbg,
+    colframe=ufamblue,
+    fonttitle=\bfseries\small,
+    title=Resultado,
+    boxrule=0.8pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+\newcommand{\Trans}[2]{{}^{#1}_{#2}\!\mathbf{T}}
+\newcommand{\Rot}[2]{{}^{#1}_{#2}\!\mathbf{R}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\degr}{^{\circ}}
+\newcommand{\cq}[1]{c_{#1}}
+\newcommand{\sq}[1]{s_{#1}}
+
+\begin{document}
+
+%==============================================================
+% CAPA
+%==============================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[0.4cm]
+{\Large\bfseries\color{ufamblue} UNIVERSIDADE FEDERAL DO AMAZONAS}\\[0.2cm]
+{\large\color{ufamblue} Instituto de Computação --- IComp}\\[0.1cm]
+{\large\color{ufamblue} Programa de Pós-Graduação em Informática --- PPGI}\\[0.4cm]
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[2.5cm]
+
+{\LARGE\bfseries Lista 2}\\[0.4cm]
+{\Large\bfseries Introdução à Robótica}\\[0.3cm]
+{\large Cinemática Direta e Inversa --- Notação Denavit-Hartenberg}\\[3cm]
+
+\begin{tabular}{rl}
+  \textbf{Disciplina:} & Introdução à Robótica \\[0.3cm]
+  \textbf{Docente:}    & Prof.\ Francisco Januário \\[0.3cm]
+  \textbf{Discente:}   & Matheus Serr\~ao Uch\^oa \\[0.3cm]
+  \textbf{Matrícula:}  & 22052633 \\[0.3cm]
+  \textbf{Nível:}      & Pós-Graduação \\[0.3cm]
+  \textbf{Data:}       & Manaus, \today \\
+\end{tabular}
+
+\vfill
+{\color{ufamblue}\rule{\linewidth}{1.5pt}}
+\end{titlepage}
+
+%==============================================================
+% SUMÁRIO
+%==============================================================
+\newpage
+\tableofcontents
+\newpage
+
+%==============================================================
+% NOTAÇÃO
+%==============================================================
+\section*{Notação Adotada}
+\addcontentsline{toc}{section}{Notação Adotada}
+
+Adota-se a notação padrão de Craig~(2005) com a convenção Denavit-Hartenberg \textbf{clássica}:
+
+\begin{itemize}[leftmargin=2cm]
+  \item ${}^{0}_{i}\mathbf{T}$ --- transformação homogênea ($4\!\times\!4$) do referencial $\{i\}$ para a base $\{0\}$;
+  \item $\theta_i$ --- ângulo de junta; $d_i$ --- deslocamento de junta; $a_i$ --- comprimento do elo; $\alpha_i$ --- torção do elo;
+  \item $c_i \equiv \cos\theta_i$,\; $s_i \equiv \sin\theta_i$,\; $c_{ij} \equiv \cos(\theta_i+\theta_j)$, etc.
+\end{itemize}
+
+A matriz de transformação DH para o elo $i$ é:
+\[
+  {}^{i-1}_{i}\mathbf{T} =
+  \begin{pmatrix}
+    c_i & -s_i c_{\alpha_i} &  s_i s_{\alpha_i} & a_i c_i \\
+    s_i &  c_i c_{\alpha_i} & -c_i s_{\alpha_i} & a_i s_i \\
+    0   &  s_{\alpha_i}     &  c_{\alpha_i}      & d_i     \\
+    0   &  0                &  0                 & 1
+  \end{pmatrix}
+\]
+
+\newpage
+
+%==============================================================
+% QUESTÃO 1
+%==============================================================
+\section{Cinemática Direta do Braço Planar de 3 Elos}
+
+\subsection*{Enunciado}
+Calcule a cinemática do braço planar de 3 elos, ${}^{0}_{3}\mathbf{T}$, considerando a notação Denavit-Hartenberg.
+
+\subsection{Estrutura e Parâmetros DH}
+
+O braço planar de 3 elos opera no plano $XY$. Os elos de comprimento $L_1$ e $L_2$ são seguidos por um terceiro elo de orientação (comprimento nulo, $L_3 = 0$) que representa a postura do efetuador. Os referenciais são atribuídos segundo a convenção DH.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[scale=1.1, >=Stealth]
+  % Base
+  \draw[thick] (0,0) -- (0,-0.3);
+  \fill[gray!40] (-0.3,-0.3) rectangle (0.3,-0.5);
+  \draw[thick] (-0.3,-0.3) -- (0.3,-0.3);
+  % Link 1
+  \draw[ultra thick, blue!70!black] (0,0) -- (2.5,1.5) node[midway, above left]{\small $L_1$};
+  % Joint 1
+  \filldraw[fill=white, draw=black, thick] (0,0) circle (0.12) node[below left]{\small $\{0\}$};
+  % Joint 2
+  \filldraw[fill=white, draw=black, thick] (2.5,1.5) circle (0.12) node[above left]{\small $\{1\}$};
+  % Link 2
+  \draw[ultra thick, red!70!black] (2.5,1.5) -- (4.5,0.5) node[midway, above right]{\small $L_2$};
+  % Joint 3
+  \filldraw[fill=white, draw=black, thick] (4.5,0.5) circle (0.12) node[above right]{\small $\{2\}$};
+  % Link 3 (zero length – just orientation frame)
+  \draw[ultra thick, green!60!black] (4.5,0.5) -- (5.5,0.9) node[right]{\small $\{3\}$};
+  % Angle annotations
+  \draw[->] (0.6,0) arc[start angle=0, end angle=31, radius=0.6] node[right]{\small $\theta_1$};
+  \draw[->] (3.1,1.5) arc[start angle=0, end angle=-24, radius=0.5] node[right]{\small $\theta_2$};
+  \draw[->] (5.0,0.5) arc[start angle=0, end angle=22, radius=0.4] node[right]{\small $\theta_3$};
+  % Base axes
+  \draw[->] (0,0) -- (0.7,0) node[right]{\small $x_0$};
+  \draw[->] (0,0) -- (0,0.7) node[above]{\small $y_0$};
+\end{tikzpicture}
+\caption{Braço planar de 3 elos com referenciais DH.}
+\end{figure}
+
+A tabela de parâmetros DH é:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccccc}
+\toprule
+Elo $i$ & $a_i$ & $\alpha_i$ & $d_i$ & $\theta_i$ \\
+\midrule
+1 & $L_1$ & $0\degr$ & 0 & $\theta_1$ \\
+2 & $L_2$ & $0\degr$ & 0 & $\theta_2$ \\
+3 & $0$   & $0\degr$ & 0 & $\theta_3$ \\
+\bottomrule
+\end{tabular}
+\caption{Parâmetros DH do braço planar de 3 elos.}
+\end{table}
+
+\subsection{Matrizes de Transformação Individual}
+
+Como $\alpha_i = 0$ e $d_i = 0$ para todos os elos, cada matriz assume a forma planar:
+
+\[
+{}^{0}_{1}\mathbf{T} =
+\begin{pmatrix}
+  c_1 & -s_1 & 0 & L_1 c_1 \\
+  s_1 &  c_1 & 0 & L_1 s_1 \\
+  0   &  0   & 1 & 0 \\
+  0   &  0   & 0 & 1
+\end{pmatrix}
+\qquad
+{}^{1}_{2}\mathbf{T} =
+\begin{pmatrix}
+  c_2 & -s_2 & 0 & L_2 c_2 \\
+  s_2 &  c_2 & 0 & L_2 s_2 \\
+  0   &  0   & 1 & 0 \\
+  0   &  0   & 0 & 1
+\end{pmatrix}
+\]
+
+\[
+{}^{2}_{3}\mathbf{T} =
+\begin{pmatrix}
+  c_3 & -s_3 & 0 & 0 \\
+  s_3 &  c_3 & 0 & 0 \\
+  0   &  0   & 1 & 0 \\
+  0   &  0   & 0 & 1
+\end{pmatrix}
+\]
+
+\subsection{Composição ${}^{0}_{2}\mathbf{T} = {}^{0}_{1}\mathbf{T}\cdot{}^{1}_{2}\mathbf{T}$}
+
+Usando $c_{12} \equiv \cos(\theta_1+\theta_2)$ e $s_{12} \equiv \sin(\theta_1+\theta_2)$:
+
+\[
+{}^{0}_{2}\mathbf{T} =
+\begin{pmatrix}
+  c_{12} & -s_{12} & 0 & L_1 c_1 + L_2 c_{12} \\
+  s_{12} &  c_{12} & 0 & L_1 s_1 + L_2 s_{12} \\
+  0      &  0      & 1 & 0 \\
+  0      &  0      & 0 & 1
+\end{pmatrix}
+\]
+
+\subsection{Cinemática Direta ${}^{0}_{3}\mathbf{T}$}
+
+Pré-multiplicando por ${}^{2}_{3}\mathbf{T}$ e usando $c_{123} \equiv \cos(\theta_1+\theta_2+\theta_3)$, $s_{123} \equiv \sin(\theta_1+\theta_2+\theta_3)$:
+
+\begin{tcolorbox}[resultbox]
+\[
+{}^{0}_{3}\mathbf{T} =
+\begin{pmatrix}
+  c_{123} & -s_{123} & 0 & L_1 c_1 + L_2 c_{12} \\
+  s_{123} &  c_{123} & 0 & L_1 s_1 + L_2 s_{12} \\
+  0       &  0       & 1 & 0 \\
+  0       &  0       & 0 & 1
+\end{pmatrix}
+\]
+onde $c_{ij} \equiv \cos(\theta_i+\theta_j)$ e $c_{123} \equiv \cos(\theta_1+\theta_2+\theta_3)$.
+\end{tcolorbox}
+
+A posição do efetuador (origem de $\{3\}$) é:
+\[
+  p_x = L_1 \cos\theta_1 + L_2 \cos(\theta_1+\theta_2), \qquad
+  p_y = L_1 \sin\theta_1 + L_2 \sin(\theta_1+\theta_2)
+\]
+e a orientação do efetuador em relação à base é $\phi = \theta_1 + \theta_2 + \theta_3$.
+
+\newpage
+
+%==============================================================
+% QUESTÃO 2
+%==============================================================
+\section{Avaliação Numérica da Cinemática Direta}
+
+\subsection*{Enunciado}
+Para o manipulador da Questão~1, descreva a posição e orientação do punho em relação à base, ${}^{0}_{3}\mathbf{T}$, utilizando as equações cinemáticas para:
+\[
+  \theta_1 = 45\degr, \quad \theta_2 = 60\degr, \quad \theta_3 = 30\degr, \qquad L_1 = L_2 = 30\ \text{cm}
+\]
+
+\subsection{Valores Trigonométricos}
+
+\begin{align*}
+  c_1 &= \cos 45\degr = 0{,}7071, & s_1 &= \sin 45\degr = 0{,}7071 \\
+  c_{12} &= \cos(45\degr + 60\degr) = \cos 105\degr = -0{,}2588, &
+  s_{12} &= \sin 105\degr = 0{,}9659 \\
+  c_{123} &= \cos(45\degr + 60\degr + 30\degr) = \cos 135\degr = -0{,}7071, &
+  s_{123} &= \sin 135\degr = 0{,}7071
+\end{align*}
+
+\subsection{Posição do Efetuador}
+
+\begin{align*}
+  p_x &= L_1 c_1 + L_2 c_{12}
+       = 30 \times 0{,}7071 + 30 \times (-0{,}2588)
+       = 21{,}213 - 7{,}764 = 13{,}449\ \text{cm} \\[4pt]
+  p_y &= L_1 s_1 + L_2 s_{12}
+       = 30 \times 0{,}7071 + 30 \times 0{,}9659
+       = 21{,}213 + 28{,}978 = 50{,}191\ \text{cm}
+\end{align*}
+
+\subsection{Orientação do Efetuador}
+
+\[
+  \phi = \theta_1 + \theta_2 + \theta_3 = 45\degr + 60\degr + 30\degr = 135\degr
+\]
+
+\begin{tcolorbox}[resultbox]
+\[
+{}^{0}_{3}\mathbf{T} =
+\begin{pmatrix}
+  -0{,}7071 & -0{,}7071 & 0 & 13{,}449 \\
+   0{,}7071 & -0{,}7071 & 0 & 50{,}191 \\
+   0        &  0        & 1 &  0 \\
+   0        &  0        & 0 &  1
+\end{pmatrix}
+\text{cm}
+\]
+Posição: $\mathbf{p} = [13{,}45\ \ 50{,}19\ \ 0]^T$ cm\quad;\quad Orientação: $\phi = 135\degr$
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 3
+%==============================================================
+\section{Cinemática Direta do PUMA 560}
+
+\subsection*{Enunciado}
+Para o PUMA 560, descreva a posição e orientação do punho em relação à base, ${}^{0}_{6}\mathbf{T}$, com os parâmetros:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccccc}
+\toprule
+Elo $i$ & $a_i$ (m) & $\alpha_i$ & $d_i$ (m) & $\theta_i$ \\
+\midrule
+1 & $0$       & $90\degr$  & $0$       & $60\degr$ \\
+2 & $0{,}4318$& $0\degr$   & $0$       & $20\degr$ \\
+3 & $0$       & $-90\degr$ & $0{,}15005$ & $90\degr$ \\
+4 & $0$       & $90\degr$  & $0{,}4318$  & $30\degr$ \\
+5 & $0$       & $-90\degr$ & $0$       & $30\degr$ \\
+6 & $0$       & $0\degr$   & $0$       & $30\degr$ \\
+\bottomrule
+\end{tabular}
+\caption{Parâmetros DH do PUMA 560 com torções padrão.}
+\end{table}
+
+\noindent\textit{Nota: as torções $\alpha_i$ são os valores padrão do PUMA 560 (Craig, 2005), fornecidos em aula.}
+
+\subsection{Matrizes de Transformação por Elo}
+
+Aplicando a fórmula DH a cada elo:
+
+\textbf{Elo 1} ($\theta_1=60\degr$, $a_1=0$, $\alpha_1=90\degr$, $d_1=0$):
+\[
+{}^{0}_{1}\mathbf{T} =
+\begin{pmatrix}
+  0{,}5000 &  0        & 0{,}8660 & 0 \\
+  0{,}8660 &  0        & -0{,}5000 & 0 \\
+  0        &  1        & 0        & 0 \\
+  0        &  0        & 0        & 1
+\end{pmatrix}
+\]
+
+\textbf{Elo 2} ($\theta_2=20\degr$, $a_2=0{,}4318$, $\alpha_2=0\degr$, $d_2=0$):
+\[
+{}^{1}_{2}\mathbf{T} =
+\begin{pmatrix}
+  0{,}9397 & -0{,}3420 & 0 & 0{,}4057 \\
+  0{,}3420 &  0{,}9397 & 0 & 0{,}1477 \\
+  0        &  0        & 1 & 0 \\
+  0        &  0        & 0 & 1
+\end{pmatrix}
+\]
+
+\textbf{Elo 3} ($\theta_3=90\degr$, $a_3=0$, $\alpha_3=-90\degr$, $d_3=0{,}15005$):
+\[
+{}^{2}_{3}\mathbf{T} =
+\begin{pmatrix}
+  0 &  0 & -1 & 0       \\
+  1 &  0 &  0 & 0       \\
+  0 & -1 &  0 & 0{,}15005 \\
+  0 &  0 &  0 & 1
+\end{pmatrix}
+\]
+
+\textbf{Elo 4} ($\theta_4=30\degr$, $a_4=0$, $\alpha_4=90\degr$, $d_4=0{,}4318$):
+\[
+{}^{3}_{4}\mathbf{T} =
+\begin{pmatrix}
+  0{,}8660 &  0 &  0{,}5000 & 0 \\
+  0{,}5000 &  0 & -0{,}8660 & 0 \\
+  0        &  1 &  0        & 0{,}4318 \\
+  0        &  0 &  0        & 1
+\end{pmatrix}
+\]
+
+\textbf{Elo 5} ($\theta_5=30\degr$, $a_5=0$, $\alpha_5=-90\degr$, $d_5=0$):
+\[
+{}^{4}_{5}\mathbf{T} =
+\begin{pmatrix}
+  0{,}8660 &  0 & -0{,}5000 & 0 \\
+  0{,}5000 &  0 &  0{,}8660 & 0 \\
+  0        & -1 &  0        & 0 \\
+  0        &  0 &  0        & 1
+\end{pmatrix}
+\]
+
+\textbf{Elo 6} ($\theta_6=30\degr$, $a_6=0$, $\alpha_6=0\degr$, $d_6=0$):
+\[
+{}^{5}_{6}\mathbf{T} =
+\begin{pmatrix}
+  0{,}8660 & -0{,}5000 & 0 & 0 \\
+  0{,}5000 &  0{,}8660 & 0 & 0 \\
+  0        &  0        & 1 & 0 \\
+  0        &  0        & 0 & 1
+\end{pmatrix}
+\]
+
+\subsection{Composição Progressiva}
+
+\textbf{${}^{0}_{2}\mathbf{T} = {}^{0}_{1}\mathbf{T}\cdot{}^{1}_{2}\mathbf{T}$:}
+\[
+{}^{0}_{2}\mathbf{T} =
+\begin{pmatrix}
+  0{,}4699 & -0{,}1710 & 0{,}8660 & 0{,}2029 \\
+  0{,}8138 & -0{,}2962 & -0{,}5000 & 0{,}3513 \\
+  0{,}3420 &  0{,}9397 & 0        & 0{,}1477 \\
+  0        &  0        & 0        & 1
+\end{pmatrix}
+\]
+
+\textbf{${}^{0}_{3}\mathbf{T} = {}^{0}_{2}\mathbf{T}\cdot{}^{2}_{3}\mathbf{T}$:}
+\[
+{}^{0}_{3}\mathbf{T} =
+\begin{pmatrix}
+ -0{,}1710 & -0{,}8660 & -0{,}4699 & 0{,}3363 \\
+ -0{,}2962 &  0{,}5000 & -0{,}8138 & 0{,}2823 \\
+  0{,}9397 &  0        & -0{,}3420 & 0{,}1286 \\
+  0        &  0        &  0        & 1
+\end{pmatrix}
+\]
+
+\textbf{${}^{0}_{4}\mathbf{T} = {}^{0}_{3}\mathbf{T}\cdot{}^{3}_{4}\mathbf{T}$:}
+\[
+{}^{0}_{4}\mathbf{T} =
+\begin{pmatrix}
+ -0{,}5811 & -0{,}4699 &  0{,}6645 &  0{,}1334 \\
+ -0{,}0065 & -0{,}8138 & -0{,}5811 & -0{,}0691 \\
+  0{,}8138 & -0{,}3420 &  0{,}4699 & -0{,}0191 \\
+  0        &  0        &  0        &  1
+\end{pmatrix}
+\]
+
+\textbf{${}^{0}_{5}\mathbf{T} = {}^{0}_{4}\mathbf{T}\cdot{}^{4}_{5}\mathbf{T}$:}
+\[
+{}^{0}_{5}\mathbf{T} =
+\begin{pmatrix}
+ -0{,}7382 & -0{,}6645 & -0{,}1163 &  0{,}1334 \\
+ -0{,}4125 &  0{,}5811 & -0{,}7015 & -0{,}0691 \\
+  0{,}5338 & -0{,}4699 & -0{,}7031 & -0{,}0191 \\
+  0        &  0        &  0        &  1
+\end{pmatrix}
+\]
+
+\subsection{Resultado Final}
+
+\begin{tcolorbox}[resultbox]
+\[
+{}^{0}_{6}\mathbf{T} = {}^{0}_{5}\mathbf{T}\cdot{}^{5}_{6}\mathbf{T} =
+\begin{pmatrix}
+ -0{,}9716 & -0{,}2063 & -0{,}1163 &  0{,}1334 \\
+ -0{,}0666 &  0{,}7095 & -0{,}7015 & -0{,}0691 \\
+  0{,}2273 & -0{,}6738 & -0{,}7031 & -0{,}0191 \\
+  0        &  0        &  0        &  1
+\end{pmatrix}
+\]
+Posição do punho (origem de $\{6\}$):
+${}^{0}\mathbf{p}_{6} = [0{,}1334\ \ {-}0{,}0691\ \ {-}0{,}0191]^T$ m
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 4
+%==============================================================
+\section{Cinemática Inversa do Braço Planar}
+
+\subsection*{Enunciado}
+Para o manipulador da Questão~1, calcule $\theta_1$, $\theta_2$ e $\theta_3$ para $\phi = 0\degr,\ 90\degr,\ -90\degr$ e $L_1 = L_2 = 30$ cm, de forma que
+\[
+  {}^{0}\mathbf{P}_{3\mathrm{ORG}} = \begin{pmatrix}1{,}1 \\ 1{,}5 \\ 0\end{pmatrix}\text{ m},
+\]
+se houver solução.
+
+\subsection{Equações da Cinemática Inversa}
+
+Da Questão~1, a posição da origem de $\{3\}$ (efetuador) e a orientação $\phi$ são:
+\begin{align}
+  p_x &= L_1 \cos\theta_1 + L_2 \cos(\theta_1 + \theta_2) \label{eq:px}\\
+  p_y &= L_1 \sin\theta_1 + L_2 \sin(\theta_1 + \theta_2) \label{eq:py}\\
+  \phi &= \theta_1 + \theta_2 + \theta_3 \label{eq:phi}
+\end{align}
+
+\subsection{Verificação da Alcançabilidade}
+
+O alcance máximo do manipulador é:
+\[
+  r_{\max} = L_1 + L_2 = 30\ \text{cm} + 30\ \text{cm} = 60\ \text{cm} = 0{,}60\ \text{m}
+\]
+
+A distância do ponto alvo à base é:
+\[
+  r = \sqrt{p_x^2 + p_y^2} = \sqrt{(1{,}1)^2 + (1{,}5)^2}
+    = \sqrt{1{,}21 + 2{,}25} = \sqrt{3{,}46} \approx 1{,}860\ \text{m}
+\]
+
+Como $r = 1{,}860$ m $>$ $r_{\max} = 0{,}60$ m, o ponto alvo está \textbf{fora do espaço de trabalho} do manipulador.
+
+\subsection{Análise por Configuração}
+
+Para cada valor de $\phi$, as equações \eqref{eq:px}--\eqref{eq:py} devem ser satisfeitas independentemente de $\phi$ (pois $\phi$ afeta apenas $\theta_3$, não a posição). Portanto, a insolubilidade se aplica às três configurações:
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{ccccc}
+\toprule
+Configuração & $\phi$ & $r_{\max}$ (m) & $r$ (m) & Solução? \\
+\midrule
+1 & $0\degr$   & $0{,}60$ & $1{,}860$ & \textbf{Não} \\
+2 & $90\degr$  & $0{,}60$ & $1{,}860$ & \textbf{Não} \\
+3 & $-90\degr$ & $0{,}60$ & $1{,}860$ & \textbf{Não} \\
+\bottomrule
+\end{tabular}
+\caption{Verificação de alcançabilidade para cada configuração.}
+\end{table}
+
+\subsection{Demonstração Formal (Critério Geométrico)}
+
+Para o braço de 2 elos (posição independe de $\theta_3$), a condição necessária e suficiente de alcançabilidade é:
+\[
+  |L_1 - L_2| \leq r \leq L_1 + L_2 \implies 0 \leq r \leq 0{,}60\ \text{m}
+\]
+
+Aplicando a lei dos cossenos ao triângulo formado pelos dois elos:
+\[
+  c_2 = \frac{r^2 - L_1^2 - L_2^2}{2 L_1 L_2}
+      = \frac{3{,}46 - 0{,}09 - 0{,}09}{2 \times 0{,}3 \times 0{,}3}
+      = \frac{3{,}28}{0{,}18} \approx 18{,}22
+\]
+
+Como $|c_2| = 18{,}22 > 1$, não existe $\theta_2 \in \mathbb{R}$ que satisfaça esta equação, confirmando que o ponto é inalcançável.
+
+\begin{tcolorbox}[resultbox]
+\textbf{Conclusão:} Para nenhuma das configurações $\phi = 0\degr,\ 90\degr,\ -90\degr$ existe solução, pois o ponto-alvo ${}^{0}\mathbf{P}_{3\mathrm{ORG}} = [1{,}1\ \ 1{,}5\ \ 0]^T$ m encontra-se fora do espaço de trabalho do manipulador (alcance máximo $= 0{,}60$ m, distância ao alvo $\approx 1{,}86$ m).
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% REFERÊNCIAS
+%==============================================================
+\section*{Referências}
+\addcontentsline{toc}{section}{Referências}
+
+\begin{enumerate}[label={[\arabic*]}]
+  \item CRAIG, J.\ J. \textit{Introduction to Robotics: Mechanics and Control}.
+        3.\ ed.\ Upper Saddle River: Pearson Prentice Hall, 2005.
+  \item SICILIANO, B.\ et al.\ \textit{Robotics: Modelling, Planning and Control}.
+        London: Springer, 2009.
+  \item SPONG, M.\ W.; HUTCHINSON, S.; VIDYASAGAR, M.\ \textit{Robot Modeling and Control}.
+        Hoboken: Wiley, 2006.
+\end{enumerate}
+
+\end{document}
