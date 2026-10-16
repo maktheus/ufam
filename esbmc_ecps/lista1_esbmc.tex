@@ -1,0 +1,735 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{listings}
+
+\geometry{a4paper, top=3cm, bottom=2.5cm, left=3cm, right=2cm, headheight=25pt}
+\setstretch{1.35}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{resultbg}{RGB}{240,248,255}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codekw}{RGB}{0,51,153}
+\definecolor{codecmt}{RGB}{110,110,110}
+\definecolor{codestr}{RGB}{140,10,10}
+
+\hypersetup{colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue, citecolor=ufamblue}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{ufamblue}{\textbf{PPGEE/UFAM} --- Verif.\ de Sistemas Embarcados e CPS}}
+\fancyhead[R]{\small\textcolor{ufamblue}{Lista 1 --- ESBMC 8.5}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ufamblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}[block]
+  {\large\bfseries\color{ufamblue}}
+  {Quest\~ao \thesection.}{0.8em}{}
+  [\vspace{-0.3em}\textcolor{ufamblue}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.5ex}{1.5ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{ufamgreen}}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1.5ex}{0.8ex}
+
+\tcbset{
+  resultbox/.style={
+    colback=resultbg, colframe=ufamblue, fonttitle=\bfseries\small,
+    title=Resultado, boxrule=0.8pt, arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  },
+  notabox/.style={
+    colback=orange!5, colframe=orange!60!black, fonttitle=\bfseries\small,
+    title=Nota did\'atica, boxrule=0.7pt, arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+\lstdefinestyle{cstyle}{
+  language=C, backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekw}\bfseries, commentstyle=\color{codecmt}\itshape,
+  stringstyle=\color{codestr}, numbers=left, numberstyle=\tiny\color{gray},
+  numbersep=6pt, frame=single, rulecolor=\color{gray!40}, breaklines=true,
+  showstringspaces=false, tabsize=2, xleftmargin=1em
+}
+\lstdefinestyle{pystyle}{
+  language=Python, backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{codekw}\bfseries, commentstyle=\color{codecmt}\itshape,
+  stringstyle=\color{codestr}, numbers=left, numberstyle=\tiny\color{gray},
+  numbersep=6pt, frame=single, rulecolor=\color{gray!40}, breaklines=true,
+  showstringspaces=false, tabsize=4, xleftmargin=1em
+}
+\lstdefinestyle{shstyle}{
+  backgroundcolor=\color{codebg}, basicstyle=\ttfamily\footnotesize,
+  frame=single, rulecolor=\color{gray!40}, breaklines=true,
+  showstringspaces=false, xleftmargin=1em
+}
+
+% Operadores LTL
+\newcommand{\LG}[1]{\mathrm{G}\bigl(#1\bigr)}
+\newcommand{\LF}[1]{\mathrm{F}\bigl(#1\bigr)}
+\newcommand{\LX}[1]{\mathrm{X}\bigl(#1\bigr)}
+\newcommand{\vv}[1]{\texttt{#1}}
+
+\begin{document}
+
+%==============================================================
+% CAPA
+%==============================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[0.4cm]
+{\Large\bfseries\color{ufamblue} UNIVERSIDADE FEDERAL DO AMAZONAS}\\[0.2cm]
+{\large\color{ufamblue} Programa de P\'os-Gradua\c{c}\~ao em Engenharia El\'etrica --- PPGEE}\\[0.1cm]
+{\large\color{ufamblue} Linha 1 --- Sistemas Inteligentes e Microeletr\^onica}\\[0.4cm]
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[2.5cm]
+
+{\LARGE\bfseries Lista de Exerc\'icios 1}\\[0.4cm]
+{\Large\bfseries Specification and Verification of}\\[0.1cm]
+{\Large\bfseries Embedded and Cyber-Physical Systems}\\[0.3cm]
+{\large Bounded Model Checking, LTL e Verifica\c{c}\~ao com ESBMC 8.5}\\[3cm]
+
+\begin{tabular}{rl}
+  \textbf{Disciplina:} & Specification and Verification of Embedded and CPS \\[0.3cm]
+  \textbf{Docente:}    & Prof.\ Dr.\ Lucas C.\ Cordeiro \\[0.3cm]
+  \textbf{Discente:}   & Matheus Serr\~ao Uch\^oa \\[0.3cm]
+  \textbf{N\'ivel:}    & P\'os-Gradua\c{c}\~ao --- Mestrado \\[0.3cm]
+  \textbf{Ferramenta:} & ESBMC 8.5.0 (+ libltl2ba) \\[0.3cm]
+  \textbf{Data:}       & Manaus, \today \\
+\end{tabular}
+
+\vfill
+{\color{ufamblue}\rule{\linewidth}{1.5pt}}
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+%==============================================================
+% NOTAÇÃO
+%==============================================================
+\section*{Conven\c{c}\~oes Adotadas}
+\addcontentsline{toc}{section}{Conven\c{c}\~oes Adotadas}
+
+Ao longo desta lista, $\mathrm{G}$, $\mathrm{F}$ e $\mathrm{X}$ denotam, respectivamente,
+os operadores LTL \emph{globally} (sempre), \emph{finally} (eventualmente) e \emph{next}
+(no pr\'oximo estado); $\wedge,\vee,\neg,\rightarrow$ t\^em o significado booleano usual.
+Identificadores de programa aparecem em \vv{fonte monoespa\c{c}ada}. Como o pr\'oprio
+enunciado enfatiza: \textbf{o ESBMC/ltl2ba n\~ao negam a f\'ormula por voc\^e} --- a
+polaridade entregue ao \texttt{ltl2ba} \'e a pergunta que se est\'a fazendo ao monitor:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Comando & Pergunta & Verdicto de sucesso \\
+\midrule
+\texttt{-f '!G(...)'} & a propriedade \emph{vale}? & \texttt{LTL\_SUCCEEDING} $\Rightarrow$ SUCCESSFUL \\
+\texttt{-f 'G(...)'}  & a propriedade pode ser \emph{refutada}? & \texttt{LTL\_FAILING} $\Rightarrow$ FAILED \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Sempre que se deseja provar corretude, usa-se a forma \emph{negada} $\neg\mathrm{G}(\varphi)$
+(pois BMC decide \emph{satisfatibilidade}, e $C\wedge\neg P$ insatisfat\'ivel $\equiv$
+$\varphi$ v\'alida); ao reportar um veredito, sempre se indica qual polaridade o produziu.
+
+\newpage
+
+%==============================================================
+% QUESTÃO 1
+%==============================================================
+\section{Bounded Model Checking}
+
+\subsection*{Enunciado}
+Descrever os passos da t\'ecnica de \emph{Bounded Model Checking} (BMC), da leitura do
+programa \'a gera\c{c}\~ao das f\'ormulas SMT, usando como exemplo o atuador \vv{ramp.c}
+(rampa de \emph{duty cycle} do aquecedor).
+
+\begin{lstlisting}[style=cstyle,caption={exercises/ecps/ramp.c}]
+#include <assert.h>
+#define STEP 2              /* duty increment per tick */
+
+int main(int argc, char **argv) {
+  long long int tick = 1, duty = 0;
+  unsigned int ticks = 5;    /* ticks in this ramp */
+  __ESBMC_assume(ticks >= 1);
+  while (tick <= ticks) {
+    duty = duty + STEP;
+    tick++;
+  }
+  assert(duty == ticks * STEP);
+}
+\end{lstlisting}
+
+\subsection*{Vis\~ao geral do pipeline de BMC}
+A t\'ecnica descrita por Cordeiro, Fischer e Marques-Silva~\cite{cordeiro2012} segue cinco
+est\'agios, todos vis\'iveis quando se roda \texttt{esbmc ramp.c}:
+
+\begin{enumerate}[leftmargin=2cm]
+  \item \textbf{Parsing e constru\c{c}\~ao do CFG.} O front-end do ESBMC (baseado em
+  Clang) traduz \vv{ramp.c} para uma representa\c{c}\~ao intermedi\'aria (GOTO-program):
+  um grafo de fluxo de controle com atribui\c{c}\~oes, desvios condicionais e chamadas
+  de fun\c{c}\~ao explicitados como instru\c{c}\~oes \texttt{ASSIGN}, \texttt{GOTO},
+  \texttt{ASSUME} e \texttt{ASSERT}. \texttt{\_\_ESBMC\_assume} vira uma instru\c{c}\~ao
+  \texttt{ASSUME} (restringe o espa\c{c}o de estados sem gerar obriga\c{c}\~ao de prova) e
+  \texttt{assert} vira uma instru\c{c}\~ao \texttt{ASSERT} (gera a obriga\c{c}\~ao de
+  prova, a propriedade $P$).
+  \item \textbf{Desenrolamento do la\c{c}o (\emph{loop unwinding}).} Como SMT solvers
+  n\~ao lidam com la\c{c}os n\~ao limitados, o \texttt{while} \'e desenrolado at\'e um
+  limite $k$ (par\^ametro \texttt{--unwind}), duplicando o corpo do la\c{c}o $k$ vezes e
+  inserindo, ap\'os a \'ultima c\'opia, uma \emph{unwinding assertion} que verifica se a
+  guarda do la\c{c}o j\'a \'e falsa --- \'e o que garante que nenhum caminho mais longo
+  foi ignorado (ver item (d)).
+  \item \textbf{Convers\~ao para forma SSA (\emph{Static Single Assignment}).} Cada
+  vari\'avel programada recebe um \'indice novo a cada atribui\c{c}\~ao ($duty_0, duty_1,
+  \dots$), eliminando atualiza\c{c}\~oes destrutivas. Desvios condicionais viram
+  \emph{guardas} booleanas que controlam quais ramos de atribui\c{c}\~ao est\~ao ativos
+  --- essa \'e exatamente a forma pedida no item (a).
+  \item \textbf{Gera\c{c}\~ao da f\'ormula l\'ogica.} A SSA \'e particionada em uma
+  restri\c{c}\~ao $C$ (a sem\^antica do programa: todas as atribui\c{c}\~oes e guardas) e
+  uma propriedade $P$ (a nega\c{c}\~ao do \texttt{assert}); a f\'ormula final \'e
+  $C \wedge \neg P$, codificada em \emph{bit-vectors} de tamanho fixo (aritm\'etica de
+  m\'aquina, com overflow e trunca\c{c}\~ao id\^enticos aos de C) --- \'e o item (b).
+  \item \textbf{Chamada ao SMT solver.} O ESBMC delega $C\wedge\neg P$ a um solver
+  (Z3, Boolector ou MathSAT); \texttt{SAT} $\Rightarrow$ existe uma atribui\c{c}\~ao de
+  vari\'aveis que satisfaz $C$ e viola $P$ (contraexemplo, \texttt{VERIFICATION FAILED});
+  \texttt{UNSAT} $\Rightarrow$ nenhum caminho de at\'e $k$ itera\c{c}\~oes viola a
+  propriedade (\texttt{VERIFICATION SUCCESSFUL}, at\'e o limite $k$).
+\end{enumerate}
+
+\subsection{(a) Desenrolamento e forma SSA para \texttt{ticks = 5}}
+
+O la\c{c}o executa as guardas $tick\le ticks$ para $tick=1,\dots,5$ (verdadeiras) e
+$tick=6$ (falsa, quando o la\c{c}o termina). Como \vv{ticks} \'e uma constante, seu
+\'unico \'indice SSA \'e $ticks_0=5$.
+
+\begin{align*}
+  tick_0 &= 1, \quad duty_0 = 0, \quad ticks_0 = 5 \\
+  &\texttt{assume}(ticks_0 \ge 1) \\[4pt]
+  g_1 &: tick_0 \le ticks_0 \quad (\text{verdadeira}) \\
+  duty_1 &= duty_0 + \mathrm{STEP}, \qquad tick_1 = tick_0 + 1 \\[2pt]
+  g_2 &: tick_1 \le ticks_0 \quad (\text{verdadeira}) \\
+  duty_2 &= duty_1 + \mathrm{STEP}, \qquad tick_2 = tick_1 + 1 \\[2pt]
+  g_3 &: tick_2 \le ticks_0 \quad (\text{verdadeira}) \\
+  duty_3 &= duty_2 + \mathrm{STEP}, \qquad tick_3 = tick_2 + 1 \\[2pt]
+  g_4 &: tick_3 \le ticks_0 \quad (\text{verdadeira}) \\
+  duty_4 &= duty_3 + \mathrm{STEP}, \qquad tick_4 = tick_3 + 1 \\[2pt]
+  g_5 &: tick_4 \le ticks_0 \quad (\text{verdadeira}) \\
+  duty_5 &= duty_4 + \mathrm{STEP}, \qquad tick_5 = tick_4 + 1 \\[2pt]
+  g_6 &: tick_5 \le ticks_0 \quad (\textbf{falsa} \Rightarrow \text{sa\'ida do la\c{c}o, unwinding assertion } \neg g_6 \text{ satisfeita}) \\[4pt]
+  &\texttt{assert}(duty_5 = ticks_0 \cdot \mathrm{STEP})
+\end{align*}
+
+\begin{tcolorbox}[resultbox]
+Substituindo $\mathrm{STEP}=2$: $duty_5 = 0+2+2+2+2+2 = 10$ e $ticks_0\cdot\mathrm{STEP}=5\cdot2=10$.
+A SSA acima tem 5 c\'opias do corpo do la\c{c}o (uma por \vv{tick}$=1..5$) mais a guarda de
+sa\'ida $g_6$ --- exatamente o que \texttt{esbmc} reporta como profundidade necess\'aria.
+\end{tcolorbox}
+
+\subsection{(b) Restri\c{c}\~ao $C$, propriedade $P$ e a f\'ormula do solver}
+
+A restri\c{c}\~ao $C$ \'e a conjun\c{c}\~ao de \textbf{todas} as atribui\c{c}\~oes SSA e
+guardas ativas (a sem\^antica do caminho executado):
+\[
+  C \;=\; \bigwedge_{i=0}^{4}\bigl(duty_{i+1}=duty_i+\mathrm{STEP}\bigr) \wedge
+          \bigwedge_{i=0}^{4}\bigl(tick_{i+1}=tick_i+1\bigr) \wedge
+          \bigwedge_{i=1}^{5} g_i \wedge \neg g_6 \wedge (ticks_0\ge1)
+\]
+A propriedade $P$ \'e a condi\c{c}\~ao do \texttt{assert}:
+\[
+  P \;=\; \bigl(duty_5 = ticks_0\cdot\mathrm{STEP}\bigr)
+\]
+O ESBMC pede ao solver que decida a satisfatibilidade de
+\[
+  C \wedge \neg P
+\]
+isto \'e, ``existe uma execu\c{c}\~ao consistente com a sem\^antica do programa em que o
+\texttt{assert} \'e violado?''. Logo:
+\begin{tcolorbox}[resultbox]
+$C\wedge\neg P$ \textbf{SAT} $\Rightarrow$ \texttt{VERIFICATION FAILED} (o solver exibiu
+um contraexemplo). $C\wedge\neg P$ \textbf{UNSAT} $\Rightarrow$ \texttt{VERIFICATION
+SUCCESSFUL} (nenhuma atribui\c{c}\~ao viola o \texttt{assert} dentro do desenrolamento).
+Neste caso, como $10=10$ \'e uma identidade aritm\'etica, $C\wedge\neg P$ \'e UNSAT e o
+esperado \'e \texttt{VERIFICATION SUCCESSFUL}.
+\end{tcolorbox}
+
+\subsection{(c) \emph{Symex completed} vs.\ \emph{Slicing}: o que \'e removido e por qu\^e}
+
+Ap\'os a execu\c{c}\~ao simb\'olica (\emph{symbolic execution}, \emph{Symex completed}),
+o ESBMC reporta o n\'umero total de atribui\c{c}\~oes SSA geradas --- isso inclui, al\'em
+das mostradas no item (a), atribui\c{c}\~oes triviais introduzidas pelo front-end para
+\vv{argc}/\vv{argv} (par\^ametros de \vv{main} nunca lidos), vari\'aveis tempor\'arias de
+achatamento de express\~oes (\emph{expression flattening}) e o valor de retorno impl\'icito
+de \vv{main}. O \emph{slicer} calcula o \textbf{cone de influ\^encia} (\emph{backward
+program slicing}) a partir das vari\'aveis que aparecem no \texttt{assert} --- aqui,
+\vv{duty} e \vv{tick} --- e remove toda atribui\c{c}\~ao que \textbf{n\~ao tem
+depend\^encia de dados nem de controle} com essas vari\'aveis, tipicamente \vv{argc} e
+\vv{argv}.
+
+\begin{tcolorbox}[notabox]
+A remo\c{c}\~ao \'e \textbf{sem perda de corretude}: se uma atribui\c{c}\~ao $x:=e$ n\~ao
+influencia, direta ou transitivamente, nenhuma vari\'avel que ocorre em $P$ (nem controla
+um desvio que a afeta), ent\~ao o valor de $x$ \'e ``observacionalmente irrelevante'' --- a
+f\'ormula $C\wedge\neg P$ com ou sem essa atribui\c{c}\~ao tem exatamente o mesmo conjunto
+de solu\c{c}\~oes projetadas nas vari\'aveis de $P$. \'E o mesmo princ\'ipio de
+\emph{program slicing} de Weiser aplicado \`a f\'ormula em vez do c\'odigo-fonte: reduzir o
+n\'umero de vari\'aveis/cl\'ausulas que o SMT solver precisa manipular sem alterar o
+resultado SAT/UNSAT.
+\end{tcolorbox}
+
+\subsection{(d) Substituindo \texttt{ticks = nondet\_uint()} e \texttt{--unwind 6}}
+
+Com \vv{ticks} n\~ao determin\'istico (restrito apenas por
+\vv{\_\_ESBMC\_assume(ticks >= 1)}, isto \'e, $ticks\in[1, \mathrm{UINT\_MAX}]$),
+\texttt{--unwind} passa a controlar \textbf{quantas c\'opias do corpo do la\c{c}o o ESBMC
+gera antes de parar de desenrolar} --- n\~ao mais o n\'umero real de itera\c{c}\~oes do
+programa (que agora \'e desconhecido em tempo de an\'alise). Com \texttt{--unwind 6}, o
+la\c{c}o \'e desenrolado 6 vezes e uma \emph{unwinding assertion} $\neg(tick_6\le ticks_0)$
+\'e adicionada ap\'os a sexta c\'opia.
+
+\begin{tcolorbox}[resultbox]
+Se existir um valor de \vv{ticks} $>6$ (por exemplo $ticks=7$), a guarda ainda ser\'a
+verdadeira ap\'os 6 desenrolamentos, e a unwinding assertion \textbf{falha}. Uma unwinding
+assertion falhando n\~ao significa que \texttt{assert(duty==ticks*STEP)} \'e falso ---
+significa que \textbf{$k=6$ \'e insuficiente para cobrir todos os comportamentos do
+programa}: existem caminhos mais longos que o ESBMC n\~ao explorou, e o veredito
+\texttt{VERIFICATION SUCCESSFUL} obtido com esse $k$ seria \emph{sound} apenas at\'e
+profundidade 6, nunca uma prova completa. \'E preciso aumentar \texttt{--unwind} (ou
+fornecer um limitante superior expl\'icito para \vv{ticks} via \texttt{assume}) at\'e a
+unwinding assertion passar --- s\'o ent\~ao o resultado cobre \emph{todos} os valores
+poss\'iveis de \vv{ticks}.
+\end{tcolorbox}
+
+\subsection{(e) \texttt{settle.py}: o que BMC pode e n\~ao pode dizer sobre termina\c{c}\~ao}
+
+\begin{lstlisting}[style=pystyle,caption={exercises/ecps/settle.py}]
+def settle(setpoint: int) -> int:
+    temp = 0
+    while temp != setpoint:
+        temp = temp + 2
+    return temp
+
+settle(10)  # reachable in 5 ticks
+settle(7)   # unreachable: an odd setpoint is never hit in steps of 2
+\end{lstlisting}
+
+Rodando \texttt{esbmc settle.py --unwind 8}: para \vv{setpoint=10}, o la\c{c}o termina em
+5 itera\c{c}\~oes ($0,2,4,6,8,10$), dentro do limite de 8 --- a unwinding assertion passa e
+o BMC \textbf{confirma}, de forma conclusiva, que essa inst\^ancia termina. Para
+\vv{setpoint=7} (\'impar), \vv{temp} \'e sempre par (invariante de la\c{c}o: $temp \bmod 2
+= 0$ em todo momento, pois parte de 0 e incrementa por 2), logo $temp\neq7$ \textbf{para
+sempre} --- o la\c{c}o nunca termina, e para \emph{qualquer} $k$ escolhido a unwinding
+assertion falhar\'a, pois a guarda $temp\neq setpoint$ continua verdadeira ap\'os $k$
+desenrolamentos.
+
+\begin{tcolorbox}[notabox]
+\textbf{O que BMC pode dizer:} para uma inst\^ancia concreta que termina dentro do
+or\c{c}amento $k$ (como \vv{setpoint=10}), BMC \'e uma prova \emph{positiva} e definitiva
+de termina\c{c}\~ao --- encontrar o desenrolamento exato que fecha o la\c{c}o \'e uma
+testemunha construtiva.
+\textbf{O que BMC n\~ao pode dizer:} n\~ao consegue provar \emph{n\~ao}-termina\c{c}\~ao
+para todo $k$. Uma unwinding assertion falhando em $k=8$ \'e \emph{indistingu\'ivel}, sem
+racioc\'inio adicional, de ``talvez termine em $k=9$''. BMC \'e fundamentalmente uma
+t\'ecnica de \emph{alcan\c{c}abilidade limitada}: aumentar $k$ nunca refuta um la\c{c}o
+genuinamente infinito, s\'o adia a falha da unwinding assertion indefinidamente. Provar a
+n\~ao-termina\c{c}\~ao exigiria um argumento \emph{n\~ao limitado} --- por exemplo o
+invariante de paridade acima, ou k-indu\c{c}\~ao~\cite{gadelha2017} mostrando que nenhum
+$k$ jamais fecha o la\c{c}o.
+\end{tcolorbox}
+
+\begin{tcolorbox}[resultbox]
+\textbf{Precondi\c{c}\~ao de termina\c{c}\~ao:} como \vv{temp} parte de 0 e s\'o assume
+valores pares n\~ao negativos, o la\c{c}o termina se e somente se
+\[
+  setpoint \ge 0 \;\wedge\; setpoint \bmod 2 = 0,
+\]
+terminando ap\'os exatamente $setpoint/2$ itera\c{c}\~oes.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 2
+%==============================================================
+\section{Concorr\^encia e Exclus\~ao M\'utua}
+
+\subsection*{Enunciado}
+As tarefas T e P entregam amostras \`a tarefa S por um \'unico barramento de exibi\c{c}\~ao,
+arbitrado pelo algoritmo de Peterson em \vv{bus.c}; \vv{in\_T}/\vv{in\_P} indicam quem
+det\'em o barramento e \vv{want[0]}/\vv{want[1]} indicam quem o solicitou.
+
+\begin{lstlisting}[style=cstyle,caption={exercises/ecps/bus.c}]
+void *task_T(void *arg) {          void *task_P(void *arg) {
+  want[0] = 1;                       want[1] = 1;
+  turn = 1;                          turn = 0;
+  while (want[1] && turn == 1) {}    while (want[0] && turn == 0) {}
+  in_T = 1;                          in_P = 1;
+  bus_word = 1; /* temperature */    bus_word = 2; /* pressure */
+  in_T = 0;                          in_P = 0;
+  want[0] = 0;                       want[1] = 0;
+  return 0;                          return 0;
+}                                   }
+\end{lstlisting}
+
+\subsection{(a) As tr\^es propriedades em LTL}
+
+Usando $c_T\equiv\vv{in\_T}$, $c_P\equiv\vv{in\_P}$, $r_T\equiv\vv{want[0]}$,
+$r_P\equiv\vv{want[1]}$:
+
+\begin{align*}
+  \text{i.}\quad   &\LG{\neg(c_T \wedge c_P)} \\
+  \text{ii.}\quad  &\LG{r_T \rightarrow \LF{c_T}} \;\wedge\; \LG{r_P \rightarrow \LF{c_P}} \\
+  \text{iii.}\quad &\LF{r_T} \;\wedge\; \LF{r_P}
+\end{align*}
+
+A propriedade (iii) \'e uma condi\c{c}\~ao de \textbf{n\~ao-vacuidade}: sem ela, a
+propriedade (ii) --- uma implica\c{c}\~ao $r_i\rightarrow \mathrm{F}(c_i)$ --- seria
+satisfeita trivialmente em qualquer execu\c{c}\~ao onde nenhuma tarefa jamais solicita o
+barramento (o antecedente nunca \'e verdadeiro). (iii) garante que o cen\'ario de
+solicita\c{c}\~ao \'e de fato alcan\c{c}\'avel, tornando (ii) uma verifica\c{c}\~ao
+significativa.
+
+\subsection{(b) Safety vs.\ liveness; o que um BMC limitado consegue refutar}
+
+\begin{center}
+\begin{tabular}{@{}p{2.5cm}p{3.9cm}p{7.4cm}@{}}
+\toprule
+Propriedade & Classe & Refut\'avel por execu\c{c}\~ao limitada? \\
+\midrule
+(i) exclus\~ao m\'utua & \textbf{Safety} (``nada de ruim acontece'') & Sim, diretamente: basta encontrar \emph{um} estado finito com $c_T\wedge c_P$ --- um prefixo ruim finito \'e um contraexemplo completo e conclusivo. \\
+(ii) resposta ($r_i\to \mathrm{F}\,c_i$) & \textbf{Liveness} (``algo bom eventualmente acontece'') & Em geral, n\~ao de forma conclusiva por um prefixo finito puro --- exige um \emph{lasso} (ciclo fechado sem progresso) dentro do horizonte para provar que o ``eventualmente'' nunca se cumpre. \\
+(iii) possibilidade ($\mathrm{F}\,r_i$) & \textbf{Liveness} (possibilidade) & Uma execu\c{c}\~ao limitada s\'o pode \emph{falhar em refutar}: n\~ao encontrar $r_i$ at\'e o limite n\~ao prova que $r_i$ nunca ocorrer\'a ap\'os o horizonte. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{(c) Verifica\c{c}\~ao da propriedade (i) com ESBMC}
+
+\begin{lstlisting}[style=shstyle]
+ltl2ba -O c -H '"bus.h"' -f '!G(!({in_T} && {in_P}))' > bus-mutex-neg.ba-2.c
+esbmc bus.c --ltl bus-mutex-neg.ba-2.c -DLTL_PREFIX_BOUND=10 --context-bound 3
+\end{lstlisting}
+
+A f\'ormula passada ao \texttt{ltl2ba} \'e \texttt{!G(...)}, ou seja, pela tabela de
+polaridade da introdu\c{c}\~ao, a pergunta \'e ``a propriedade \emph{vale} aqui?''.
+
+\begin{tcolorbox}[resultbox]
+\textbf{Final lowest outcome: SUCCESSFUL} (\texttt{LTL\_SUCCEEDING}). O algoritmo de
+Peterson \'e uma constru\c{c}\~ao cl\'assica e comprovadamente correta de exclus\~ao
+m\'utua para dois processos: para qualquer entrela\c{c}amento explorado at\'e
+\texttt{--context-bound 3}, n\~ao existe estado com \vv{in\_T} e \vv{in\_P} simultaneamente
+ativos, porque as vari\'aveis \vv{want[\,]} e \vv{turn} garantem que, se ambas as tarefas
+disputam o barramento ao mesmo tempo, exatamente uma delas fica presa no \emph{busy-wait}.
+\end{tcolorbox}
+
+\subsection{(d) Removendo \texttt{turn = 1;} de \texttt{task\_T}: \texttt{LTL\_BAD} vs.\ \texttt{LTL\_FAILING}}
+
+Sem \texttt{turn = 1;}, a guarda de T ---
+\texttt{while (want[1] \&\& turn == 1) \{\}} --- nunca pode ser verdadeira, pois nada mais
+no programa atribui $1$ a \vv{turn} (apenas \vv{task\_P} escreve \vv{turn = 0}). T deixa,
+portanto, de esperar por P em \textbf{qualquer} circunst\^ancia: a guarda \'e
+identicamente falsa e T atravessa a se\c{c}\~ao cr\'itica sem nenhuma verifica\c{c}\~ao.
+
+\paragraph{Interleaving que viola a exclus\~ao m\'utua.}
+\begin{enumerate}[leftmargin=2cm]
+  \item \texttt{task\_P}: \vv{want[1] = 1}
+  \item \texttt{task\_P}: \vv{turn = 0}
+  \item \texttt{task\_P}: avalia a guarda --- \vv{want[0]} ainda \'e 0 (T n\~ao rodou) $\Rightarrow$ guarda falsa, P segue em frente
+  \item \texttt{task\_P}: \vv{in\_P = 1} (P agora domina o barramento)
+  \item \texttt{task\_T}: \vv{want[0] = 1}
+  \item \texttt{task\_T}: avalia a guarda --- \vv{want[1]=1} mas \vv{turn==1} \'e sempre falsa (bug) $\Rightarrow$ guarda falsa, T tamb\'em segue em frente
+  \item \texttt{task\_T}: \vv{in\_T = 1} \textbf{enquanto \vv{in\_P} ainda vale 1} $\Rightarrow$ $c_T\wedge c_P$ \'e verdadeiro: viola\c{c}\~ao.
+\end{enumerate}
+
+\begin{tcolorbox}[notabox]
+\textbf{\texttt{LTL\_FAILING}} designa um contraexemplo \emph{infinito} confirmado: o
+monitor de B\"uchi da f\'ormula negada fecha um \emph{lasso} (um prefixo finito seguido de
+um ciclo que revisita um par (estado do programa, estado do aut\^omato) j\'a visto) dentro
+de \texttt{LTL\_PREFIX\_BOUND} --- a assinatura t\'ipica de refuta\c{c}\~ao de
+\textbf{liveness}, que por defini\c{c}\~ao precisa de um comportamento que se repete para
+sempre. \textbf{\texttt{LTL\_BAD}} designa que o aut\^omato monitor alcan\c{c}ou seu
+estado de rejei\c{c}\~ao (``bad state'') a partir de um \emph{prefixo finito}, sem que seja
+necess\'ario fechar ciclo algum. Isso \'e exatamente o que se espera aqui: exclus\~ao
+m\'utua \'e uma propriedade de \textbf{safety}, e um \'unico estado alcan\c{c}\'avel com
+$c_T\wedge c_P$ j\'a \'e, por si s\'o, um contraexemplo completo e irrefut\'avel --- n\~ao
+h\'a necessidade (nem sentido) de exibir um la\c{c}o infinito para refutar uma propriedade
+de safety. A mudan\c{c}a de veredito de \texttt{LTL\_FAILING} (caso gen\'erico, usado
+tamb\'em para liveness) para \texttt{LTL\_BAD} reflete precisamente essa diferen\c{c}a
+estrutural entre as duas classes de propriedades.
+\end{tcolorbox}
+
+\subsection{(e) Propriedade (ii): por que um BMC limitado \'e inconclusivo}
+
+\begin{lstlisting}[style=shstyle]
+ltl2ba -O c -H '"bus.h"' \
+  -f '!G(({want[0]} -> F{in_T}) && ({want[1]} -> F{in_P}))' > bus-resp-neg.ba-2.c
+esbmc bus.c --ltl bus-resp-neg.ba-2.c -DLTL_PREFIX_BOUND=10 --context-bound 3
+\end{lstlisting}
+
+\begin{tcolorbox}[resultbox]
+Um run limitado \textbf{n\~ao} estabelece (ii) de forma definitiva: dentro do prefixo de
+10 passos e context-bound 3, o ESBMC n\~ao encontra nenhum caminho em que uma solicita\c{c}\~ao
+fique sem resposta (o algoritmo de Peterson genuinamente garante entrada limitada para dois
+processos), ent\~ao o veredito observado \'e ``nenhuma viola\c{c}\~ao encontrada dentro do
+limite'' --- mas isso \textbf{n\~ao} equivale a uma prova de que a propriedade vale para
+\emph{todo} escalonamento infinito poss\'ivel. Essa \'e a resposta esperada, n\~ao uma
+limita\c{c}\~ao acidental da ferramenta: \emph{eventualmente} ($\mathrm{F}$) quantifica
+sobre o futuro infinito da execu\c{c}\~ao, e nenhum prefixo finito consegue, por si s\'o,
+testemunhar ou negar um compromisso sobre infinitos passos --- s\'o o faria ao fechar um
+\emph{lasso} genu\'ino (contraexemplo) dentro do horizonte, o que aqui n\~ao acontece porque
+a propriedade \'e verdadeira. Para ganhar confian\c{c}a adicional aumenta-se
+\texttt{LTL\_PREFIX\_BOUND}; para uma prova completa de liveness seria necess\'aria uma
+t\'ecnica \emph{unbounded} (k-indu\c{c}\~ao, ou um argumento de justi\c{c}a/\emph{fairness}
+sobre o escalonador), pois BMC \'e, por constru\c{c}\~ao, \emph{sound} apenas at\'e o
+limite $k$ e \emph{incompleto} para propriedades que envolvem toda a futuridade infinita.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% QUESTÃO 3
+%==============================================================
+\section{Especifica\c{c}\~ao e Verifica\c{c}\~ao de um Sistema Embarcado}
+
+\subsection*{Enunciado}
+Sistema de processo qu\'imico com dois conversores ADC (temperatura, press\~ao), um DAC
+(v\'alvula/bomba) e uma chave (aquecedor), operado remotamente via TCP/IP, implementado
+como executivo c\'iclico (\vv{process\_T} $\to$ \vv{process\_P} $\to$ \vv{process\_S}).
+
+\begin{lstlisting}[style=cstyle,caption={exercises/ecps/plant.c -- abridged}]
+static void process_T(void) {                 /* temperature control */
+  temperature = read_thermocouple();           /* nondet, -50..400 degC */
+  if (temperature < TEMP_LOW)  heater_on = 1;
+  else if (temperature > TEMP_HIGH) heater_on = 0;
+}
+static void process_P(void) {                  /* pressure control */
+  pressure = read_transducer();                 /* nondet, 0..600 bar */
+  if (pressure > PRESS_HIGH) valve_open = 1;
+  else if (pressure < PRESS_LOW) valve_open = 0;
+}
+static void process_S(void) {                  /* screen refresh */
+  if (fresh_sample && !bus_busy()) { displayed = 1; fresh_sample = 0; }
+}
+\end{lstlisting}
+
+\subsection{(a) As tr\^es propriedades em LTL}
+
+Com $\mathrm{TEMP\_LOW}=20$, $\mathrm{TEMP\_HIGH}=300$, $\mathrm{PRESS\_HIGH}=500$,
+$\mathrm{PRESS\_LOW}=100$ (consistente com o exemplo de comando dado no enunciado):
+
+\begin{align*}
+  \varphi_T &= \LG{\vv{temperature} < 20 \rightarrow \LF{\vv{heater\_on}}} \;\wedge\;
+               \LG{\vv{temperature} > 300 \rightarrow \LF{\neg\vv{heater\_on}}} \\[6pt]
+  \varphi_P &= \LG{\vv{pressure} > 500 \rightarrow \LF{\vv{valve\_open}}} \;\wedge\;
+               \LG{\vv{pressure} < 100 \rightarrow \LF{\neg\vv{valve\_open}}} \\[6pt]
+  \varphi_S &= \LG{\vv{fresh\_sample} \rightarrow \LF{\vv{displayed}}}
+\end{align*}
+
+\subsection{(b) Verifica\c{c}\~ao com ESBMC}
+
+\begin{lstlisting}[style=shstyle]
+ltl2ba -O c -H '"plant.h"' -f '!G({pressure > 500} -> F {valve_open})' \
+       > valve-neg.ba-2.c
+esbmc plant.c --ltl valve-neg.ba-2.c -DLTL_PREFIX_BOUND=10
+\end{lstlisting}
+(e comandos an\'alogos, trocando a f\'ormula, para $\varphi_T$ e $\varphi_S$).
+
+\begin{tcolorbox}[resultbox]
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Propriedade & Veredito & Coment\'ario \\
+\midrule
+$\varphi_T$ (aquecedor) & \textbf{FAILED} & defeito de estado inicial --- item (c) \\
+$\varphi_P$ (press\~ao) & \textbf{SUCCESSFUL} & \'unica das tr\^es a passar \\
+$\varphi_S$ (tela) & \textbf{FAILED} & falta de justi\c{c}a no barramento --- item (e) \\
+\bottomrule
+\end{tabular}
+\end{center}
+Exatamente uma reporta \texttt{VERIFICATION SUCCESSFUL}, como o enunciado antecipa: por
+elimina\c{c}\~ao (os itens (c) e (e) dizem explicitamente que as propriedades do aquecedor
+e da tela falham), \'e a propriedade de press\~ao $\varphi_P$.
+\end{tcolorbox}
+
+\subsection{(c) Diagn\'ostico do defeito no aquecedor}
+
+Vari\'aveis globais em C s\~ao zero-inicializadas antes de \vv{main} come\c{c}ar a
+executar; logo, no \textbf{estado inicial} (antes de \vv{process\_T} rodar pela primeira
+vez), \vv{temperature = 0} e \vv{heater\_on = 0}. Como $0 < 20 = \mathrm{TEMP\_LOW}$, o
+antecedente de $\varphi_T$ --- ``\vv{temperature} $<20$'' --- j\'a \'e verdadeiro
+\textbf{antes de qualquer leitura real do termopar}, exigindo que \vv{heater\_on} se torne
+verdadeiro em algum instante futuro. Como \vv{read\_thermocouple()} \'e n\~ao
+determin\'istico em $[-50,400]$, o ESBMC pode escolher, para \textbf{toda} rodada dentro
+do horizonte limitado, um valor no intervalo morto $[20,300)$ --- onde nem o ramo ``liga''
+nem o ramo ``desliga'' de \vv{process\_T} \'e tomado --- de forma que \vv{heater\_on}
+\textbf{nunca} muda de seu valor inicial 0. O contraexemplo \'e, portanto, uma leitura de
+sensor spuriamente inferida do valor de reset do sistema, e n\~ao de uma medi\c{c}\~ao
+real.
+
+\begin{tcolorbox}[notabox]
+\textbf{Por que a press\~ao n\~ao tem o mesmo problema?} \vv{pressure} tamb\'em inicia em
+0, e $0 < 100 = \mathrm{PRESS\_LOW}$ \'e igualmente verdadeiro no estado inicial --- \'a
+primeira vista, o mesmo defeito deveria existir. Mas o ramo disparado \'e o \emph{outro}:
+$\LG{\vv{pressure}<100 \rightarrow \LF{\neg\vv{valve\_open}}}$ exige que a v\'alvula
+\textbf{esteja fechada}, e \vv{valve\_open} \textbf{tamb\'em} \'e 0 por padr\~ao (fechada)!
+O consequente j\'a \'e verdadeiro no pr\'oprio estado inicial, antes de qualquer a\c{c}\~ao
+do controlador --- a implica\c{c}\~ao \'e satisfeita \emph{trivialmente} pelo valor de
+reset do atuador, sem depender de nenhuma futura mudan\c{c}a de estado. A assimetria do
+bug est\'a exatamente aqui: para o aquecedor, o valor padr\~ao de \vv{heater\_on} (0,
+desligado) \textbf{contradiz} o que a leitura esp\'uria de \vv{temperature=0} exige (que
+ligue); para a v\'alvula, o valor padr\~ao de \vv{valve\_open} (0, fechada) \textbf{coincide}
+com o que a leitura esp\'uria de \vv{pressure=0} exige (que feche).
+\end{tcolorbox}
+
+\subsection{(d) Reparo de \texttt{plant.c}}
+
+A corre\c{c}\~ao m\'inima \'e inicializar \vv{temperature} com um valor dentro da
+\emph{zona morta} (\emph{deadband}) $[\mathrm{TEMP\_LOW},\mathrm{TEMP\_HIGH}]$, de modo que
+o estado de reset n\~ao dispare, por si s\'o, nenhum dos dois ramos da propriedade:
+
+\begin{lstlisting}[style=cstyle]
+static int temperature = 20;  /* em vez do default implicito 0 */
+\end{lstlisting}
+
+\begin{tcolorbox}[resultbox]
+Com \vv{temperature} inicializada em $\mathrm{TEMP\_LOW}=20$ (ou qualquer valor no
+intervalo $[20,300]$), a condi\c{c}\~ao ``$\vv{temperature}<20$'' deixa de ser verdadeira
+no estado de reset, e $\varphi_T$ passa a valer: \texttt{VERIFICATION SUCCESSFUL}. Esse
+reparo \textbf{assume} que o hardware/\emph{firmware} garante um valor de reset do
+registrador de temperatura dentro da faixa operacional segura antes que \vv{process\_T}
+rode pela primeira vez (ou, alternativamente, que o software s\'o passa a monitorar a
+propriedade ap\'os a primeira convers\~ao ADC real ter completado) --- uma suposi\c{c}\~ao
+razo\'avel de projeto, mas que deve ser documentada como pr\'e-condi\c{c}\~ao de hardware,
+e \textbf{n\~ao} \'e uma garantia f\'isica de que o termopar de fato l\^e $20\,^{\circ}$C no
+instante de \emph{power-on}.
+\end{tcolorbox}
+
+\subsection{(e) Diagn\'ostico do defeito na tela}
+
+O defeito de $\varphi_S$ \'e de natureza \textbf{completamente diferente}: n\~ao \'e um
+problema de estado inicial, e sim de \textbf{aus\^encia de justi\c{c}a}
+(\emph{fairness}) no modelo do barramento. Em \vv{process\_S}, a exibi\c{c}\~ao s\'o
+ocorre quando \texttt{!bus\_busy()}; como \vv{bus\_busy()} n\~ao \'e restringido em
+nenhum lugar do modelo, o ESBMC \'e livre para escolher, em \textbf{toda} rodada dentro do
+horizonte, que o barramento est\'a ocupado --- fazendo com que \vv{fresh\_sample}
+permane\c{c}a verdadeiro e \vv{displayed} nunca se torne verdadeiro, violando
+$\LF{\vv{displayed}}$.
+
+\begin{tcolorbox}[notabox]
+\textbf{Suposi\c{c}\~ao a acrescentar:} \'e preciso uma hip\'otese de \textbf{justi\c{c}a
+fraca} sobre o barramento --- ele n\~ao pode ficar ocupado \emph{para sempre}; deve
+liberar-se infinitas vezes. Em LTL: $\mathrm{G}\,\mathrm{F}(\neg\texttt{bus\_busy()})$.
+A propriedade provada passa a ser a implica\c{c}\~ao condicionada a essa justi\c{c}a:
+\[
+  \bigl(\mathrm{G}\,\mathrm{F}\,\neg\texttt{bus\_busy()}\bigr) \;\longrightarrow\;
+  \LG{\vv{fresh\_sample} \rightarrow \LF{\vv{displayed}}}
+\]
+Na pr\'atica em ESBMC/ltl2ba, isso \'e expresso restringindo o modelo (n\~ao apenas a
+f\'ormula): ou limitando quantas rodadas consecutivas \vv{bus\_busy()} pode retornar
+verdadeiro (por exemplo, via um contador com \texttt{\_\_ESBMC\_assume}), ou compondo a
+hip\'otese de justi\c{c}a como antecedente do monitor gerado pelo \texttt{ltl2ba}, de modo
+que o BMC s\'o precise considerar execu\c{c}\~oes em que o barramento eventualmente libera.
+\end{tcolorbox}
+
+\subsection{(f) Objetivos de seguran\c{c}a do sistema}
+
+\begin{itemize}[leftmargin=1.7cm]
+  \item \textbf{Integridade}: leituras de temperatura e press\~ao e comandos de atuadores
+  (\vv{heater\_on}, \vv{valve\_open}, sa\'ida do DAC) n\~ao podem ser adulterados em
+  tr\^ansito nem na mem\'oria do controlador --- inclusive contra corrup\c{c}\~ao de
+  mem\'oria (\emph{buffer overflow}) no c\'odigo de an\'alise de pacotes TCP.
+  \item \textbf{Confidencialidade}: dados de processo e comandos do operador remoto n\~ao
+  devem ser expostos a terceiros n\~ao autorizados na rede.
+  \item \textbf{Disponibilidade}: o executivo c\'iclico (T, P, S) precisa continuar
+  rodando dentro de seus prazos mesmo sob carga ou ataque na interface TCP --- uma nega\c{c}\~ao
+  de servi\c{c}o na rede n\~ao pode impedir o controle do processo f\'isico.
+  \item \textbf{Autentica\c{c}\~ao/autoriza\c{c}\~ao}: apenas o operador leg\'itimo deve
+  conseguir influenciar par\^ametros ou atuadores via a interface remota.
+  \item \textbf{Seguran\c{c}a f\'isica (\emph{safety}) como consequ\^encia}: em \'ultima
+  an\'alise, todos os objetivos acima existem para preservar o objetivo f\'isico de manter
+  temperatura e press\~ao dentro dos limites definidos --- em um processo qu\'imico, uma
+  falha de seguran\c{c}a de dados vira, quase imediatamente, um incidente de seguran\c{c}a
+  f\'isica.
+\end{itemize}
+
+\subsection{(g) Fontes de problemas de seguran\c{c}a na opera\c{c}\~ao remota via TCP}
+
+\begin{itemize}[leftmargin=1.7cm]
+  \item TCP/IP puro n\~ao oferece confidencialidade, integridade nem autentica\c{c}\~ao;
+  sem um canal seguro (TLS/VPN) por cima, o tr\'afego (leituras e, pior, comandos de
+  atuador) pode ser interceptado ou falsificado por um atacante \emph{man-in-the-middle}.
+  \item Aus\^encia ou fraqueza de autentica\c{c}\~ao do operador remoto: qualquer cliente
+  que alcance a porta TCP pode, potencialmente, emitir comandos se n\~ao houver
+  verifica\c{c}\~ao de identidade.
+  \item Valida\c{c}\~ao insuficiente de entrada no c\'odigo que interpreta pacotes de
+  rede --- a classe cl\'assica de vulnerabilidade de mem\'oria (\emph{overflow}) que t\'ecnicas
+  como BMC ajudam a encontrar antes do deploy.
+  \item Falta de limita\c{c}\~ao de taxa (\emph{rate limiting}): inunda\c{c}\~ao da
+  interface TCP pode esgotar o tempo de CPU do executivo c\'iclico, atrasando ou
+  suprimindo rodadas de T/P/S --- um ataque de disponibilidade que nem precisa tocar em
+  \vv{heater\_on} diretamente.
+  \item Inje\c{c}\~ao direta de comando: se o protocolo de rede permite escrever
+  vari\'aveis internas (como \vv{heater\_on}) sem passar pela l\'ogica de
+  \vv{process\_T}, isso \'e um vetor de sabotagem catastr\'ofico --- exatamente o cen\'ario
+  perguntado a seguir.
+\end{itemize}
+
+\begin{tcolorbox}[resultbox]
+\textbf{Se um atacante puder escrever \vv{heater\_on} diretamente:} $\varphi_T$
+\textbf{deixa de valer} --- o atacante pode manter \vv{heater\_on=0} mesmo com
+\vv{temperature}$<20$ para sempre (viola o primeiro conjunto) ou manter
+\vv{heater\_on=1} mesmo com \vv{temperature}$>300$ (viola o segundo, criando risco real de
+superaquecimento), pois a propriedade \'e definida inteiramente em termos de
+\vv{heater\_on} ser corretamente governado pela l\'ogica de \vv{process\_T}, l\'ogica que o
+atacante agora contorna. J\'a $\varphi_P$ (v\'alvula) e $\varphi_S$ (tela) \textbf{continuam
+v\'alidas}: nenhuma delas referencia \vv{heater\_on}, e o c\'odigo de \vv{process\_P} e
+\vv{process\_S} n\~ao \'e afetado por essa escrita direta --- o comprometimento de uma
+vari\'avel de atuador n\~ao propaga, neste modelo, para propriedades que n\~ao dependem
+dela. Isso ilustra por que \emph{cada} atuador exposto pela interface remota precisa de sua
+pr\'opria an\'alise de amea\c{c}as: comprometer \vv{heater\_on} n\~ao compromete
+automaticamente o controle de press\~ao ou de exibi\c{c}\~ao, mas compromete integralmente a
+propriedade de seguran\c{c}a t\'ermica.
+\end{tcolorbox}
+
+\newpage
+
+%==============================================================
+% REFERÊNCIAS
+%==============================================================
+\begin{thebibliography}{9}
+\bibitem{cordeiro2012} L.~C.~Cordeiro, B.~Fischer, J.~Marques-Silva. \emph{SMT-Based
+  Bounded Model Checking for Embedded ANSI-C Software}. IEEE TSE 38(4):957--974, 2012.
+\bibitem{gadelha2017} M.~Y.~R.~Gadelha, H.~I.~Ismail, L.~C.~Cordeiro. \emph{Handling loops
+  in bounded model checking of C programs via k-induction}. STTT 19(1):97--114, 2017.
+\bibitem{gadelha2018} M.~Y.~R.~Gadelha et al. \emph{ESBMC 5.0: an industrial-strength C
+  model checker}. ASE 2018, pp.~888--891.
+\bibitem{farias2024} B.~Farias et al. \emph{ESBMC-Python: A Bounded Model Checker for
+  Python Programs}. ISSTA 2024, pp.~1836--1840.
+\bibitem{baier2008} C.~Baier, J.-P.~Katoen. \emph{Principles of Model Checking}. MIT
+  Press, 2008.
+\bibitem{burns2009} A.~Burns, A.~J.~Wellings. \emph{Real-Time Systems and Programming
+  Languages}, 4.\ ed. Addison-Wesley, 2009.
+\end{thebibliography}
+
+\end{document}
