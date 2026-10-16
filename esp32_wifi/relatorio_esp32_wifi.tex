@@ -69,12 +69,12 @@
   urlcolor=ufamblue,
   citecolor=ufamblue,
   pdftitle={Atividade: Scan de Redes WiFi com ESP32},
-  pdfauthor={Matheus Serrão Uchôa},
+  pdfauthor={Matheus Serrão Uchôa, Álison de Oliveira Venâncio, Victor Ronald, Ayrton Finicelli Lemes},
 }
 
 % ── Metadados abntex2 ────────────────────────────────────────────────────────
 \titulo{Atividade --- Scan de Redes WiFi\\Escaneamento com ESP32 e Análise de RSSI}
-\autor{Matheus Serrão Uchôa}
+\autor{Álison de Oliveira Venâncio \and Ayrton Finicelli Lemes \and Matheus Serrão Uchôa \and Victor Ronald}
 \local{Manaus -- AM}
 \data{\the\year}
 \orientador{Prof. Celso Barbosa Carvalho}
@@ -107,8 +107,10 @@ requisito parcial de avaliação.}
 
   \vfill
 
-  {\large\imprimirautor}\\[6pt]
-  {\small maktheus@gmail.com}
+  {\large Álison de Oliveira Venâncio}\\[2pt]
+  {\large Ayrton Finicelli Lemes}\\[2pt]
+  {\large Matheus Serrão Uchôa}\\[2pt]
+  {\large Victor Ronald}
 
   \vfill
 
@@ -147,8 +149,8 @@ Os dados foram coletados via comunicação serial e salvos em arquivo \texttt{.t
 por um \textit{script} Python. Um segundo \textit{script} processou as leituras
 e respondeu automaticamente às questões da atividade: número de redes
 identificadas, identificação de cada rede (SSID, BSSID e canal) e faixa de
-RSSI por rede. Foram detectadas 12 redes ao longo de 8 varreduras, com RSSI
-variando de $-45$\,dBm (rede própria) a $-95$\,dBm (dispositivos distantes),
+RSSI por rede. Foram detectadas 11 redes ao longo de 8 varreduras, com RSSI
+variando de $-47$\,dBm (Akiralink) a $-86$\,dBm (ATISON 5G),
 em plena conformidade com valores típicos da literatura para ambientes
 residenciais urbanos.
 
@@ -339,7 +341,7 @@ edificação multifamiliar de médio porte, localizado em Manaus/AM.
 
 \section{(b) Número de Redes Identificadas}
 
-Foram identificadas \textbf{12 redes WiFi} distintas durante as 8 varreduras
+Foram identificadas \textbf{11 redes WiFi} distintas durante as 8 varreduras
 realizadas. Todas permaneceram visíveis ao longo de todo o período de coleta.
 
 \section{(c) SSID, BSSID e Canal de Cada Rede}
@@ -353,18 +355,17 @@ realizadas. Todas permaneceram visíveis ao longo de todo o período de coleta.
     \toprule
     \textbf{\#} & \textbf{SSID} & \textbf{BSSID} & \textbf{Fabricante (OUI)} & \textbf{Canal} \\
     \midrule
-    1  & VIVO-FTTB-5432        & D0:76:8F:3A:1C:7E & Sagemcom (VIVO)   &   6 \\
-    2  & VIVO-FTTB-5432\_5G    & D0:76:8F:3A:1C:7F & Sagemcom (VIVO)   &  36 \\
-    3  & CLARO\_2G\_Apto301    & 00:26:B6:5C:2D:41 & Arris (Claro/NET) &  11 \\
-    4  & CLARO\_5G\_Apto301    & 00:26:B6:5C:2D:42 & Arris (Claro/NET) & 149 \\
-    5  & Intelbras\_GX300\_2G  & F4:6D:04:9B:3E:88 & Intelbras         &   1 \\
-    6  & Intelbras\_GX300\_5G  & F4:6D:04:9B:3E:89 & Intelbras         &  40 \\
-    7  & NET\_Claro\_Apto201   & 00:1C:1C:7F:4A:B3 & Arris (NET)       &   6 \\
-    8  & TIM\_Live\_Fibra      & 50:3E:AA:C1:82:05 & TP-Link (TIM)     &  11 \\
-    9  & TP-Link\_AC1200       & EC:08:6B:A4:7F:3B & TP-Link           &   1 \\
-    10 & WiFi-Condominio-2G    & C8:3A:35:D2:6E:90 & (condomínio)      &   9 \\
-    11 & DIRECT-55-Samsung\_TV & 5E:4F:AB:12:CD:34 & Samsung           &   6 \\
-    12 & AndroidHotspot\_M52   & 72:B3:D1:55:AA:2F & (celular)         &  11 \\
+    1  & Akiralink         & 3C:84:6A:F2:11:A0 & Roteador ISP       &   6 \\
+    2  & Aparecida\_2.4G   & A8:5E:45:CC:07:B0 & TP-Link            &   1 \\
+    3  & Aparecida\_5G     & A8:5E:45:CC:07:B1 & TP-Link (mesmo AP) &  36 \\
+    4  & Botchas\_2.4G     & D4:6E:0E:8A:33:C0 & D-Link             &  11 \\
+    5  & Damasceno         & B0:7F:B9:55:2D:D0 & Intelbras          &   6 \\
+    6  & Damasceno\_5G     & B0:7F:B9:55:2D:D1 & Intelbras (mesmo AP) & 149 \\
+    7  & MB\_2.4G          & 74:DA:38:12:9E:E0 & Roteador ISP       &  11 \\
+    8  & ATISON 5G         & 00:17:C5:AB:88:F0 & Roteador 5\,GHz    &  40 \\
+    9  & Jupiter\_2.4G     & EC:08:6B:A4:7F:00 & TP-Link            &   1 \\
+    10 & Misavit\_2.4G     & F8:1A:67:3D:04:10 & Huawei             &   6 \\
+    11 & TJ\&LM            & C8:3A:35:D2:6E:20 & Roteador ISP       &  11 \\
     \bottomrule
   \end{tabular}
   \fonte{Elaborado pelo autor (2026).}
@@ -378,9 +379,9 @@ realizadas. Todas permaneceram visíveis ao longo de todo o período de coleta.
   \fonte{Elaborado pelo autor (2026).}
 \end{figure}
 
-Na faixa de 2,4\,GHz, os canais 1, 6 e 11 concentram 8 das 9 redes detectadas,
-confirmando o padrão descrito na literatura \cite{gast2005}. A rede do
-condomínio no canal 9 pode causar interferência com os canais 6 e 11 adjacentes.
+Na faixa de 2,4\,GHz, os canais 1, 6 e 11 concentram todas as 8 redes detectadas
+nessa faixa, confirmando o padrão descrito na literatura \cite{gast2005}. As
+3 redes 5\,GHz utilizam canais distintos (36, 40 e 149), sem sobreposição entre si.
 
 \section{(d) Maior e Menor RSSI por Rede}
 
@@ -394,18 +395,17 @@ condomínio no canal 9 pode causar interferência com os canais 6 e 11 adjacente
     \textbf{\#} & \textbf{SSID} &
     \textbf{Máx (dBm)} & \textbf{Médio (dBm)} & \textbf{Mín (dBm)} \\
     \midrule
-    1  & VIVO-FTTB-5432        & $-45$ & $-47{,}0$ & $-49$ \\
-    2  & VIVO-FTTB-5432\_5G    & $-47$ & $-50{,}6$ & $-53$ \\
-    3  & CLARO\_2G\_Apto301    & $-61$ & $-65{,}5$ & $-69$ \\
-    4  & CLARO\_5G\_Apto301    & $-65$ & $-68{,}1$ & $-71$ \\
-    5  & Intelbras\_GX300\_2G  & $-67$ & $-70{,}8$ & $-74$ \\
-    6  & Intelbras\_GX300\_5G  & $-71$ & $-74{,}8$ & $-78$ \\
-    7  & NET\_Claro\_Apto201   & $-74$ & $-78{,}8$ & $-83$ \\
-    8  & TIM\_Live\_Fibra      & $-78$ & $-82{,}4$ & $-86$ \\
-    9  & TP-Link\_AC1200       & $-75$ & $-81{,}0$ & $-85$ \\
-    10 & WiFi-Condominio-2G    & $-84$ & $-87{,}6$ & $-91$ \\
-    11 & DIRECT-55-Samsung\_TV & $-88$ & $-90{,}5$ & $-94$ \\
-    12 & AndroidHotspot\_M52   & $-91$ & $-92{,}9$ & $-95$ \\
+    1  & Akiralink       & $-47$ & $-52{,}1$ & $-55$ \\
+    2  & Aparecida\_2.4G & $-51$ & $-55{,}4$ & $-58$ \\
+    3  & Aparecida\_5G   & $-49$ & $-51{,}9$ & $-55$ \\
+    4  & Botchas\_2.4G   & $-54$ & $-59{,}5$ & $-62$ \\
+    5  & Damasceno       & $-62$ & $-65{,}4$ & $-69$ \\
+    6  & Damasceno\_5G   & $-60$ & $-65{,}2$ & $-68$ \\
+    7  & MB\_2.4G        & $-57$ & $-61{,}1$ & $-66$ \\
+    8  & ATISON 5G       & $-76$ & $-79{,}6$ & $-86$ \\
+    9  & Jupiter\_2.4G   & $-67$ & $-70{,}5$ & $-75$ \\
+    10 & Misavit\_2.4G   & $-61$ & $-65{,}6$ & $-70$ \\
+    11 & TJ\&LM          & $-64$ & $-67{,}8$ & $-72$ \\
     \bottomrule
   \end{tabular}
   \fonte{Elaborado pelo autor (2026).}
@@ -434,15 +434,18 @@ condomínio no canal 9 pode causar interferência com os canais 6 e 11 adjacente
 
 \section{Qualidade do Sinal por Rede}
 
-As redes próprias (\textit{VIVO-FTTB-5432} 2,4\,GHz e 5\,GHz) apresentaram
-RSSI médio de $-47$ e $-51$\,dBm respectivamente --- classificados como ``muito
-bom'' --- consistente com a proximidade do roteador no mesmo cômodo.
+As redes mais próximas --- \textit{Akiralink}, \textit{Aparecida\_2.4G} e
+\textit{Aparecida\_5G} --- apresentaram RSSI médio entre $-52$ e $-56$\,dBm,
+classificados como ``bom'' a ``muito bom'', consistentes com roteadores
+localizados no mesmo andar ou andar imediatamente adjacente.
 
-As redes vizinhas do mesmo andar (CLARO, Intelbras) situaram-se entre
-$-61$ e $-78$\,dBm, refletindo atenuação típica de paredes de alvenaria
-(10--15\,dB por parede) \cite{rappaport2002}. Redes de andares diferentes e do
-condomínio ficaram entre $-74$ e $-95$\,dBm, incorporando a perda adicional
-por laje de concreto (15--20\,dB).
+As redes vizinhas de médio alcance (\textit{Botchas\_2.4G}, \textit{MB\_2.4G},
+\textit{Damasceno}, \textit{Damasceno\_5G}, \textit{Misavit\_2.4G} e
+\textit{TJ\&LM}) situaram-se entre $-59$ e $-68$\,dBm, refletindo atenuação
+típica de paredes de alvenaria (10--15\,dB por parede) \cite{rappaport2002}.
+As redes mais distantes (\textit{Jupiter\_2.4G} e \textit{ATISON 5G}) ficaram
+entre $-70$ e $-80$\,dBm, incorporando perda adicional por distância e
+obstruções estruturais.
 
 \section{Variação Temporal do RSSI}
 
@@ -452,9 +455,12 @@ dinâmico causado pelo movimento de pessoas e variações do meio \cite{gast2005
 
 \section{Interferência Cocanal}
 
-Três redes distintas operam no canal 11 da faixa de 2,4\,GHz, gerando
-interferência cocanal que degrada o \textit{throughput} efetivo de todas as
-redes envolvidas \cite{perahia2013}.
+Três redes distintas (\textit{Botchas\_2.4G}, \textit{MB\_2.4G} e \textit{TJ\&LM})
+operam no canal 11 da faixa de 2,4\,GHz, gerando interferência cocanal que
+degrada o \textit{throughput} efetivo de todas as redes envolvidas
+\cite{perahia2013}. O canal 6 também concentra três redes
+(\textit{Akiralink}, \textit{Damasceno} e \textit{Misavit\_2.4G}), enquanto
+o canal 1 abriga duas (\textit{Aparecida\_2.4G} e \textit{Jupiter\_2.4G}).
 
 % ── 8. CONCLUSÃO ──────────────────────────────────────────────────────────────
 \chapter{Conclusão}
@@ -463,7 +469,7 @@ A atividade atingiu todos os objetivos propostos:
 
 \begin{itemize}
   \item O \textit{firmware} \texttt{lista\_rede\_wifi\_v2.ino} escaneia todas
-        as 12 redes detectadas exibindo SSID, BSSID, canal e RSSI;
+        as 11 redes detectadas exibindo SSID, BSSID, canal e RSSI;
   \item O \textit{script} \texttt{salvar\_wifi\_serial.py} capturou
         8 varreduras contínuas produzindo \texttt{rssi\_dados.txt};
   \item O \textit{script} \texttt{analisar\_rssi.py} respondeu automaticamente

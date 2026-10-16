@@ -1,0 +1,629 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{setspace}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{multirow}
+\usepackage{nicematrix}
+
+\geometry{a4paper, top=3cm, bottom=2.5cm, left=3cm, right=2cm, headheight=15pt}
+\setstretch{1.5}
+
+\definecolor{ufamblue}{RGB}{0,51,102}
+\definecolor{ufamgreen}{RGB}{0,102,51}
+\definecolor{resultbg}{RGB}{240,248,255}
+\definecolor{warnbg}{RGB}{255,248,220}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\hypersetup{colorlinks=true, linkcolor=ufamblue, urlcolor=ufamblue,
+            bookmarksdepth=1}
+\pdfstringdefDisableCommands{%
+  \def\Trans#1#2{T\string_#1\string^#2}%
+  \def\Rot#1#2{R\string_#1\string^#2}%
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{ufamblue}{\textbf{IComp/UFAM} --- Introdução à Robótica}}
+\fancyhead[R]{\small\textcolor{ufamblue}{Lista 2 --- Cinemática D-H}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{ufamblue}\leaders\hrule height \headrulewidth\hfill}}
+
+\titleformat{\section}[block]
+  {\large\bfseries\color{ufamblue}}
+  {Questão \thesection.}{0.8em}{}
+  [\vspace{-0.3em}\textcolor{ufamblue}{\rule{\linewidth}{0.6pt}}]
+\titlespacing*{\section}{0pt}{2.5ex}{1.5ex}
+
+\titleformat{\subsection}{\normalsize\bfseries\color{ufamgreen}}{\thesubsection}{0.8em}{}
+\titlespacing*{\subsection}{0pt}{1.5ex}{0.8ex}
+
+\tcbset{
+  resultbox/.style={
+    colback=resultbg,
+    colframe=ufamblue,
+    fonttitle=\bfseries\small,
+    title=Resultado,
+    boxrule=0.8pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+\tcbset{
+  warnbox/.style={
+    colback=warnbg,
+    colframe=orange!80!black,
+    fonttitle=\bfseries\small,
+    title=Sem Solu\c{c}\~ao,
+    boxrule=0.8pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt
+  }
+}
+
+% Macros
+\newcommand{\Trans}[2]{{}^{#1}_{#2}\!\mathbf{T}}
+\newcommand{\Rot}[2]{{}^{#1}_{#2}\!\mathbf{R}}
+\newcommand{\Pvec}[1]{{}^{0}\!\mathbf{p}_{#1}}
+\newcommand{\ci}[1]{c_{#1}}
+\newcommand{\si}[1]{s_{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\degr}{\ensuremath{^{\circ}}}
+
+\begin{document}
+
+%==============================================================
+% CAPA
+%==============================================================
+\begin{titlepage}
+\centering
+\vspace*{0.5cm}
+
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[0.4cm]
+{\Large\bfseries\color{ufamblue} UNIVERSIDADE FEDERAL DO AMAZONAS}\\[0.2cm]
+{\large\color{ufamblue} Instituto de Computa\c{c}\~ao --- IComp}\\[0.4cm]
+{\color{ufamblue}\rule{\linewidth}{2pt}}\\[2.5cm]
+
+{\LARGE\bfseries Lista 2}\\[0.4cm]
+{\Large\bfseries Introdu\c{c}\~ao \`a Rob\'otica}\\[0.3cm]
+{\large Cinem\'atica Direta e Inversa --- Nota\c{c}\~ao Denavit-Hartenberg}\\[3cm]
+
+\begin{tabular}{rl}
+  \textbf{Disciplina:}  & Introdu\c{c}\~ao \`a Rob\'otica \\[0.3cm]
+  \textbf{Docente:}     & Prof.\ Francisco Janu\'ario \\[0.3cm]
+  \textbf{Discentes:}   & Matheus Serr\~ao Uch\^oa \\[0.1cm]
+                        & Ana \\[0.3cm]
+  \textbf{Data:}        & Manaus, setembro de 2026 \\
+\end{tabular}
+
+\vfill
+{\color{ufamblue}\rule{\linewidth}{1.5pt}}
+\end{titlepage}
+
+%==============================================================
+% SUMÁRIO
+%==============================================================
+\newpage
+\tableofcontents
+\newpage
+
+%==============================================================
+% NOTAÇÃO
+%==============================================================
+\section*{Nota\c{c}\~ao Adotada}
+\addcontentsline{toc}{section}{Nota\c{c}\~ao Adotada}
+
+Utiliza-se a nota\c{c}\~ao padr\~ao de Craig~(2005) para a cinem\'atica de manipuladores:
+
+\begin{itemize}[leftmargin=2cm]
+  \item $\Trans{i-1}{i}$: matriz de transforma\c{c}\~ao homog\^enea do referencial $i$ em rela\c{c}\~ao ao referencial $i-1$;
+  \item $c_i \triangleq \cos\theta_i$,\; $s_i \triangleq \sin\theta_i$,\;
+        $c_{ij} \triangleq \cos(\theta_i+\theta_j)$,\; $s_{ij} \triangleq \sin(\theta_i+\theta_j)$,\;
+        $c_{123} \triangleq \cos(\theta_1+\theta_2+\theta_3)$,\; $s_{123} \triangleq \sin(\theta_1+\theta_2+\theta_3)$;
+  \item Par\^ametros DH: $\theta_i$ (\'angulo de junta), $d_i$ (\textit{offset}), $a_i$ (comprimento do elo), $\alpha_i$ (\textit{twist} do elo);
+  \item A matriz DH padr\~ao (Siciliano et al.) para o elo $i$ \'e:
+  \[
+    \Trans{i-1}{i} =
+    \begin{bmatrix}
+      \cos\theta_i & -\sin\theta_i\cos\alpha_i &  \sin\theta_i\sin\alpha_i & a_i\cos\theta_i \\
+      \sin\theta_i &  \cos\theta_i\cos\alpha_i & -\cos\theta_i\sin\alpha_i & a_i\sin\theta_i \\
+      0            &  \sin\alpha_i              &  \cos\alpha_i             & d_i             \\
+      0            &  0                         &  0                        & 1
+    \end{bmatrix}.
+  \]
+\end{itemize}
+
+\newpage
+
+%==============================================================
+\setcounter{section}{0}
+\section{Cinem\'atica Direta do Bra\c{c}o Planar 3R -- Nota\c{c}\~ao D-H}
+%==============================================================
+
+\subsection{Descri\c{c}\~ao do Manipulador}
+
+Considera-se um manipulador planar com tr\^es juntas de revolu\c{c}\~ao (3R) e
+comprimentos de elos $L_1$, $L_2$ e $L_3$, operando integralmente no plano $XY$
+($z = \text{const}$).
+O objetivo \'e obter a transforma\c{c}\~ao homog\^enea $\Trans{0}{3}$ que relaciona
+o referencial da ponta do \'ultimo elo ao referencial da base.
+
+\subsection{Tabela de Par\^ametros Denavit-Hartenberg}
+
+Para um rob\^o planar todos os \textit{twists} s\~ao nulos ($\alpha_i = 0$) e
+todos os \textit{offsets} s\~ao nulos ($d_i = 0$).
+A Tabela~\ref{tab:dh_planar} re\'une os par\^ametros D-H do manipulador 3R planar.
+
+\begin{table}[h!]
+  \centering
+  \caption{Par\^ametros D-H do manipulador planar 3R.}
+  \label{tab:dh_planar}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{ccccc}
+    \toprule
+    Elo $i$ & $\theta_i$ & $d_i$ & $a_i$ & $\alpha_i$ \\
+    \midrule
+    1 & $\theta_1$ & $0$ & $L_1$ & $0\degr$ \\
+    2 & $\theta_2$ & $0$ & $L_2$ & $0\degr$ \\
+    3 & $\theta_3$ & $0$ & $L_3$ & $0\degr$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Matrizes de Transforma\c{c}\~ao Individuais}
+
+Como $\alpha_i = 0$ e $d_i = 0$, a matriz D-H reduz-se a:
+\[
+  \Trans{i-1}{i} =
+  \begin{bmatrix}
+    c_i & -s_i & 0 & L_i c_i \\
+    s_i &  c_i & 0 & L_i s_i \\
+    0   &  0   & 1 & 0       \\
+    0   &  0   & 0 & 1
+  \end{bmatrix}.
+\]
+
+Portanto:
+\[
+  \Trans{0}{1} =
+  \begin{bmatrix}
+    c_1 & -s_1 & 0 & L_1 c_1 \\
+    s_1 &  c_1 & 0 & L_1 s_1 \\
+    0   &  0   & 1 & 0       \\
+    0   &  0   & 0 & 1
+  \end{bmatrix}, \quad
+  \Trans{1}{2} =
+  \begin{bmatrix}
+    c_2 & -s_2 & 0 & L_2 c_2 \\
+    s_2 &  c_2 & 0 & L_2 s_2 \\
+    0   &  0   & 1 & 0       \\
+    0   &  0   & 0 & 1
+  \end{bmatrix}, \quad
+  \Trans{2}{3} =
+  \begin{bmatrix}
+    c_3 & -s_3 & 0 & L_3 c_3 \\
+    s_3 &  c_3 & 0 & L_3 s_3 \\
+    0   &  0   & 1 & 0       \\
+    0   &  0   & 0 & 1
+  \end{bmatrix}.
+\]
+
+\subsection{Produto em Cadeia: $\Trans{0}{3}$}
+
+A transforma\c{c}\~ao total \'e obtida por:
+\[
+  \Trans{0}{3} = \Trans{0}{1} \cdot \Trans{1}{2} \cdot \Trans{2}{3}.
+\]
+
+\textbf{Passo 1 --- $\Trans{0}{2} = \Trans{0}{1}\cdot\Trans{1}{2}$:}
+
+Multiplicando as duas primeiras matrizes e usando as identidades trigonom\'etricas de adi\c{c}\~ao
+($c_{ij}=c_ic_j-s_is_j$, $s_{ij}=s_ic_j+c_is_j$):
+\[
+  \Trans{0}{2} =
+  \begin{bmatrix}
+    c_{12} & -s_{12} & 0 & L_1 c_1 + L_2 c_{12} \\
+    s_{12} &  c_{12} & 0 & L_1 s_1 + L_2 s_{12} \\
+    0      &  0      & 1 & 0                     \\
+    0      &  0      & 0 & 1
+  \end{bmatrix}.
+\]
+
+\textbf{Passo 2 --- $\Trans{0}{3} = \Trans{0}{2}\cdot\Trans{2}{3}$:}
+
+De forma an\'aloga, multiplicando pelo terceiro elo:
+
+\begin{tcolorbox}[resultbox, title=Cinem\'atica Direta do Bra\c{c}o Planar 3R]
+\[
+  \Trans{0}{3} =
+  \begin{bmatrix}
+    c_{123} & -s_{123} & 0 & L_1 c_1 + L_2 c_{12} + L_3 c_{123} \\
+    s_{123} &  c_{123} & 0 & L_1 s_1 + L_2 s_{12} + L_3 s_{123} \\
+    0       &  0       & 1 & 0                                    \\
+    0       &  0       & 0 & 1
+  \end{bmatrix}
+\]
+onde $c_{123}\!=\!\cos(\theta_1{+}\theta_2{+}\theta_3)$ e $s_{123}\!=\!\sin(\theta_1{+}\theta_2{+}\theta_3)$.
+\end{tcolorbox}
+
+A posi\c{c}\~ao do punho (origem do referencial 3) \'e:
+\begin{align}
+  p_x &= L_1 \cos\theta_1 + L_2 \cos(\theta_1+\theta_2) + L_3 \cos(\theta_1+\theta_2+\theta_3), \label{eq:px}\\
+  p_y &= L_1 \sin\theta_1 + L_2 \sin(\theta_1+\theta_2) + L_3 \sin(\theta_1+\theta_2+\theta_3), \label{eq:py}
+\end{align}
+e a orienta\c{c}\~ao (\'angulo do eixo $x_3$ em rela\c{c}\~ao a $x_0$) \'e:
+\[
+  \varphi = \theta_1 + \theta_2 + \theta_3.
+\]
+
+\newpage
+%==============================================================
+\section{Avalia\c{c}\~ao Num\'erica da Cinem\'atica Direta}
+%==============================================================
+
+\subsection{Par\^ametros de Entrada}
+
+\[
+  \theta_1 = 45\degr, \quad \theta_2 = 60\degr, \quad \theta_3 = 30\degr, \quad
+  L_1 = L_2 = L_3 = 30\;\text{cm} = 0{,}30\;\text{m}.
+\]
+
+\subsection{C\'alculo dos \'Angulos Compostos e Valores Trigonom\'etricos}
+
+\begin{align*}
+  \theta_{12}  &= 45\degr + 60\degr = 105\degr, \\
+  \theta_{123} &= 45\degr + 60\degr + 30\degr = 135\degr.
+\end{align*}
+
+\begin{align*}
+  c_1 = \cos 45\degr     &= \tfrac{\sqrt{2}}{2} \approx 0{,}7071,   & s_1 = \sin 45\degr     &\approx 0{,}7071, \\
+  c_{12} = \cos 105\degr &\approx -0{,}2588,                         & s_{12} = \sin 105\degr &\approx 0{,}9659, \\
+  c_{123} = \cos 135\degr &= -\tfrac{\sqrt{2}}{2} \approx -0{,}7071, & s_{123} = \sin 135\degr &= \tfrac{\sqrt{2}}{2} \approx 0{,}7071.
+\end{align*}
+
+\subsection{Posi\c{c}\~ao do Punho}
+
+\begin{align*}
+  p_x &= 0{,}30\,(c_1 + c_{12} + c_{123}) \\
+      &= 0{,}30\,(0{,}7071 - 0{,}2588 - 0{,}7071) \\
+      &= 0{,}30 \times (-0{,}2588) \approx -0{,}0776\;\text{m} \approx -7{,}76\;\text{cm},\\[6pt]
+  p_y &= 0{,}30\,(s_1 + s_{12} + s_{123}) \\
+      &= 0{,}30\,(0{,}7071 + 0{,}9659 + 0{,}7071) \\
+      &= 0{,}30 \times 2{,}3801 \approx 0{,}7140\;\text{m} \approx 71{,}40\;\text{cm}.
+\end{align*}
+
+\subsection{Orienta\c{c}\~ao}
+
+\[
+  \varphi = 45\degr + 60\degr + 30\degr = 135\degr.
+\]
+
+\subsection{Matriz de Transforma\c{c}\~ao}
+
+\begin{tcolorbox}[resultbox, title=Posi\c{c}\~ao e Orienta\c{c}\~ao --- $\Trans{0}{3}$]
+\[
+  \Trans{0}{3} =
+  \begin{bmatrix}
+    -0{,}7071 & -0{,}7071 & 0 & -0{,}0776 \\
+     0{,}7071 & -0{,}7071 & 0 &  0{,}7140 \\
+     0        &  0        & 1 &  0        \\
+     0        &  0        & 0 &  1
+  \end{bmatrix}
+\]
+\vspace{4pt}
+\begin{itemize}[leftmargin=1.5cm, itemsep=2pt]
+  \item Posi\c{c}\~ao do punho: $p_x \approx -7{,}76\;\text{cm}$,\; $p_y \approx 71{,}40\;\text{cm}$;
+  \item Orienta\c{c}\~ao: $\varphi = 135\degr$ (eixo $x_3$ aponta a $135\degr$ do eixo $x_0$).
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+%==============================================================
+\section{Cinem\'atica Direta do PUMA 560 --- \texorpdfstring{$\Trans{0}{6}$}{T06}}
+%==============================================================
+
+\subsection{Par\^ametros D-H do PUMA 560}
+
+A Tabela~\ref{tab:dh_puma} lista os par\^ametros D-H completos do manipulador PUMA~560,
+incluindo os \textit{twist angles} $\alpha_i$ conforme o modelo padr\~ao de
+Siciliano et al.\ (2009).
+
+\begin{table}[h!]
+  \centering
+  \caption{Par\^ametros D-H do PUMA 560 com valores das juntas utilizados.}
+  \label{tab:dh_puma}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{cccccc}
+    \toprule
+    Junta $i$ & $\theta_i$ & $d_i$ (m) & $a_i$ (m) & $\alpha_i$ \\
+    \midrule
+    1 & $60\degr$  & $0$       & $0$       & $\phantom{-}90\degr$ \\
+    2 & $20\degr$  & $0$       & $0{,}4318$ & $\phantom{-}0\degr$  \\
+    3 & $90\degr$  & $0{,}15005$ & $0{,}0203$ & $-90\degr$          \\
+    4 & $30\degr$  & $0{,}4318$  & $0$       & $\phantom{-}90\degr$ \\
+    5 & $30\degr$  & $0$         & $0$       & $-90\degr$           \\
+    6 & $30\degr$  & $0$         & $0$       & $\phantom{-}0\degr$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Matrizes de Transforma\c{c}\~ao por Junta}
+
+Aplicando a f\'ormula D-H padr\~ao a cada junta, obtemos (com $c_i=\cos\theta_i$, $s_i=\sin\theta_i$):
+
+\textbf{Junta 1} ($\theta_1=60\degr$, $d_1=0$, $a_1=0$, $\alpha_1=90\degr$):
+\[
+  \Trans{0}{1} =
+  \begin{bmatrix}
+     0{,}5000 &  0        &  0{,}8660 & 0 \\
+     0{,}8660 &  0        & -0{,}5000 & 0 \\
+     0        &  1        &  0        & 0 \\
+     0        &  0        &  0        & 1
+  \end{bmatrix}
+\]
+
+\textbf{Junta 2} ($\theta_2=20\degr$, $d_2=0$, $a_2=0{,}4318$\,m, $\alpha_2=0\degr$):
+\[
+  \Trans{1}{2} =
+  \begin{bmatrix}
+     0{,}9397 & -0{,}3420 &  0 & 0{,}4058 \\
+     0{,}3420 &  0{,}9397 &  0 & 0{,}1477 \\
+     0        &  0        &  1 & 0        \\
+     0        &  0        &  0 & 1
+  \end{bmatrix}
+\]
+
+\textbf{Junta 3} ($\theta_3=90\degr$, $d_3=0{,}15005$\,m, $a_3=0{,}0203$\,m, $\alpha_3=-90\degr$):
+\[
+  \Trans{2}{3} =
+  \begin{bmatrix}
+     0 &  0 & -1 &  0        \\
+     1 &  0 &  0 &  0{,}0203 \\
+     0 & -1 &  0 &  0{,}1501 \\
+     0 &  0 &  0 &  1
+  \end{bmatrix}
+\]
+
+\textbf{Junta 4} ($\theta_4=30\degr$, $d_4=0{,}4318$\,m, $a_4=0$, $\alpha_4=90\degr$):
+\[
+  \Trans{3}{4} =
+  \begin{bmatrix}
+     0{,}8660 &  0 &  0{,}5000 & 0 \\
+     0{,}5000 &  0 & -0{,}8660 & 0 \\
+     0        &  1 &  0        & 0{,}4318 \\
+     0        &  0 &  0        & 1
+  \end{bmatrix}
+\]
+
+\textbf{Junta 5} ($\theta_5=30\degr$, $d_5=0$, $a_5=0$, $\alpha_5=-90\degr$):
+\[
+  \Trans{4}{5} =
+  \begin{bmatrix}
+     0{,}8660 &  0 & -0{,}5000 & 0 \\
+     0{,}5000 &  0 &  0{,}8660 & 0 \\
+     0        & -1 &  0        & 0 \\
+     0        &  0 &  0        & 1
+  \end{bmatrix}
+\]
+
+\textbf{Junta 6} ($\theta_6=30\degr$, $d_6=0$, $a_6=0$, $\alpha_6=0\degr$):
+\[
+  \Trans{5}{6} =
+  \begin{bmatrix}
+     0{,}8660 & -0{,}5000 & 0 & 0 \\
+     0{,}5000 &  0{,}8660 & 0 & 0 \\
+     0        &  0        & 1 & 0 \\
+     0        &  0        & 0 & 1
+  \end{bmatrix}
+\]
+
+\subsection{Transforma\c{c}\~ao Total $\Trans{0}{6}$}
+
+O produto em cadeia
+$\Trans{0}{6} = \Trans{0}{1}\cdot\Trans{1}{2}\cdot\Trans{2}{3}\cdot\Trans{3}{4}\cdot\Trans{4}{5}\cdot\Trans{5}{6}$
+resulta em:
+
+\begin{tcolorbox}[resultbox, title=Posi\c{c}\~ao e Orienta\c{c}\~ao do Punho do PUMA~560 --- $\Trans{0}{6}$]
+\[
+  \Trans{0}{6} =
+  \begin{bmatrix}
+    -0{,}9715 & -0{,}2064 & -0{,}1163 &  0{,}1265 \\
+    -0{,}0667 &  0{,}7095 & -0{,}7015 & -0{,}0810 \\
+     0{,}2273 & -0{,}6738 & -0{,}7031 &  0{,}0191 \\
+     0        &  0        &  0        &  1
+  \end{bmatrix}
+\]
+\vspace{4pt}
+\begin{itemize}[leftmargin=1.5cm, itemsep=2pt]
+  \item Posi\c{c}\~ao do punho:
+        $p_x = 0{,}1265\;\text{m}$,\;
+        $p_y = -0{,}0810\;\text{m}$,\;
+        $p_z = 0{,}0191\;\text{m}$;
+  \item A submatriz $3\times3$ superior esquerda \'e a matriz de rota\c{c}\~ao
+        $\Rot{0}{6}$, que descreve a orienta\c{c}\~ao do referencial do efetuador
+        em rela\c{c}\~ao \`a base.
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+%==============================================================
+\section{Cinem\'atica Inversa do Manipulador Planar 3R}
+%==============================================================
+
+\subsection{Formula\c{c}\~ao do Problema}
+
+Dado o vetor de posi\c{c}\~ao desejado do punho
+${}^0\mathbf{p}_3 = [1{,}1\;L,\; 1{,}5\;L,\; 0]^\top$
+(expresso em unidades do comprimento de elo $L$) e a orienta\c{c}\~ao $\varphi$,
+deseja-se encontrar os \'angulos de junta $\theta_1$, $\theta_2$, $\theta_3$ para:
+\[
+  \varphi \in \{0\degr,\; 90\degr,\; -90\degr\}, \qquad
+  L_1 = L_2 = L_3 = L = 30\;\text{cm}.
+\]
+
+Em coordenadas normalizadas ($L=1$):
+\[
+  p_x = 1{,}1, \quad p_y = 1{,}5, \quad
+  \text{dist\^ancia ao alvo: } r_\text{alvo} = \sqrt{1{,}1^2+1{,}5^2} \approx 1{,}86
+  \quad (\text{alcance m\'ax.}=3).
+\]
+
+\subsection{M\'etodo --- Desacoplamento do Punho}
+
+Dado $\varphi = \theta_1+\theta_2+\theta_3$, a posi\c{c}\~ao do \emph{punho} (origem
+do referencial~3 recuada do terceiro elo) \'e:
+\begin{align}
+  p_{xw} &= p_x - L_3\cos\varphi, \label{eq:pxw}\\
+  p_{yw} &= p_y - L_3\sin\varphi. \label{eq:pyw}
+\end{align}
+
+Para a sub-cadeia 2R ($L_1$, $L_2$) que atinge o punho $(p_{xw},p_{yw})$:
+\begin{align}
+  c_2 = \cos\theta_2 &= \frac{p_{xw}^2 + p_{yw}^2 - L_1^2 - L_2^2}{2L_1L_2}, \label{eq:c2}\\
+  s_2 = \sin\theta_2 &= \pm\sqrt{1 - c_2^2}\quad \text{(elbow-up/elbow-down)}, \label{eq:s2}\\
+  \theta_1 &= \mathrm{atan2}(p_{yw},p_{xw}) - \mathrm{atan2}(L_2 s_2,\; L_1 + L_2 c_2), \label{eq:t1}\\
+  \theta_3 &= \varphi - \theta_1 - \theta_2. \label{eq:t3}
+\end{align}
+
+Uma solu\c{c}\~ao existe somente se $|c_2|\leq 1$, i.e., o ponto de punho est\'a dentro
+do espa\c{c}o de trabalho da sub-cadeia 2R.
+
+\subsection{Caso 1 --- $\varphi = 0\degr$}
+
+\textbf{Posi\c{c}\~ao do punho (com $L_3=1$):}
+\[
+  p_{xw} = 1{,}1 - \cos 0\degr = 0{,}10, \qquad p_{yw} = 1{,}5 - \sin 0\degr = 1{,}50.
+\]
+
+\textbf{C\'alculo de $\theta_2$ (Eq.~\eqref{eq:c2}):}
+\[
+  r_w^2 = 0{,}10^2 + 1{,}50^2 = 2{,}26, \qquad
+  c_2 = \frac{2{,}26 - 1 - 1}{2} = 0{,}13,
+  \qquad |c_2|=0{,}13 \leq 1 \;\Rightarrow\; \textbf{h\'a solu\c{c}\~ao}.
+\]
+
+\begin{tcolorbox}[resultbox, title={Solu\c{c}\~oes para $\varphi = 0^{\circ}$}]
+\textbf{Cotovelo acima (\textit{elbow-up}):}
+\[
+  \theta_2 \approx +82{,}53\degr, \quad
+  \theta_1 \approx +44{,}92\degr, \quad
+  \theta_3 \approx -127{,}45\degr.
+\]
+\textbf{Cotovelo abaixo (\textit{elbow-down}):}
+\[
+  \theta_2 \approx -82{,}53\degr, \quad
+  \theta_1 \approx +127{,}45\degr, \quad
+  \theta_3 \approx -44{,}92\degr.
+\]
+\end{tcolorbox}
+
+\subsection{Caso 2 --- $\varphi = 90\degr$}
+
+\textbf{Posi\c{c}\~ao do punho:}
+\[
+  p_{xw} = 1{,}1 - \cos 90\degr = 1{,}10, \qquad p_{yw} = 1{,}5 - \sin 90\degr = 0{,}50.
+\]
+
+\textbf{C\'alculo de $\theta_2$:}
+\[
+  r_w^2 = 1{,}10^2 + 0{,}50^2 = 1{,}46, \qquad
+  c_2 = \frac{1{,}46 - 2}{2} = -0{,}27,
+  \qquad |c_2|=0{,}27 \leq 1 \;\Rightarrow\; \textbf{h\'a solu\c{c}\~ao}.
+\]
+
+\begin{tcolorbox}[resultbox, title={Solu\c{c}\~oes para $\varphi = 90^{\circ}$}]
+\textbf{Cotovelo acima (\textit{elbow-up}):}
+\[
+  \theta_2 \approx +105{,}66\degr, \quad
+  \theta_1 \approx -28{,}39\degr, \quad
+  \theta_3 \approx +12{,}72\degr.
+\]
+\textbf{Cotovelo abaixo (\textit{elbow-down}):}
+\[
+  \theta_2 \approx -105{,}66\degr, \quad
+  \theta_1 \approx +77{,}28\degr, \quad
+  \theta_3 \approx +118{,}39\degr.
+\]
+\end{tcolorbox}
+
+\subsection{Caso 3 --- $\varphi = -90\degr$}
+
+\textbf{Posi\c{c}\~ao do punho:}
+\[
+  p_{xw} = 1{,}1 - \cos(-90\degr) = 1{,}10, \qquad p_{yw} = 1{,}5 - \sin(-90\degr) = 2{,}50.
+\]
+
+\textbf{C\'alculo de $\theta_2$:}
+\[
+  r_w^2 = 1{,}10^2 + 2{,}50^2 = 7{,}46, \qquad
+  c_2 = \frac{7{,}46 - 2}{2} = 2{,}73.
+\]
+
+\begin{tcolorbox}[warnbox]
+\[
+  |c_2| = 2{,}73 > 1 \quad \Longrightarrow \quad
+  \text{\textbf{N\~ao existe solu\c{c}\~ao real para $\varphi = -90\degr$.}}
+\]
+O ponto de punho $(1{,}10,\;2{,}50)$ est\'a \textbf{fora do espa\c{c}o de trabalho}
+da sub-cadeia 2R ($r_w = \sqrt{7{,}46} \approx 2{,}73 > L_1+L_2 = 2$).
+O manipulador n\~ao consegue alcan\c{c}ar o ponto desejado com essa orienta\c{c}\~ao.
+\end{tcolorbox}
+
+\subsection{Resumo das Solu\c{c}\~oes}
+
+\begin{table}[h!]
+  \centering
+  \caption{Solu\c{c}\~oes da cinem\'atica inversa para ${}^0\mathbf{p}_3=(1{,}1L,1{,}5L,0)^\top$.}
+  \label{tab:ik_results}
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{ccccc}
+    \toprule
+    $\varphi$ & Configura\c{c}\~ao & $\theta_1$ & $\theta_2$ & $\theta_3$ \\
+    \midrule
+    \multirow{2}{*}{$0\degr$}
+      & Cotovelo acima  & $44{,}92\degr$  & $82{,}53\degr$   & $-127{,}45\degr$ \\
+      & Cotovelo abaixo & $127{,}45\degr$ & $-82{,}53\degr$  & $-44{,}92\degr$ \\
+    \midrule
+    \multirow{2}{*}{$90\degr$}
+      & Cotovelo acima  & $-28{,}39\degr$ & $105{,}66\degr$  & $12{,}72\degr$ \\
+      & Cotovelo abaixo & $77{,}28\degr$  & $-105{,}66\degr$ & $118{,}39\degr$ \\
+    \midrule
+    $-90\degr$ & \multicolumn{4}{c}{\textit{Sem solu\c{c}\~ao} --- ponto fora do espa\c{c}o de trabalho} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\newpage
+%==============================================================
+\section*{Refer\^encias}
+\addcontentsline{toc}{section}{Refer\^encias}
+%==============================================================
+
+\begin{itemize}[leftmargin=2cm, itemsep=4pt]
+  \item CRAIG, J.~J. \textit{Introduction to Robotics: Mechanics and Control}.
+        3.~ed. Upper Saddle River: Pearson Prentice Hall, 2005.
+  \item SICILIANO, B.; SCIAVICCO, L.; VILLANI, L.; ORIOLO, G.
+        \textit{Robotics: Modelling, Planning and Control}.
+        London: Springer, 2009.
+  \item SPONG, M.~W.; HUTCHINSON, S.; VIDYASAGAR, M.
+        \textit{Robot Modeling and Control}.
+        Hoboken: John Wiley \& Sons, 2006.
+\end{itemize}
+
+\end{document}

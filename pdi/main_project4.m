@@ -1,7 +1,7 @@
 % ==========================================================================
 % main_project4.m  –  Project #4: imagePad4e demo script
 % Disciplina: Processamento Digital de Imagens – UFAM (2026)
-% Author    : Pedro Victor dos Santos Oliveira
+% Author    : Matheus Serrao Uchoa
 %
 % Description:
 %   Loads testpattern1024.tif, applies zero-padding and replicate-padding
