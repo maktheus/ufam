@@ -121,27 +121,27 @@
     extrai características significativas (bordas, regiões) para reconhecimento
     e interpretação. É um problema central em visão computacional.
   \end{block}
-  \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \textbf{Abordagens clássicas:}
-      \begin{itemize}
-        \item por \alert{limiar} (threshold)
-        \item por \alert{região} (area)
-        \item por \alert{borda} (edge)
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \textbf{Aplicação-alvo do artigo:}
-      \begin{itemize}
-        \item imagens de \alert{espuma de flotação} (\textit{froth}) na mineração
-        \item bolhas de \alert{tamanhos muito variados} na mesma imagem
-      \end{itemize}
-    \end{column}
-  \end{columns}
+  \vspace{0.3cm}
+  \begin{block}{Abordagens clássicas}
+    \begin{itemize}
+      \item por \alert{limiar} (threshold)
+      \item por \alert{região} (area)
+      \item por \alert{borda} (edge)
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Aplicação-alvo e o método base}
+  \begin{block}{Aplicação-alvo do artigo}
+    \begin{itemize}
+      \item imagens de \alert{espuma de flotação} (\textit{froth}) na mineração
+      \item bolhas de \alert{tamanhos muito variados} na mesma imagem
+    \end{itemize}
+  \end{block}
   \vspace{0.3cm}
   \begin{exampleblock}{Watershed (divisor de águas)}
-    Método de segmentação por região baseado em morfologia matemática, muito
-    usado; encontra bordas por conjuntos fechados conexos.
+    Método de segmentação por \alert{região} baseado em morfologia matemática,
+    muito usado; encontra bordas por conjuntos fechados conexos.
   \end{exampleblock}
 \end{frame}
 
