@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SEI Radar - protótipo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand"><span class="brand-orbit">◌</span><div><span class="eyebrow">V0 / UFAM</span><h1>SEI Radar</h1></div></div>
+      <span class="badge"><i></i> modo demonstração</span>
+    </header>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy"><p class="eyebrow reveal">Acompanhamento de processos</p><h2 class="reveal delay-1">O processo em movimento.<br><em>Você no controle.</em></h2><p class="muted reveal delay-2">Uma visão cinemática do histórico, da árvore e da tramitação por setor antes da conexão com o SEI.</p><div class="hero-actions reveal delay-3"><a href="#resultado" class="hero-link">Explorar demo <span>↗</span></a><span class="mono">SCROLL TO DISCOVER</span></div></div>
+        <div class="hero-visual" aria-label="Visualização 3D do processo"><div class="scene-grid"></div><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="ring ring-a"></div><div class="ring ring-b"></div><div class="cube"><div class="face front">SEI<br><small>RADAR</small></div><div class="face side">V0</div><div class="face top">UFAM</div></div><div class="float-card card-a">● <span>HISTÓRICO</span><strong>+08</strong></div><div class="float-card card-b">↗ <span>FLUXO ATIVO</span><strong>87%</strong></div></div>
+      </section>
+      <section class="search-card reveal-up">
+        <label for="processo">Número do processo</label>
+        <div class="search-row"><input id="processo" value="23005.012345/2026-11" aria-label="Número do processo"><button id="buscar">Consultar histórico</button></div>
+        <p class="hint">Demo local: qualquer consulta exibe o processo de exemplo. A integração real será feita pelo servidor, nunca expondo a chave no navegador.</p>
+      </section>
+      <section id="resultado" class="result reveal-up">
+        <div class="section-head"><div><p class="eyebrow">Processo monitorado</p><h2>23005.012345/2026-11</h2></div><span class="status">Em tramitação</span></div>
+        <div class="metrics"><div><span>Tipo</span><strong>Contratação de solução tecnológica</strong></div><div><span>Unidade atual</span><strong>PROGESP / Coordenação</strong></div><div><span>Última movimentação</span><strong>12 nov 2026, 15:42</strong></div></div>
+        <div class="layout-grid">
+          <article class="panel"><div class="panel-title"><h3>Linha do tempo</h3><span>8 eventos</span></div><div id="timeline" class="timeline"></div></article>
+          <article class="panel"><div class="panel-title"><h3>Árvore do processo</h3><span>4 documentos</span></div><div id="tree" class="tree"></div></article>
+        </div>
+      </section>
+      <section class="next reveal-up"><div><p class="eyebrow">Próxima validação</p><h3>Conectar ao ambiente de homologação</h3><p class="muted">O protótipo já valida o fluxo visual. Falta confirmar versão do SEI, instalar/atualizar o mod-wssei e receber credenciais de teste da UFAM.</p></div><button id="copiar">Copiar checklist</button></section>
+      <p id="toast" class="toast" role="status"></p>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
