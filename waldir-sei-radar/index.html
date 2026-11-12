@@ -3,38 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SEI Radar - protótipo</title>
+    <title>SEI Radar · dashboard operacional</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand"><span class="brand-orbit">◌</span><div><span class="eyebrow">V0 / UFAM</span><h1>SEI Radar</h1></div></div>
-      <span class="badge"><i></i> modo demonstração</span>
-    </header>
+    <header class="topbar"><div class="brand"><span class="brand-orbit">◌</span><div><span class="eyebrow">V0 / UFAM</span><h1>SEI Radar</h1></div></div><div class="topbar-actions"><span class="badge"><i></i> dados mockados</span><button class="icon-button" id="refresh" aria-label="Atualizar painel">↻</button></div></header>
     <main class="shell">
-      <section class="hero">
-        <div class="hero-copy"><p class="eyebrow reveal">Acompanhamento de processos</p><h2 class="reveal delay-1">O processo em movimento.<br><em>Você no controle.</em></h2><p class="muted reveal delay-2">Uma visão cinemática do histórico, da árvore e da tramitação por setor antes da conexão com o SEI.</p><div class="hero-actions reveal delay-3"><a href="#resultado" class="hero-link">Explorar demo <span>↗</span></a><span class="mono">SCROLL TO DISCOVER</span></div></div>
-        <div class="hero-visual" aria-label="Visualização 3D do processo"><div class="scene-grid"></div><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="ring ring-a"></div><div class="ring ring-b"></div><div class="cube"><div class="face front">SEI<br><small>RADAR</small></div><div class="face side">V0</div><div class="face top">UFAM</div></div><div class="float-card card-a">● <span>HISTÓRICO</span><strong>+08</strong></div><div class="float-card card-b">↗ <span>FLUXO ATIVO</span><strong>87%</strong></div></div>
-      </section>
-      <section class="search-card reveal-up">
-        <label for="processo">Número do processo</label>
-        <div class="search-row"><input id="processo" value="23005.012345/2026-11" aria-label="Número do processo"><button id="buscar">Consultar histórico</button></div>
-        <p class="hint">Demo local: qualquer consulta exibe o processo de exemplo. A integração real será feita pelo servidor, nunca expondo a chave no navegador.</p>
-      </section>
-      <section id="resultado" class="result reveal-up">
-        <div class="section-head"><div><p class="eyebrow">Processo monitorado</p><h2>23005.012345/2026-11</h2></div><span class="status">Em tramitação</span></div>
-        <div class="metrics"><div><span>Tipo</span><strong>Contratação de solução tecnológica</strong></div><div><span>Unidade atual</span><strong>PROGESP / Coordenação</strong></div><div><span>Última movimentação</span><strong>12 nov 2026, 15:42</strong></div></div>
-        <div class="layout-grid">
-          <article class="panel"><div class="panel-title"><h3>Linha do tempo</h3><span>8 eventos</span></div><div id="timeline" class="timeline"></div></article>
-          <article class="panel"><div class="panel-title"><h3>Árvore do processo</h3><span>4 documentos</span></div><div id="tree" class="tree"></div></article>
-        </div>
-      </section>
-      <section class="next reveal-up"><div><p class="eyebrow">Próxima validação</p><h3>Conectar ao ambiente de homologação</h3><p class="muted">O protótipo já valida o fluxo visual. Falta confirmar versão do SEI, instalar/atualizar o mod-wssei e receber credenciais de teste da UFAM.</p></div><button id="copiar">Copiar checklist</button></section>
-      <p id="toast" class="toast" role="status"></p>
-    </main>
-    <script src="app.js"></script>
+      <section class="dashboard-intro"><div><p class="eyebrow reveal">Visão operacional · 12 nov 2026</p><h2 class="reveal delay-1">Bom dia, equipe.<br><em>O que precisa de atenção?</em></h2><p class="muted reveal delay-2">Acompanhe filas, prazos e a movimentação dos processos por unidade em um único lugar.</p></div><div class="hero-visual compact" aria-label="Visualização 3D do fluxo de processos"><div class="scene-grid"></div><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="ring ring-a"></div><div class="ring ring-b"></div><div class="cube"><div class="face front">SEI<br><small>RADAR</small></div><div class="face side">V0</div><div class="face top">UFAM</div></div><div class="float-card card-a">● <span>ATIVOS</span><strong>128</strong></div><div class="float-card card-b">↗ <span>SLA</span><strong>86%</strong></div></div></section>
+      <section class="toolbar reveal-up" aria-label="Filtros do dashboard"><label>Unidade<select id="unit-filter"><option value="all">Todas as unidades</option><option>PROGESP</option><option>PROAD</option><option>PROT</option><option>DTI</option></select></label><label>Status<select id="status-filter"><option value="all">Todos os status</option><option value="attention">Precisa atenção</option><option value="normal">Em tramitação</option><option value="done">Concluído</option></select></label><label>Período<select><option>Últimos 30 dias</option><option>Últimos 7 dias</option><option>Este ano</option></select></label><div class="toolbar-actions"><button class="button secondary" id="export">Exportar visão</button><button class="button" id="apply-filters">Atualizar visão</button></div></section>
+      <section class="kpis reveal-up" aria-label="Indicadores"><article class="kpi"><span>Processos monitorados</span><strong>128</strong><small class="positive">↑ 12% vs. mês anterior</small></article><article class="kpi alert"><span>Precisam de ação</span><strong>17</strong><small>3 parados há mais de 5 dias</small></article><article class="kpi"><span>Em atraso</span><strong>09</strong><small>7% da fila atual</small></article><article class="kpi"><span>SLA de tramitação</span><strong>86%</strong><small class="positive">↑ 4 p.p. no período</small></article></section>
+      <section class="alert-strip reveal-up"><span class="alert-icon">!</span><div><strong>Há 3 processos parados há mais de 5 dias</strong><p>Revise a fila de PROGESP e PROAD antes do próximo ciclo de acompanhamento.</p></div><button class="text-button" id="focus-attention">Ver pendências →</button></section>
+      <section class="dashboard-grid reveal-up"><article class="panel queue-panel"><div class="panel-title"><div><p class="eyebrow">Distribuição</p><h3>Fila por unidade</h3></div><span class="panel-meta">128 processos</span></div><div id="queue" class="queue-list"></div></article><article class="panel activity-panel"><div class="panel-title"><div><p class="eyebrow">Agora</p><h3>Atividade recente</h3></div><button class="text-button" id="show-all">Ver tudo</button></div><div id="activity" class="activity-list"></div></article></section>
+      <section class="panel attention-panel reveal-up"><div class="panel-title"><div><p class="eyebrow">Ação recomendada</p><h3>Processos que precisam de atenção</h3></div><span class="live-dot"><i></i> Atualizado agora</span></div><div class="table-wrap"><table><thead><tr><th>Processo</th><th>Assunto</th><th>Unidade</th><th>Tempo parado</th><th>Status</th><th></th></tr></thead><tbody id="attention-table"></tbody></table></div></section>
+      <section class="detail-grid reveal-up"><article class="panel process-detail"><div class="panel-title"><div><p class="eyebrow">Detalhe selecionado</p><h3 id="detail-number">23005.012345/2026-11</h3></div><span class="status">Em tramitação</span></div><div class="detail-summary"><div><span>Assunto</span><strong id="detail-subject">Contratação de solução tecnológica</strong></div><div><span>Unidade atual</span><strong id="detail-unit">PROGESP / Coordenação</strong></div><div><span>Última movimentação</span><strong id="detail-date">12 nov 2026 · 15:42</strong></div></div><div id="timeline" class="timeline"></div></article><article class="panel api-panel"><div class="panel-title"><div><p class="eyebrow">Prontidão de integração</p><h3>O que falta liberar</h3></div><span class="badge mini">mock</span></div><div class="api-list"><div><span class="api-state pending">○</span><div><strong>Ambiente de homologação</strong><small>URL, VPN/allowlist e versão do SEI</small></div></div><div><span class="api-state pending">○</span><div><strong>Credencial somente leitura</strong><small>Usuário técnico, unidade e processo de teste</small></div></div><div><span class="api-state ready">✓</span><div><strong>Contrato visual do dashboard</strong><small>Histórico, árvore e tramitação normalizados</small></div></div><a class="api-link" href="relatorio.pdf">Abrir relatório de permissões ↗</a></div></article></section>
+      <p class="mock-note">Ambiente de demonstração · Nenhuma chamada real ao SEI foi realizada · Dados fictícios para validação do fluxo.</p><p id="toast" class="toast" role="status"></p>
+    </main><script src="app.js"></script>
   </body>
 </html>

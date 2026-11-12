@@ -1,22 +1,20 @@
-const events = [
-  ['12 nov 2026 · 15:42','Recebido pela PROGESP / Coordenação','Unidade atual'],
-  ['11 nov 2026 · 10:18','Enviado para análise técnica','PROT / Núcleo de sistemas'],
-  ['10 nov 2026 · 16:03','Despacho incluído no processo','Documento 04'],
-  ['09 nov 2026 · 14:27','Processo recebido','PROAD / Diretoria'],
-  ['06 nov 2026 · 09:11','Processo enviado para PROAD','PROGESP / Coordenação'],
-  ['03 nov 2026 · 11:34','Documento inicial assinado','Documento 01'],
-  ['03 nov 2026 · 10:52','Processo autuado','SEI / UFAM'],
+const processes = [
+  { id: '23005.012345/2026-11', subject: 'Contratação de solução tecnológica', unit: 'PROGESP', status: 'normal', statusLabel: 'Em tramitação', stalled: '1 dia', tone: 'normal', date: '12 nov 2026 · 15:42' },
+  { id: '23005.010982/2026-11', subject: 'Atualização de cadastro institucional', unit: 'PROAD', status: 'attention', statusLabel: 'Aguardando', stalled: '7 dias', tone: 'danger', date: '05 nov 2026 · 09:10' },
+  { id: '23005.009871/2026-11', subject: 'Aquisição de equipamentos de laboratório', unit: 'PROT', status: 'attention', statusLabel: 'Aguardando', stalled: '6 dias', tone: 'warning', date: '06 nov 2026 · 14:27' },
+  { id: '23005.008544/2026-11', subject: 'Manutenção de infraestrutura de rede', unit: 'DTI', status: 'done', statusLabel: 'Concluído', stalled: '—', tone: 'success', date: '04 nov 2026 · 16:03' },
 ];
-document.querySelector('#timeline').innerHTML = events.map(([date,title,unit]) => `<div class="event"><time>${date}</time><strong>${title}</strong><small>${unit}</small></div>`).join('');
-document.querySelector('#tree').innerHTML = `<div class="node root">Processo 23005.012345/2026-11</div><div class="node child">01 · Documento inicial<em>03 nov 2026 · assinado</em></div><div class="node child">02 · Nota técnica<em>06 nov 2026 · recebido</em></div><div class="node child">03 · Despacho<em>10 nov 2026 · incluído</em></div><div class="node child">04 · Anexo de requisitos<em>11 nov 2026 · pendente de análise</em></div>`;
-const toast = (msg) => { const el=document.querySelector('#toast'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2400); };
-document.querySelector('#buscar').addEventListener('click',()=>{document.querySelector('.section-head h2').textContent=document.querySelector('#processo').value||'Processo sem número';toast('Consulta simulada carregada.');});
-document.querySelector('#copiar').addEventListener('click',async()=>{const text='SEI Radar - liberar homologação: versão SEI/SUPER; versão mod-wssei; URL base; usuário de teste; unidade/perfil; chave/token; processo de teste; autorização de rede; definição de escopo e LGPD.';try{await navigator.clipboard.writeText(text);toast('Checklist copiado.')}catch{toast('Checklist: versão, URL, usuário, unidade, chave, processo e rede.')}});
-const visual = document.querySelector('.hero-visual');
-visual?.addEventListener('pointermove', (event) => {
-  const box = visual.getBoundingClientRect();
-  const x = (event.clientX - box.left) / box.width - .5;
-  const y = (event.clientY - box.top) / box.height - .5;
-  visual.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${y * -5}deg)`;
-});
-visual?.addEventListener('pointerleave', () => { visual.style.transform = ''; });
+const activities = [['15:42', 'Processo recebido pela PROGESP', '23005.012345/2026-11', 'normal'], ['14:27', 'Despacho incluído no processo', '23005.009871/2026-11', 'warning'], ['11:08', 'Processo concluído pela DTI', '23005.008544/2026-11', 'success'], ['09:10', 'Prazo de análise ultrapassado', '23005.010982/2026-11', 'danger']];
+const events = [['12 nov 2026 · 15:42', 'Recebido pela PROGESP / Coordenação', 'Unidade atual'], ['11 nov 2026 · 10:18', 'Enviado para análise técnica', 'PROT / Núcleo de sistemas'], ['10 nov 2026 · 16:03', 'Despacho incluído no processo', 'Documento 04'], ['09 nov 2026 · 14:27', 'Processo recebido', 'PROAD / Diretoria'], ['06 nov 2026 · 09:11', 'Processo enviado para PROAD', 'PROGESP / Coordenação']];
+const toast = (msg) => { const el = document.querySelector('#toast'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2400); };
+const processRow = (p) => `<tr><td><button class="process-link" data-id="${p.id}">${p.id}</button></td><td>${p.subject}</td><td>${p.unit}</td><td>${p.stalled}</td><td><span class="status-dot ${p.tone}">${p.statusLabel}</span></td><td><button class="row-action" data-id="${p.id}">Abrir →</button></td></tr>`;
+function renderQueue() { const counts = { PROGESP: 42, PROAD: 31, PROT: 28, DTI: 27 }; document.querySelector('#queue').innerHTML = Object.entries(counts).map(([unit, count]) => `<div class="queue-row"><div class="queue-label"><strong>${unit}</strong><span>${count} processos</span></div><div class="bar"><i style="width:${Math.round(count / 42 * 100)}%"></i></div><b>${Math.round(count / 128 * 100)}%</b></div>`).join(''); }
+function renderActivity() { document.querySelector('#activity').innerHTML = activities.map(([time, title, id, tone]) => `<div class="activity-row"><span class="activity-time">${time}</span><span class="activity-dot ${tone}"></span><div><strong>${title}</strong><small>${id}</small></div></div>`).join(''); }
+function renderTable() { const unit = document.querySelector('#unit-filter').value; const status = document.querySelector('#status-filter').value; const filtered = processes.filter((p) => (unit === 'all' || p.unit === unit) && (status === 'all' || p.status === status)); document.querySelector('#attention-table').innerHTML = filtered.map(processRow).join('') || '<tr><td colspan="6" class="empty">Nenhum processo encontrado neste filtro.</td></tr>'; document.querySelectorAll('[data-id]').forEach((button) => button.addEventListener('click', () => selectProcess(button.dataset.id))); }
+function selectProcess(id) { const p = processes.find((item) => item.id === id); if (!p) return; document.querySelector('#detail-number').textContent = p.id; document.querySelector('#detail-subject').textContent = p.subject; document.querySelector('#detail-unit').textContent = `${p.unit} / Coordenação`; document.querySelector('#detail-date').textContent = p.date; document.querySelector('#timeline').innerHTML = events.map(([date, title, unit]) => `<div class="event"><time>${date}</time><strong>${title}</strong><small>${unit}</small></div>`).join(''); document.querySelector('.process-detail').scrollIntoView({ behavior: 'smooth', block: 'center' }); toast(`Detalhe de ${p.id} carregado.`); }
+renderQueue(); renderActivity(); renderTable(); selectProcess(processes[0].id);
+document.querySelector('#apply-filters').addEventListener('click', () => { renderTable(); toast('Visão atualizada com os filtros selecionados.'); });
+document.querySelector('#focus-attention').addEventListener('click', () => { document.querySelector('#status-filter').value = 'attention'; renderTable(); document.querySelector('.attention-panel').scrollIntoView({ behavior: 'smooth', block: 'center' }); });
+document.querySelector('#refresh').addEventListener('click', () => { toast('Dados mockados atualizados.'); });
+document.querySelector('#export').addEventListener('click', () => { const csv = 'processo,assunto,unidade,status\n' + processes.map((p) => `${p.id},${p.subject},${p.unit},${p.statusLabel}`).join('\n'); const blob = new Blob([csv], { type: 'text/csv' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = 'sei-radar-visao-mock.csv'; link.click(); URL.revokeObjectURL(link.href); toast('Visão exportada em CSV.'); });
+const visual = document.querySelector('.hero-visual'); visual?.addEventListener('pointermove', (event) => { const box = visual.getBoundingClientRect(); const x = (event.clientX - box.left) / box.width - .5; const y = (event.clientY - box.top) / box.height - .5; visual.style.transform = `perspective(900px) rotateY(${x * 7}deg) rotateX(${y * -5}deg)`; }); visual?.addEventListener('pointerleave', () => { visual.style.transform = ''; });
